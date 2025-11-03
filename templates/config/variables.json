@@ -1,9 +1,15 @@
 {
   "variables_communes": {
+    "entreprise": {
+      "label": "Entreprise",
+      "type": "text",
+      "required": true,
+      "placeholder": "Ex: ACME Corp"
+    },
     "civilite": {
       "label": "Civilité",
       "type": "select",
-      "options": ["M.", "Mme", "M. et Mme"],
+      "options": ["Monsieur", "Madame", "Monsieur et Madame"],
       "required": true
     },
     "nom_destinataire": {
@@ -43,12 +49,6 @@
     "nom_exp": {
       "label": "Nom expéditeur",
       "type": "text",
-      "required": false,
-      "default": "FO METAUX"
-    },
-    "statut_exp": {
-      "label": "Statut expéditeur",
-      "type": "text",
       "required": false
     },
     "date": {
@@ -69,20 +69,20 @@
       "type": "auto",
       "format": "HH:mm",
       "description": "Généré automatiquement"
+    },
+    "genre": {
+      "label": "Genre (la/le)",
+      "type": "auto",
+      "condition": "civilite === 'Madame' ? 'la' : 'le'",
+      "description": "Généré automatiquement selon la civilité"
     }
   },
   "templates": {
     "securite": {
-      "nom": "Document Sécurité",
+      "nom": "Sécurité et Désignation",
       "fichier": "template_principal.docx",
       "description": "Sécurité désignation",
       "variables_specifiques": {
-        "objet": {
-          "label": "Objet du document",
-          "type": "text",
-          "required": true,
-          "placeholder": "Ex: Sécurité au travail"
-        },
         "texte_ia": {
           "label": "Texte (optionnel IA)",
           "type": "textarea",
@@ -96,18 +96,56 @@
           "required": false,
           "placeholder": "Ex: 2025-001"
         },
-        "civilite_replace": {
-          "label": "Civilité (remplacement)",
+        "civilite_nomme": {
+          "label": "Civilité (nommé)",
           "type": "select",
-          "options": ["M.", "Mme", "M. et Mme"],
+          "options": ["Monsieur", "Madame"],
+          "required": false,
+          "description": "Civilité de la personne nommée"
+        },
+        "nom_nomme": {
+          "label": "Nom (nommé)",
+          "type": "text",
+          "required": false,
+          "description": "Nom de la personne nommée"
+        },
+        "email_nomme": {
+          "label": "Email (nommé)",
+          "type": "email",
+          "required": false,
+          "description": "Email de la personne nommée"
+        },
+        "civilite_replace": {
+          "label": "Civilité (remplaçant)",
+          "type": "select",
+          "options": ["Monsieur", "Madame"],
           "required": false,
           "description": "Si différent de la civilité principale"
         },
         "nom_replace": {
-          "label": "Nom (remplacement)",
+          "label": "Nom (remplaçant)",
           "type": "text",
           "required": false,
           "description": "Si différent du nom principal"
+        }
+      }
+    },
+    "designation": {
+      "nom": "Mandat Négociation",
+      "fichier": "template_designation.docx",
+      "description": "Mandat de négociation collective",
+      "variables_specifiques": {
+        "objet": {
+          "label": "Objet du mandat",
+          "type": "text",
+          "required": true,
+          "placeholder": "Ex: Négociation collective"
+        },
+        "texte_ia": {
+          "label": "Texte (optionnel IA)",
+          "type": "textarea",
+          "required": false,
+          "rows": 5
         }
       }
     }

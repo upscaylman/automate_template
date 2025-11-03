@@ -15,43 +15,15 @@
       🎲 Remplir avec données de test
     </button>
 
-    <select id="civilite" class="w-full p-2 border rounded-lg" required>
-      <option value="">Civilité</option>
-      <option value="Monsieur">Monsieur</option>
-      <option value="Madame">Madame</option>
-    </select>
-
-    <input id="statut" type="text" placeholder="Statut (ex: Président, Directeur...)" class="w-full p-2 border rounded-lg">
-
-    <input id="nom" type="text" placeholder="Nom" class="w-full p-2 border rounded-lg" required>
-
-    <input id="batiment" type="text" placeholder="Bâtiment" class="w-full p-2 border rounded-lg">
-
-    <input id="adresse" type="text" placeholder="Adresse" class="w-full p-2 border rounded-lg" required>
-
-    <input id="cp" type="text" placeholder="Code postal + Ville (ex: 75001 Paris)" class="w-full p-2 border rounded-lg" required>
-
-    <input id="objet" type="text" placeholder="Objet du document" class="w-full p-2 border rounded-lg">
-
-    <input id="number" type="text" placeholder="Numéro (ex: 2025-001)" class="w-full p-2 border rounded-lg" required>
-
-    <input id="nom_destinataire" type="text" placeholder="Nom du destinataire" class="w-full p-2 border rounded-lg">
-
+    <!-- Sélecteur de template (toujours visible) -->
     <select id="template" class="w-full p-2 border rounded-lg" required>
-      <option value="">Choisir un type de documents</option>
-      <option value="securite">Sécurité et Désignation</option>
-      <option value="designation">Mandat Négociation</option>
-      <option value="autre">Autre</option>
+      <option value="">📄 Choisir un type de document...</option>
     </select>
 
-    <textarea id="texte_ai" placeholder="Texte IA (optionnel)" rows="3" class="w-full p-2 border rounded-lg"></textarea>
+    <!-- Champs dynamiques générés depuis variables.json -->
+    <div id="dynamicFields" class="space-y-4"></div>
 
-    <input id="civilite_replace" type="text" placeholder="Civilité remplaçant" class="w-full p-2 border rounded-lg">
-
-    <input id="nom_replace" type="text" placeholder="Nom remplaçant" class="w-full p-2 border rounded-lg" required>
-    
-    <input id="nom_exp" type="text" placeholder="Nom expéditeur (ex: FO METAUX)" class="w-full p-2 border rounded-lg">
-
+    <!-- Destinataires (toujours visible) -->
     <div class="w-full">
       <label class="block text-sm font-medium text-gray-700 mb-1">Destinataires</label>
       <div id="emailContainer" class="w-full p-2 border rounded-lg bg-white flex flex-wrap gap-2 items-center min-h-[42px] cursor-text">
@@ -80,6 +52,174 @@
     const previewModal = document.getElementById("previewModal")
     const previewContent = document.getElementById("previewContent")
     const closeModal = document.getElementById("closeModal")
+    const templateSelect = document.getElementById("template")
+    const dynamicFields = document.getElementById("dynamicFields")
+    
+    let variablesConfig = null
+    let currentTemplate = null
+
+    // Charger variables.json au démarrage
+    async function loadVariablesConfig() {
+      try {
+        const response = await fetch('/config/variables.json')
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        }
+        
+        const text = await response.text()
+        if (!text || text.trim() === '') {
+          throw new Error('Empty response from server')
+        }
+        
+        variablesConfig = JSON.parse(text)
+        
+        // Remplir le sélecteur de templates
+        templateSelect.innerHTML = '<option value="">📄 Choisir un type de document...</option>'
+        Object.keys(variablesConfig.templates).forEach(key => {
+          const template = variablesConfig.templates[key]
+          const option = document.createElement('option')
+          option.value = key
+          option.textContent = template.nom
+          templateSelect.appendChild(option)
+        })
+        
+        console.log('Variables config loaded:', variablesConfig)
+      } catch (error) {
+        console.error('Erreur chargement variables.json:', error)
+        msg.textContent = `❌ Impossible de charger la configuration: ${error.message}`
+        msg.style.color = '#dc2626'
+      }
+    }
+
+    // Générer les champs dynamiquement
+    function generateFields(templateKey) {
+      if (!variablesConfig) return
+      
+      dynamicFields.innerHTML = ''
+      currentTemplate = templateKey
+      
+      const template = variablesConfig.templates[templateKey]
+      if (!template) return
+
+      // === SECTION COORDONNÉES ===
+      const coordSection = document.createElement('div')
+      coordSection.className = 'space-y-3 p-4 border-2 border-blue-200 rounded-lg bg-blue-50'
+      
+      const coordLabel = document.createElement('h3')
+      coordLabel.className = 'text-sm font-semibold text-blue-900 mb-3'
+      coordLabel.textContent = '📋 Coordonnées'
+      coordSection.appendChild(coordLabel)
+
+      // Ordre des champs pour la section Coordonnées
+      const coordFields = ['entreprise', 'civilite', 'statut', 'nom_destinataire', 'batiment', 'adresse', 'cp']
+      
+      coordFields.forEach(key => {
+        const variable = variablesConfig.variables_communes[key]
+        if (variable && variable.type !== 'auto') {
+          const field = createField(key, variable)
+          if (field) coordSection.appendChild(field)
+        }
+      })
+      
+      dynamicFields.appendChild(coordSection)
+
+      // === VARIABLES SPÉCIFIQUES AU TEMPLATE ===
+      if (template.variables_specifiques) {
+        const templateSection = document.createElement('div')
+        templateSection.className = 'space-y-3 p-4 border-2 border-green-200 rounded-lg bg-green-50 mt-4'
+        
+        const templateLabel = document.createElement('h3')
+        templateLabel.className = 'text-sm font-semibold text-green-900 mb-3'
+        templateLabel.textContent = '📝 Contenu de la demande'
+        templateSection.appendChild(templateLabel)
+        
+        Object.keys(template.variables_specifiques).forEach(key => {
+          const variable = template.variables_specifiques[key]
+          const field = createField(key, variable)
+          if (field) templateSection.appendChild(field)
+        })
+        
+        dynamicFields.appendChild(templateSection)
+      }
+
+      // === BLOC DONNÉES DE L'EXPÉDITEUR ===
+      const otherSection = document.createElement('div')
+      otherSection.className = 'space-y-3 p-4 border-2 border-purple-200 rounded-lg bg-purple-50 mt-4'
+      
+      const otherLabel = document.createElement('h3')
+      otherLabel.className = 'text-sm font-semibold text-purple-900 mb-3'
+      otherLabel.textContent = '👤 Données de l\'expéditeur'
+      otherSection.appendChild(otherLabel)
+      
+      // Ajouter uniquement nom_exp
+      const expediteurFields = ['nom_exp']
+      
+      expediteurFields.forEach(key => {
+        const variable = variablesConfig.variables_communes[key]
+        if (variable && variable.type !== 'auto') {
+          const field = createField(key, variable)
+          if (field) otherSection.appendChild(field)
+        }
+      })
+      
+      if (otherSection.children.length > 1) {
+        dynamicFields.appendChild(otherSection)
+      }
+    }
+
+    // Créer un champ HTML depuis la config
+    function createField(key, config) {
+      if (config.type === 'select') {
+        const select = document.createElement('select')
+        select.id = key
+        select.className = 'w-full p-2 border rounded-lg'
+        select.required = config.required || false
+        
+        const defaultOption = document.createElement('option')
+        defaultOption.value = ''
+        defaultOption.textContent = config.label
+        select.appendChild(defaultOption)
+        
+        config.options.forEach(opt => {
+          const option = document.createElement('option')
+          option.value = opt
+          option.textContent = opt
+          select.appendChild(option)
+        })
+        
+        return select
+      } else if (config.type === 'textarea') {
+        const textarea = document.createElement('textarea')
+        textarea.id = key
+        textarea.placeholder = config.placeholder || config.label
+        textarea.rows = config.rows || 3
+        textarea.className = 'w-full p-2 border rounded-lg'
+        textarea.required = config.required || false
+        return textarea
+      } else {
+        const input = document.createElement('input')
+        input.id = key
+        input.type = config.type === 'email' ? 'email' : 'text'
+        input.placeholder = config.placeholder || config.label
+        input.className = 'w-full p-2 border rounded-lg'
+        input.required = config.required || false
+        if (config.default) input.value = config.default
+        return input
+      }
+    }
+
+    // Détecter changement de template
+    templateSelect.addEventListener('change', (e) => {
+      if (e.target.value) {
+        generateFields(e.target.value)
+      } else {
+        dynamicFields.innerHTML = ''
+      }
+    })
+
+    // Charger la config au démarrage
+    loadVariablesConfig()
     
     // Gestion des chips d'emails inline
     const emailInput = document.getElementById("emailInput")
@@ -158,38 +298,43 @@
     
     // Bouton pour remplir avec des données de test
     document.getElementById('fillTestData').addEventListener('click', () => {
+      // Sélectionner un template aléatoire si pas déjà sélectionné
+      if (!templateSelect.value && variablesConfig) {
+        const templates = Object.keys(variablesConfig.templates)
+        const randomTemplate = templates[Math.floor(Math.random() * templates.length)]
+        templateSelect.value = randomTemplate
+        generateFields(randomTemplate)
+      }
+
       const testData = {
+        entreprise: ['ACME Corp', 'TechCo', 'Industries SA', 'Solutions SARL'][Math.floor(Math.random() * 4)],
         civilite: ['Monsieur', 'Madame'][Math.floor(Math.random() * 2)],
         statut: ['Président', 'Directeur', 'Responsable RH', 'Chef de service'][Math.floor(Math.random() * 4)],
         nom: ['Dupont', 'Martin', 'Bernard', 'Dubois', 'Laurent'][Math.floor(Math.random() * 5)],
+        nom_destinataire: ['Jean Dupont', 'Marie Martin', 'Pierre Bernard', 'Sophie Dubois'][Math.floor(Math.random() * 4)],
         batiment: ['Bâtiment A', 'Bâtiment B', 'Tour Nord', 'Annexe'][Math.floor(Math.random() * 4)],
         adresse: ['123 Rue de la Paix', '45 Avenue des Champs', '78 Boulevard Saint-Michel', '12 Place de la République'][Math.floor(Math.random() * 4)],
         cp: ['75001 Paris', '69002 Lyon', '13001 Marseille', '44000 Nantes'][Math.floor(Math.random() * 4)],
         objet: ['Sécurité au travail', 'Désignation représentant', 'Négociation collective', 'Réunion CSE'][Math.floor(Math.random() * 4)],
         number: ['2025-' + String(Math.floor(Math.random() * 100) + 1).padStart(3, '0')],
-        nom_destinataire: ['Jean Dupont', 'Marie Martin', 'Pierre Bernard', 'Sophie Dubois'][Math.floor(Math.random() * 4)],
         civilite_replace: ['Monsieur', 'Madame'][Math.floor(Math.random() * 2)],
         nom_replace: ['Durand', 'Petit', 'Robert', 'Moreau'][Math.floor(Math.random() * 4)],
+        email_replace: ['durand@example.com', 'petit@example.com', 'robert@example.com'][Math.floor(Math.random() * 3)],
+        civilite_nomme: ['Monsieur', 'Madame'][Math.floor(Math.random() * 2)],
+        nom_nomme: ['Lefebvre', 'Girard', 'Rousseau', 'Leroy'][Math.floor(Math.random() * 4)],
+        email_nomme: ['lefebvre@example.com', 'girard@example.com', 'rousseau@example.com'][Math.floor(Math.random() * 3)],
         nom_exp: ['FO METAUX', 'Force Ouvrière', 'Syndicat FO'][Math.floor(Math.random() * 3)],
-        template: ['securite', 'designation'][Math.floor(Math.random() * 2)],
+        statut_exp: ['Secrétaire général', 'Représentant syndical'][Math.floor(Math.random() * 2)],
         texte_ai: 'Ceci est un texte de test généré automatiquement pour la démonstration.',
         emails: ['epheandrill@gmail.com', 'bouvier.jul@gmail.com']
       }
       
-      document.getElementById('civilite').value = testData.civilite
-      document.getElementById('statut').value = testData.statut
-      document.getElementById('nom').value = testData.nom
-      document.getElementById('batiment').value = testData.batiment
-      document.getElementById('adresse').value = testData.adresse
-      document.getElementById('cp').value = testData.cp
-      document.getElementById('objet').value = testData.objet
-      document.getElementById('number').value = testData.number
-      document.getElementById('nom_destinataire').value = testData.nom_destinataire
-      document.getElementById('civilite_replace').value = testData.civilite_replace
-      document.getElementById('nom_replace').value = testData.nom_replace
-      document.getElementById('nom_exp').value = testData.nom_exp
-      document.getElementById('template').value = testData.template
-      document.getElementById('texte_ai').value = testData.texte_ai
+      // Remplir tous les champs dynamiques
+      Object.keys(testData).forEach(key => {
+        if (key === 'emails') return // Géré séparément
+        const field = document.getElementById(key)
+        if (field) field.value = testData[key]
+      })
       
       // Remplir les emails avec chips
       emails = []
@@ -201,23 +346,17 @@
       e.preventDefault()
       msg.textContent = "Envoi en cours..."
 
+      // Collecter toutes les données des champs dynamiques
       const data = {
-        civilite: document.getElementById("civilite").value,
-        statut: document.getElementById("statut").value,
-        nom: document.getElementById("nom").value,
-        batiment: document.getElementById("batiment").value,
-        adresse: document.getElementById("adresse").value,
-        cp: document.getElementById("cp").value,
-        objet: document.getElementById("objet").value,
-        number: document.getElementById("number").value,
-        nom_destinataire: document.getElementById("nom_destinataire").value,
-        template: document.getElementById("template").value,
-        texte_ai: document.getElementById("texte_ai").value,
-        civilite_replace: document.getElementById("civilite_replace").value,
-        nom_replace: document.getElementById("nom_replace").value,
-        destinataires: document.getElementById("destinataires").value,
-        nom_exp: document.getElementById("nom_exp").value
+        template: templateSelect.value,
+        destinataires: document.getElementById("destinataires").value
       }
+
+      // Ajouter toutes les valeurs des champs générés dynamiquement
+      const allInputs = dynamicFields.querySelectorAll('input, select, textarea')
+      allInputs.forEach(input => {
+        data[input.id] = input.value || ''
+      })
 
       try {
         const res = await fetch("http://localhost:3000/webhook/formulaire-doc", {

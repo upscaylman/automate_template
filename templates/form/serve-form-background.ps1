@@ -4,6 +4,7 @@
 $Port = 3000
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $FormPath = Join-Path $ScriptDir "form.html"
+$ConfigPath = Join-Path $ScriptDir "..\config\variables.json"
 
 # Check if port is available
 $PortInUse = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue
@@ -205,6 +206,46 @@ function Handle-Request {
             $Response.StatusCode = 404
             $Response.Close()
             return
+        }
+    }
+    elseif ($Path -eq "/config/variables.json") {
+        Write-Host "[REQUEST] Loading variables.json from: $ConfigPath" -ForegroundColor Cyan
+        
+        if (Test-Path $ConfigPath) {
+            try {
+                $Content = Get-Content $ConfigPath -Raw -Encoding UTF8
+                
+                if (-not $Content -or $Content.Trim() -eq "") {
+                    Write-Host "[ERROR] variables.json is empty!" -ForegroundColor Red
+                    $Response.StatusCode = 500
+                } else {
+                    $Buffer = [System.Text.Encoding]::UTF8.GetBytes($Content)
+                    
+                    $Response.ContentType = "application/json; charset=utf-8"
+                    $Response.ContentLength64 = $Buffer.Length
+                    $Response.StatusCode = 200
+                    
+                    $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+                    Write-Host "[SUCCESS] Sent variables.json ($($Buffer.Length) bytes)" -ForegroundColor Green
+                }
+            }
+            catch {
+                Write-Host "[ERROR] Failed to read variables.json: $($_.Exception.Message)" -ForegroundColor Red
+                $Response.StatusCode = 500
+                $errorMsg = @{error = "Failed to read variables.json"; details = $_.Exception.Message} | ConvertTo-Json
+                $errorBuffer = [System.Text.Encoding]::UTF8.GetBytes($errorMsg)
+                $Response.ContentType = "application/json"
+                $Response.ContentLength64 = $errorBuffer.Length
+                $Response.OutputStream.Write($errorBuffer, 0, $errorBuffer.Length)
+            }
+        } else {
+            Write-Host "[ERROR] variables.json not found at: $ConfigPath" -ForegroundColor Red
+            $Response.StatusCode = 404
+            $errorMsg = @{error = "variables.json not found"; path = $ConfigPath} | ConvertTo-Json
+            $errorBuffer = [System.Text.Encoding]::UTF8.GetBytes($errorMsg)
+            $Response.ContentType = "application/json"
+            $Response.ContentLength64 = $errorBuffer.Length
+            $Response.OutputStream.Write($errorBuffer, 0, $errorBuffer.Length)
         }
     }
     elseif ($Path -eq "/favicon.ico") {
