@@ -1,10 +1,17 @@
 {
   "variables_communes": {
-    "codeDocument": {
-      "label": "Code Document / Entreprise",
+    "entreprise": {
+      "label": "Entreprise",
       "type": "text",
       "required": true,
       "placeholder": "Ex: ACME Corp"
+    },
+    "codeDocument": {
+      "label": "Code Document",
+      "type": "text",
+      "required": false,
+      "placeholder": "Ex: DOC-2025-001",
+      "description": "Code interne du document (optionnel)"
     },
     "civiliteDestinataire": {
       "label": "Civilité Destinataire",
