@@ -19,7 +19,8 @@
     }
 
     body {
-      background: linear-gradient(-45deg, #6750A4, #ff0055, #5E35B1, #4686ff);
+      /* background: linear-gradient(-45deg, #6750A4, #ff0055, #5E35B1, #4686ff); */
+      background: linear-gradient(-45deg, #6750a459, #0093ff40, #5e35b19e, #4686ff80);
       background-size: 400% 400%;
       animation: gradient 15s ease infinite;
     }
@@ -343,7 +344,7 @@
 
     /* Section cards avec style Material Design 3 */
     .section-card {
-      background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+      background: linear-gradient(135deg, #ebe5fe 0%, #F8F9FA 100%);
       border-radius: 24px;
       padding: 2rem;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
@@ -681,7 +682,7 @@
       document.getElementById('expediteurFields').innerHTML = ''
 
       // === SECTION 1: COORDONNÉES ===
-      const coordFields = ['entreprise', 'codeDocument', 'civiliteDestinataire', 'nomDestinataire', 'statutDestinataire', 'batiment', 'adresse', 'cpVille']
+      const coordFields = ['entreprise', 'civiliteDestinataire', 'nomDestinataire', 'statutDestinataire', 'batiment', 'adresse', 'cpVille', 'codeDocument']
       const coordContainer = document.getElementById('coordonneesFields')
 
       coordFields.forEach(key => {
@@ -1085,13 +1086,13 @@
               </h3>
               <div class="space-y-2 text-sm">
                 ${data.entreprise ? `<div><span class="font-semibold text-blue-900">Entreprise:</span> <strong class="text-blue-700">${data.entreprise}</strong></div>` : ''}
-                ${data.codeDocument ? `<div><span class="font-semibold text-blue-900">Code:</span> <strong class="text-blue-700">${data.codeDocument}</strong></div>` : ''}
                 ${data.civiliteDestinataire ? `<div><span class="font-semibold text-blue-900">Civilité:</span> <strong class="text-blue-700">${data.civiliteDestinataire}</strong></div>` : ''}
                 ${data.nomDestinataire ? `<div><span class="font-semibold text-blue-900">Nom:</span> <strong class="text-blue-700">${data.nomDestinataire}</strong></div>` : ''}
                 ${data.statutDestinataire ? `<div><span class="font-semibold text-blue-900">Statut:</span> <strong class="text-blue-700">${data.statutDestinataire}</strong></div>` : ''}
                 ${data.batiment ? `<div><span class="font-semibold text-blue-900">Bâtiment:</span> <strong class="text-blue-700">${data.batiment}</strong></div>` : ''}
                 ${data.adresse ? `<div><span class="font-semibold text-blue-900">Adresse:</span> <strong class="text-blue-700">${data.adresse}</strong></div>` : ''}
                 ${data.cpVille ? `<div><span class="font-semibold text-blue-900">CP/Ville:</span> <strong class="text-blue-700">${data.cpVille}</strong></div>` : ''}
+                ${data.codeDocument ? `<div><span class="font-semibold text-blue-900">N° Document:</span> <strong class="text-blue-700">${data.codeDocument}</strong></div>` : ''}
               </div>
             </div>
 
