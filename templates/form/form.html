@@ -41,13 +41,13 @@
     .md3-input {
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid #79747E;
-      border-radius: 12px;
+      border-radius: 50px;
     }
 
     .md3-input:focus {
       outline: none;
       border: 2px solid #6750A4;
-      border-radius: 12px;
+      border-radius: 50px;
     }
 
     .md3-select {
@@ -55,6 +55,26 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%236750A4' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 8px center;
+    }
+
+    /* Inputs dans les 3 sections - arrondi max */
+    #coordonneesFields input,
+    #coordonneesFields select,
+    #coordonneesFields textarea,
+    #contenuFields input,
+    #contenuFields select,
+    #contenuFields textarea,
+    #expediteurFields input,
+    #expediteurFields select,
+    #expediteurFields textarea {
+      border-radius: 50px !important;
+    }
+
+    /* Textarea avec arrondi adapté */
+    #coordonneesFields textarea,
+    #contenuFields textarea,
+    #expediteurFields textarea {
+      border-radius: 24px !important;
     }
 
     /* Material Design 3 - Buttons */
@@ -92,56 +112,411 @@
     .email-chip:hover {
       background-color: #E8DEF8;
     }
+
+    /* Onglets de navigation - Material Design 3 Expressive */
+    .tab-button {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .tab-button::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(103, 80, 164, 0.1) 0%, rgba(126, 87, 194, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tab-button:hover::before {
+      opacity: 1;
+    }
+
+    .tab-button.active {
+      background: linear-gradient(135deg, #6750A4 0%, #7E57C2 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(103, 80, 164, 0.4);
+      transform: translateX(4px);
+    }
+
+    .tab-button:not(.active):hover {
+      background-color: #F3EDF7;
+      transform: translateX(2px);
+    }
+
+    .tab-section {
+      display: none;
+      animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tab-section.active {
+      display: block;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .step-indicator {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 2px solid transparent;
+    }
+
+    .step-indicator.completed {
+      background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+      border: 2px solid white;
+    }
+
+    .step-indicator.active {
+      background: linear-gradient(135deg, #6750A4 0%, #7E57C2 100%);
+      color: white;
+      transform: scale(1.15);
+      box-shadow: 0 6px 16px rgba(103, 80, 164, 0.5);
+      border: 2px solid white;
+    }
+
+    /* Hauteur adaptative selon le device */
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    #docForm {
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #6750A4 #E8DEF8;
+    }
+
+    #docForm::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #docForm::-webkit-scrollbar-track {
+      background: #E8DEF8;
+      border-radius: 10px;
+    }
+
+    #docForm::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #6750A4 0%, #7E57C2 100%);
+      border-radius: 10px;
+    }
+
+    #docForm::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #7E57C2 0%, #6750A4 100%);
+    }
+
+    /* Responsive - Mobile First */
+    @media (max-width: 768px) {
+      body {
+        padding: 8px;
+        align-items: flex-start;
+      }
+
+      #docForm {
+        max-height: calc(100vh - 16px);
+        padding: 16px !important;
+      }
+
+      .tab-navigation {
+        flex-direction: row !important;
+        width: 100% !important;
+        overflow-x: auto;
+        gap: 8px !important;
+        padding-bottom: 8px;
+        scrollbar-width: thin;
+      }
+
+      .tab-button {
+        flex: 1;
+        min-width: 100px;
+        padding: 12px 8px !important;
+        font-size: 11px !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+      }
+
+      .tab-button.active {
+        transform: translateY(-4px) !important;
+      }
+
+      .tab-button:not(.active):hover {
+        transform: translateY(-2px) !important;
+      }
+
+
+
+      .tab-button-text {
+        font-size: 10px;
+        text-align: center;
+      }
+
+      .step-indicator {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 12px !important;
+      }
+
+      #tabsContainer {
+        flex-direction: column !important;
+        gap: 16px !important;
+      }
+
+      .section-title {
+        font-size: 18px !important;
+      }
+
+      .section-fields {
+        grid-template-columns: 1fr !important;
+      }
+
+      .md3-button {
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+      }
+
+      .section-card {
+        padding: 16px !important;
+      }
+    }
+
+    /* Réduire les espacements globaux */
+    @media (max-width: 768px) {
+      #docForm {
+        padding: 12px !important;
+      }
+
+      .section-card {
+        margin-top: 12px !important;
+        margin-bottom: 12px !important;
+      }
+    }
+
+    /* Tablette */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      #docForm {
+        max-height: calc(100vh - 48px);
+      }
+
+      .section-fields {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* Desktop large */
+    @media (min-width: 1440px) {
+      #docForm {
+        max-height: calc(100vh - 64px);
+      }
+    }
+
+    /* Cartes de section avec style expressif */
+    .section-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 245, 252, 0.95) 100%);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(103, 80, 164, 0.08);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(103, 80, 164, 0.1);
+    }
+
+    .section-card:hover {
+      box-shadow: 0 8px 32px rgba(103, 80, 164, 0.15);
+      transform: translateY(-4px);
+      border-color: rgba(103, 80, 164, 0.2);
+    }
+
+    /* Section cards avec style Material Design 3 */
+    .section-card {
+      background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .section-card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+    }
+
+    /* Navigation responsive */
+    @media (max-width: 768px) {
+      .tabs-layout {
+        flex-direction: column;
+      }
+
+      .tabs-sidebar {
+        width: 100% !important;
+        margin-bottom: 1.5rem;
+      }
+
+      .tabs-sidebar .sticky {
+        position: relative !important;
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+      }
+
+      .tab-button {
+        flex: 1;
+        min-width: 120px;
+        padding: 0.75rem 1rem !important;
+      }
+
+      .tab-button span:last-child {
+        display: none;
+      }
+
+      .tab-button.active::after {
+        left: 50%;
+        top: auto;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 4px;
+      }
+
+      .section-card {
+        padding: 1.5rem;
+      }
+
+      #coordonneesFields,
+      #contenuFields,
+      #expediteurFields {
+        grid-template-columns: 1fr !important;
+      }
+    }
   </style>
 </head>
 <body class="bg-gray-100 flex flex-col items-center justify-start min-h-screen py-8 px-4">
 
-  <form id="docForm" class="bg-white p-8 md3-card elevation-3 w-full max-w-7xl space-y-6">
+  <form id="docForm" class="bg-white p-6 md:p-10 md3-card elevation-3 w-full max-w-7xl space-y-8 rounded-3xl">
     <!-- Header -->
-    <div class="text-center mb-6">
-      <h1 class="text-4xl font-bold text-[#1C1B1F] mb-2">Génération de document</h1>
-      <p class="text-[#49454F] text-lg">Créez vos documents professionnels en quelques clics</p>
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#6750A4] to-[#7E57C2] rounded-3xl mb-4 elevation-2">
+        <span class="material-icons text-5xl text-white">description</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-[#1C1B1F] mb-3 bg-gradient-to-r from-[#6750A4] to-[#7E57C2] bg-clip-text text-transparent">Génération de document</h1>
+      <p class="text-[#49454F] text-lg md:text-xl">Créez vos documents professionnels en quelques clics</p>
     </div>
 
     <!-- Actions rapides -->
-    <div class="flex gap-3 justify-center mb-6">
-      <button type="button" id="fillTestData" class="md3-button px-6 py-2.5 bg-[#E8DEF8] text-[#6750A4] hover:bg-[#D0BCFF] elevation-1 flex items-center gap-2">
+    <div class="flex gap-3 justify-center mb-8">
+      <button type="button" id="fillTestData" class="md3-button px-6 py-3 bg-[#E8DEF8] text-[#6750A4] hover:bg-[#D0BCFF] elevation-2 flex items-center gap-2 rounded-full font-semibold transition-all hover:scale-105">
         <span class="material-icons text-xl">casino</span>
-        Remplir avec données de test
+        <span class="hidden sm:inline">Remplir avec données de test</span>
+        <span class="sm:hidden">Test</span>
       </button>
     </div>
 
     <!-- Sélecteur de template -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-[#49454F] mb-2 flex items-center gap-2">
-        <span class="material-icons text-[#6750A4]">description</span>
-        Type de document
+    <div class="mb-8 section-card">
+      <label class="block text-lg font-semibold text-[#1C1B1F] mb-4 flex items-center gap-3">
+        <span class="material-icons text-2xl text-[#6750A4]">description</span>
+        Type de document <span class="text-red-500">*</span>
       </label>
-      <select id="template" class="md3-input md3-select w-full p-3.5 text-base" required>
-        <option value="">Choisir un type de document...</option>
+      <select id="template" class="md3-input md3-select w-full p-4 text-base rounded-xl border-2 border-[#E8DEF8] focus:border-[#6750A4] transition-all" required>
+        <option value="">📄 Choisir un type de document...</option>
       </select>
     </div>
 
-    <!-- Champs dynamiques en 3 colonnes -->
-    <div id="dynamicFields" class="space-y-6"></div>
+    <!-- Layout avec onglets à gauche et contenu à droite -->
+    <div id="tabsContainer" class="flex flex-col md:flex-row gap-6" style="display: none;">
+      <!-- Navigation par onglets (gauche sur desktop, horizontal sur mobile) -->
+      <div class="w-full md:w-64 flex-shrink-0">
+        <div class="tab-navigation md:sticky md:top-4 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-x-visible">
+          <button type="button" class="tab-button active w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-sm font-medium text-[#49454F]" data-tab="coordonnees">
+            <span class="step-indicator active w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-gray-200">1</span>
+            <span class="tab-button-text">Coordonnées</span>
+          </button>
+          <button type="button" class="tab-button w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-sm font-medium text-[#49454F]" data-tab="contenu">
+            <span class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-gray-200">2</span>
+            <span class="tab-button-text">Contenu</span>
+          </button>
+          <button type="button" class="tab-button w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-sm font-medium text-[#49454F]" data-tab="expediteur">
+            <span class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-gray-200">3</span>
+            <span class="tab-button-text">Expéditeur</span>
+          </button>
+        </div>
+      </div>
 
-    <!-- Destinataires -->
-    <div class="w-full">
-      <label class="block text-sm font-medium text-[#49454F] mb-2 flex items-center gap-2">
-        <span class="material-icons text-[#6750A4]">email</span>
-        Destinataires
+      <!-- Contenu des onglets (droite) -->
+      <div class="flex-1 min-w-0">
+        <!-- Section Coordonnées -->
+        <div id="tab-coordonnees" class="tab-section active section-card">
+          <h3 class="section-title text-xl font-bold text-[#1C1B1F] mb-4 flex items-center gap-2">
+            <span class="material-icons text-2xl text-[#6750A4]">person</span>
+            Coordonnées
+          </h3>
+          <div id="coordonneesFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- Section Contenu -->
+        <div id="tab-contenu" class="tab-section section-card">
+          <h3 class="section-title text-xl font-bold text-[#1C1B1F] mb-4 flex items-center gap-2">
+            <span class="material-icons text-2xl text-[#6750A4]">article</span>
+            Contenu de la demande
+          </h3>
+          <div id="contenuFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- Section Expéditeur -->
+        <div id="tab-expediteur" class="tab-section section-card">
+          <h3 class="section-title text-xl font-bold text-[#1C1B1F] mb-4 flex items-center gap-2">
+            <span class="material-icons text-2xl text-[#6750A4]">send</span>
+            Expéditeur
+          </h3>
+          <div id="expediteurFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- Navigation entre les onglets -->
+        <div class="flex flex-col sm:flex-row justify-between gap-3 mt-8 pt-6 border-t-2 border-[#E8DEF8]">
+          <button type="button" id="prevBtn" class="md3-button px-6 py-3 bg-gray-200 text-gray-700 hover:bg-gray-300 elevation-2 flex items-center justify-center gap-2 rounded-full font-semibold transition-all" style="display: none;">
+            <span class="material-icons">arrow_back</span>
+            <span class="hidden sm:inline">Précédent</span>
+          </button>
+          <button type="button" id="nextBtn" class="md3-button px-6 py-3 bg-gradient-to-r from-[#6750A4] to-[#7E57C2] text-white hover:shadow-lg elevation-2 flex items-center justify-center gap-2 rounded-full font-semibold transition-all ml-auto">
+            <span class="hidden sm:inline">Suivant</span>
+            <span class="material-icons">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Destinataires (après les onglets) -->
+    <div id="destinatairesSection" class="w-full mt-6 section-card" style="display: none;">
+      <label class="block text-base font-semibold text-[#1C1B1F] mb-3 flex items-center gap-2">
+        <span class="material-icons text-xl text-[#6750A4]">email</span>
+        Destinataires <span class="text-red-500">*</span>
       </label>
-      <div id="emailContainer" class="md3-input w-full p-3 bg-white flex flex-wrap gap-2 items-center min-h-[52px] cursor-text">
-        <input id="emailInput" type="text" placeholder="Tapez une adresse email et appuyez sur virgule ou espace..." class="flex-1 outline-none min-w-[250px] text-base">
+      <div id="emailContainer" class="md3-input w-full p-3 bg-white flex flex-wrap gap-2 items-center min-h-[52px] cursor-text rounded-xl border-2 border-[#E8DEF8] focus-within:border-[#6750A4] transition-all">
+        <input id="emailInput" type="text" placeholder="Tapez une adresse email et appuyez sur virgule ou espace..." class="flex-1 outline-none min-w-[200px] text-base">
       </div>
       <input id="destinataires" type="hidden" required>
     </div>
 
     <!-- Bouton d'action -->
-    <div class="flex gap-3">
-      <button type="button" id="previewBtn" disabled class="md3-button flex-1 py-3.5 bg-[#E8DEF8] text-[#6750A4] hover:bg-[#D0BCFF] elevation-1 flex items-center justify-center gap-2 text-base disabled:opacity-50 disabled:cursor-not-allowed transition-opacity">
+    <div id="previewBtnContainer" class="flex gap-3 mt-6" style="display: none;">
+      <button type="button" id="previewBtn" disabled class="md3-button w-full py-3.5 bg-gradient-to-r from-[#6750A4] to-[#7E57C2] text-white hover:shadow-2xl elevation-3 flex items-center justify-center gap-2 text-base font-bold rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none transition-all transform hover:scale-105 active:scale-95">
         <span class="material-icons">visibility</span>
-        Prévisualiser
+        Prévisualiser le document
       </button>
     </div>
 
@@ -181,10 +556,11 @@
             <span class="material-icons">download</span>
             Télécharger le document
           </button>
-          <button id="sendEmailBtn" class="md3-button px-6 py-2.5 bg-[#6750A4] text-white hover:bg-[#7E57C2] elevation-2 flex items-center gap-2">
+          <!-- Bouton d'envoi par email désactivé temporairement -->
+          <!-- <button id="sendEmailBtn" class="md3-button px-6 py-2.5 bg-[#6750A4] text-white hover:bg-[#7E57C2] elevation-2 flex items-center gap-2">
             <span class="material-icons">send</span>
             Générer et envoyer
-          </button>
+          </button> -->
         </div>
       </div>
     </div>
@@ -285,97 +661,62 @@
       }
     }
 
-    // Générer les champs dynamiquement
+    // Générer les champs dynamiquement dans les onglets
     function generateFields(templateKey) {
       if (!variablesConfig) return
 
-      dynamicFields.innerHTML = ''
       currentTemplate = templateKey
 
       const template = variablesConfig.templates[templateKey]
       if (!template) return
 
-      // === CONTENEUR 3 COLONNES ===
-      const gridContainer = document.createElement('div')
-      gridContainer.className = 'grid grid-cols-1 md:grid-cols-3 gap-6'
+      // Afficher le conteneur des onglets
+      document.getElementById('tabsContainer').style.display = 'flex'
+      document.getElementById('destinatairesSection').style.display = 'block'
+      document.getElementById('previewBtnContainer').style.display = 'flex'
 
-      // === COLONNE 1: COORDONNÉES (Bleu) ===
-      const coordSection = document.createElement('div')
-      coordSection.className = 'md3-card elevation-1 p-5 bg-gradient-to-br from-blue-50 to-blue-100 border-l-4 border-blue-500'
+      // Vider les conteneurs
+      document.getElementById('coordonneesFields').innerHTML = ''
+      document.getElementById('contenuFields').innerHTML = ''
+      document.getElementById('expediteurFields').innerHTML = ''
 
-      const coordLabel = document.createElement('h3')
-      coordLabel.className = 'text-base font-semibold text-blue-900 mb-4 flex items-center gap-2'
-      coordLabel.innerHTML = '<span class="material-icons">location_on</span> Coordonnées'
-      coordSection.appendChild(coordLabel)
-
-      const coordFieldsContainer = document.createElement('div')
-      coordFieldsContainer.className = 'space-y-4'
-
-      // Ordre des champs pour la section Coordonnées
+      // === SECTION 1: COORDONNÉES ===
       const coordFields = ['entreprise', 'codeDocument', 'civiliteDestinataire', 'nomDestinataire', 'statutDestinataire', 'batiment', 'adresse', 'cpVille']
+      const coordContainer = document.getElementById('coordonneesFields')
 
       coordFields.forEach(key => {
         const variable = variablesConfig.variables_communes[key]
         if (variable && variable.type !== 'auto') {
           const field = createField(key, variable)
-          if (field) coordFieldsContainer.appendChild(field)
+          if (field) coordContainer.appendChild(field)
         }
       })
 
-      coordSection.appendChild(coordFieldsContainer)
-      gridContainer.appendChild(coordSection)
-
-      // === COLONNE 2: VARIABLES SPÉCIFIQUES (Vert) ===
-      const templateSection = document.createElement('div')
-      templateSection.className = 'md3-card elevation-1 p-5 bg-gradient-to-br from-green-50 to-green-100 border-l-4 border-green-500'
-
-      const templateLabel = document.createElement('h3')
-      templateLabel.className = 'text-base font-semibold text-green-900 mb-4 flex items-center gap-2'
-      templateLabel.innerHTML = '<span class="material-icons">edit_document</span> Contenu de la demande'
-      templateSection.appendChild(templateLabel)
-
-      const templateFieldsContainer = document.createElement('div')
-      templateFieldsContainer.className = 'space-y-4'
+      // === SECTION 2: CONTENU DE LA DEMANDE ===
+      const contenuContainer = document.getElementById('contenuFields')
 
       if (template.variables_specifiques) {
         Object.keys(template.variables_specifiques).forEach(key => {
           const variable = template.variables_specifiques[key]
           const field = createField(key, variable)
-          if (field) templateFieldsContainer.appendChild(field)
+          if (field) contenuContainer.appendChild(field)
         })
       }
 
-      templateSection.appendChild(templateFieldsContainer)
-      gridContainer.appendChild(templateSection)
-
-      // === COLONNE 3: EXPÉDITEUR (Violet) ===
-      const otherSection = document.createElement('div')
-      otherSection.className = 'md3-card elevation-1 p-5 bg-gradient-to-br from-purple-50 to-purple-100 border-l-4 border-purple-500'
-
-      const otherLabel = document.createElement('h3')
-      otherLabel.className = 'text-base font-semibold text-purple-900 mb-4 flex items-center gap-2'
-      otherLabel.innerHTML = '<span class="material-icons">person</span> Expéditeur'
-      otherSection.appendChild(otherLabel)
-
-      const otherFieldsContainer = document.createElement('div')
-      otherFieldsContainer.className = 'space-y-4'
-
-      // Ajouter uniquement signatureExp
+      // === SECTION 3: EXPÉDITEUR ===
       const expediteurFields = ['signatureExp']
+      const expediteurContainer = document.getElementById('expediteurFields')
 
       expediteurFields.forEach(key => {
         const variable = variablesConfig.variables_communes[key]
         if (variable && variable.type !== 'auto') {
           const field = createField(key, variable)
-          if (field) otherFieldsContainer.appendChild(field)
+          if (field) expediteurContainer.appendChild(field)
         }
       })
 
-      otherSection.appendChild(otherFieldsContainer)
-      gridContainer.appendChild(otherSection)
-
-      // Ajouter le conteneur 3 colonnes au DOM
-      dynamicFields.appendChild(gridContainer)
+      // Réinitialiser la navigation des onglets
+      switchTab('coordonnees')
     }
 
     // Créer un champ HTML depuis la config
@@ -386,7 +727,7 @@
       const label = document.createElement('label')
       label.htmlFor = key
       label.className = 'block text-xs font-medium text-gray-700 mb-1.5'
-      label.textContent = config.label
+      label.innerHTML = config.label + (config.required ? ' <span class="text-red-500">*</span>' : '')
       fieldContainer.appendChild(label)
 
       if (config.type === 'select') {
@@ -438,6 +779,7 @@
       // Vérifier si un template est sélectionné
       if (!templateSelect.value) {
         previewBtn.disabled = true
+        console.log('❌ Bouton désactivé : aucun template sélectionné')
         return
       }
 
@@ -445,22 +787,93 @@
       const destinataires = document.getElementById('destinataires')
       if (!destinataires || !destinataires.value || destinataires.value.trim() === '') {
         previewBtn.disabled = true
+        console.log('❌ Bouton désactivé : aucun destinataire')
         return
       }
 
-      // Récupérer tous les champs required dans dynamicFields
-      const requiredFields = dynamicFields.querySelectorAll('[required]')
+      // Récupérer tous les champs required dans les 3 sections
+      const requiredFields = document.querySelectorAll('#coordonneesFields [required], #contenuFields [required], #expediteurFields [required]')
       let allFilled = true
+      const emptyFields = []
 
       requiredFields.forEach(field => {
         if (!field.value || field.value.trim() === '') {
           allFilled = false
+          emptyFields.push(field.id || field.name || 'champ sans nom')
         }
       })
 
-      // Activer/désactiver le bouton
-      previewBtn.disabled = !allFilled
+      if (!allFilled) {
+        previewBtn.disabled = true
+        console.log('❌ Bouton désactivé : champs vides ->', emptyFields)
+      } else {
+        previewBtn.disabled = false
+        console.log('✅ Bouton activé : tous les champs required sont remplis')
+      }
     }
+
+    // Navigation entre les onglets
+    let currentTab = 'coordonnees'
+    const tabs = ['coordonnees', 'contenu', 'expediteur']
+
+    function switchTab(tabName) {
+      currentTab = tabName
+      const currentIndex = tabs.indexOf(tabName)
+
+      // Mettre à jour les boutons d'onglets
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active')
+        btn.querySelector('.step-indicator').classList.remove('active')
+      })
+      const activeBtn = document.querySelector(`[data-tab="${tabName}"]`)
+      activeBtn.classList.add('active')
+      activeBtn.querySelector('.step-indicator').classList.add('active')
+
+      // Mettre à jour les sections
+      document.querySelectorAll('.tab-section').forEach(section => {
+        section.classList.remove('active')
+      })
+      document.getElementById(`tab-${tabName}`).classList.add('active')
+
+      // Mettre à jour les boutons Précédent/Suivant
+      const prevBtn = document.getElementById('prevBtn')
+      const nextBtn = document.getElementById('nextBtn')
+
+      if (currentIndex === 0) {
+        prevBtn.style.display = 'none'
+      } else {
+        prevBtn.style.display = 'flex'
+      }
+
+      if (currentIndex === tabs.length - 1) {
+        nextBtn.style.display = 'none'
+      } else {
+        nextBtn.style.display = 'flex'
+      }
+    }
+
+    // Clic sur les onglets
+    document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchTab(btn.dataset.tab)
+      })
+    })
+
+    // Bouton Précédent
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      const currentIndex = tabs.indexOf(currentTab)
+      if (currentIndex > 0) {
+        switchTab(tabs[currentIndex - 1])
+      }
+    })
+
+    // Bouton Suivant
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      const currentIndex = tabs.indexOf(currentTab)
+      if (currentIndex < tabs.length - 1) {
+        switchTab(tabs[currentIndex + 1])
+      }
+    })
 
     // Détecter changement de template
     templateSelect.addEventListener('change', (e) => {
@@ -469,7 +882,7 @@
 
         // Ajouter des listeners sur tous les champs pour vérifier la validation
         setTimeout(() => {
-          const allInputs = dynamicFields.querySelectorAll('input, select, textarea')
+          const allInputs = document.querySelectorAll('#coordonneesFields input, #coordonneesFields select, #coordonneesFields textarea, #contenuFields input, #contenuFields select, #contenuFields textarea, #expediteurFields input, #expediteurFields select, #expediteurFields textarea')
           allInputs.forEach(input => {
             input.addEventListener('input', checkRequiredFields)
             input.addEventListener('change', checkRequiredFields)
@@ -485,7 +898,9 @@
           checkRequiredFields()
         }, 100)
       } else {
-        dynamicFields.innerHTML = ''
+        document.getElementById('tabsContainer').style.display = 'none'
+        document.getElementById('destinatairesSection').style.display = 'none'
+        document.getElementById('previewBtnContainer').style.display = 'none'
         document.getElementById('previewBtn').disabled = true
       }
     })
@@ -631,13 +1046,13 @@
         return
       }
 
-      // Collecter les données du formulaire
+      // Collecter les données du formulaire depuis les 3 sections
       const data = {
         templateType: templateSelect.value,
         emailDestinataire: document.getElementById("destinataires").value
       }
 
-      const allInputs = dynamicFields.querySelectorAll('input, select, textarea')
+      const allInputs = document.querySelectorAll('#coordonneesFields input, #coordonneesFields select, #coordonneesFields textarea, #contenuFields input, #contenuFields select, #contenuFields textarea, #expediteurFields input, #expediteurFields select, #expediteurFields textarea')
       allInputs.forEach(input => {
         data[input.id] = input.value || ''
       })
@@ -757,13 +1172,13 @@
         btn.disabled = true
         btn.innerHTML = '<span class="material-icons animate-spin">sync</span> Génération...'
 
-        // Collecter les données du formulaire
+        // Collecter les données du formulaire depuis les 3 sections
         const data = {
           templateType: templateSelect.value,
           emailDestinataire: document.getElementById("destinataires").value
         }
 
-        const allInputs = dynamicFields.querySelectorAll('input, select, textarea')
+        const allInputs = document.querySelectorAll('#coordonneesFields input, #coordonneesFields select, #coordonneesFields textarea, #contenuFields input, #contenuFields select, #contenuFields textarea, #expediteurFields input, #expediteurFields select, #expediteurFields textarea')
         allInputs.forEach(input => {
           data[input.id] = input.value || ''
         })
@@ -845,6 +1260,8 @@
     })
 
     // Bouton "Générer et envoyer" - envoie l'email avec le Word en pièce jointe
+    // DÉSACTIVÉ TEMPORAIREMENT
+    /*
     document.getElementById("sendEmailBtn").addEventListener("click", async () => {
       const btn = document.getElementById("sendEmailBtn")
       const originalHTML = btn.innerHTML
@@ -911,6 +1328,7 @@
         btn.innerHTML = originalHTML
       }
     })
+    */
 
     // Fonction utilitaire pour convertir base64 en Blob
     function base64ToBlob(base64, mimeType) {
