@@ -45,19 +45,30 @@ export function collectFormData() {
   const templateSelect = getElement(CONFIG.SELECTORS.templateSelect);
   const destinataires = getElement(CONFIG.SELECTORS.destinatairesHidden);
   const dynamicFields = getElement(CONFIG.SELECTORS.dynamicFields);
-  
+
+  const templateType = templateSelect?.value || '';
+
   const data = {
-    templateType: templateSelect?.value || '',
+    templateType: templateType,
     emailDestinataire: destinataires?.value || ''
   };
-  
+
+  // Ajouter le nom du template pour le nom de fichier
+  const variablesConfig = getVariablesConfig();
+  if (variablesConfig && variablesConfig.templates && variablesConfig.templates[templateType]) {
+    const templateConfig = variablesConfig.templates[templateType];
+    data.templateName = templateConfig.nom || templateType;
+  } else {
+    data.templateName = templateType;
+  }
+
   if (dynamicFields) {
     const allInputs = dynamicFields.querySelectorAll('input, select, textarea');
     allInputs.forEach(input => {
       data[input.id] = input.value || '';
     });
   }
-  
+
   return data;
 }
 
@@ -170,10 +181,12 @@ export function generatePreviewHTML(data) {
 /**
  * Générer et afficher la prévisualisation
  */
-export function generateLocalPreview() {
+export async function generateLocalPreview() {
   const templateSelect = getElement(CONFIG.SELECTORS.templateSelect);
   const msg = getElement(CONFIG.SELECTORS.message);
-  
+  const previewContent = getElement(CONFIG.SELECTORS.previewContent);
+  const previewModal = getElement(CONFIG.SELECTORS.previewModal);
+
   if (!templateSelect?.value) {
     if (msg) {
       msg.textContent = CONFIG.MESSAGES.ERROR_SELECT_TEMPLATE;
@@ -181,15 +194,217 @@ export function generateLocalPreview() {
     }
     return;
   }
-  
-  const data = collectFormData();
-  const previewHTML = generatePreviewHTML(data);
-  
-  const variablesConfig = getVariablesConfig();
-  const templateConfig = variablesConfig?.templates[data.templateType];
-  const typeDocumentLabel = templateConfig ? templateConfig.nom : 'Document';
-  const dateStr = new Date().toLocaleDateString('fr-FR');
-  
-  showPreviewModal(previewHTML, `Type: ${typeDocumentLabel} • Date: ${dateStr}`);
+
+  // Afficher le modal avec un loader
+  if (previewContent) {
+    previewContent.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-12">
+        <span class="material-icons text-6xl text-blue-500 animate-spin mb-4">sync</span>
+        <p class="text-lg text-gray-600">Génération du document en cours...</p>
+        <p class="text-sm text-gray-500 mt-2">Veuillez patienter</p>
+      </div>
+    `;
+  }
+
+  if (previewModal) {
+    previewModal.classList.remove('hidden');
+  }
+
+  try {
+    // Collecter les données et générer le document
+    const data = collectFormData();
+    console.log('📄 Génération du document pour prévisualisation...');
+
+    // Importer dynamiquement les fonctions nécessaires
+    const { generateWordDocument, base64ToBlob } = await import('../core/api.js');
+    const { setGeneratedWord } = await import('../core/state.js');
+
+    // Générer le document Word
+    const result = await generateWordDocument(data);
+    const wordBase64 = result.data;
+
+    // Stocker pour téléchargement ultérieur
+    setGeneratedWord(wordBase64);
+
+    // Convertir en blob
+    const blob = base64ToBlob(wordBase64);
+
+    // Calculer la taille du fichier
+    const fileSizeKB = (blob.size / 1024).toFixed(2);
+
+    // Obtenir les informations du document
+    const variablesConfig = getVariablesConfig();
+    const templateConfig = variablesConfig?.templates[data.templateType];
+    const typeDocumentLabel = templateConfig ? templateConfig.nom : 'Document';
+
+    // Convertir le Word en HTML avec Mammoth.js pour prévisualisation
+    if (previewContent && window.mammoth) {
+      const arrayBuffer = await blob.arrayBuffer();
+
+      // Options de conversion pour un meilleur rendu avec en-têtes et pieds de page
+      const options = {
+        includeDefaultStyleMap: true,
+        includeEmbeddedStyleMap: true,
+        styleMap: [
+          "p[style-name='Heading 1'] => h1:fresh",
+          "p[style-name='Heading 2'] => h2:fresh",
+          "p[style-name='Heading 3'] => h3:fresh",
+          "p[style-name='Title'] => h1.title:fresh",
+          "r[style-name='Strong'] => strong",
+          "r[style-name='Emphasis'] => em"
+        ]
+      };
+
+      // Extraire le contenu principal + en-têtes/pieds de page
+      Promise.all([
+        mammoth.convertToHtml({ arrayBuffer: arrayBuffer }, options),
+        mammoth.extractRawText({ arrayBuffer: arrayBuffer })
+      ]).then(([htmlResult, textResult]) => {
+          const htmlContent = htmlResult.value;
+
+          // Vérifier s'il y a des messages d'avertissement
+          if (htmlResult.messages.length > 0) {
+            console.log('Messages Mammoth:', htmlResult.messages);
+          }
+
+          previewContent.innerHTML = `
+            <div class="w-full h-full flex flex-col">
+              <!-- Message de succès -->
+              <div class="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-300 rounded-xl p-4 mb-4">
+                <div class="flex items-start gap-3">
+                  <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                    <span class="material-icons text-white text-2xl">check_circle</span>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="text-lg font-bold text-green-800 mb-1">✅ Document généré avec succès !</h3>
+                    <p class="text-sm text-gray-700 mb-2">
+                      <strong>${typeDocumentLabel}</strong> • ${fileSizeKB} KB
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Prévisualisation du document avec style Word -->
+              <div class="bg-gray-200 rounded-xl p-4 overflow-auto" style="max-height: 600px;">
+                <!-- Page A4 simulée -->
+                <div class="word-document-preview bg-white shadow-2xl mx-auto" style="
+                  width: 21cm;
+                  min-height: 29.7cm;
+                  box-sizing: border-box;
+                  font-family: 'Calibri', 'Arial', sans-serif;
+                  font-size: 11pt;
+                  line-height: 1.5;
+                  color: #000000;
+                  display: flex;
+                  flex-direction: column;
+                ">
+                  <!-- En-tête avec logo -->
+                  <div style="padding: 1.27cm 2.54cm 0.5cm 2.54cm;">
+                    <img src="./assets/img/logo_entete.png" alt="En-tête FO METAUX" style="width: 25%; height: auto; display: block;">
+                  </div>
+
+                  <!-- Contenu principal -->
+                  <div style="flex: 1; padding: 0 2.54cm;">
+                    ${htmlContent}
+                  </div>
+
+                  <!-- Pied de page -->
+                  <div style="padding: 0.5cm 2.54cm 1.27cm 2.54cm; margin-top: auto;">
+                    <img src="./assets/img/logo_piedpage.png" alt="Pied de page FO METAUX" style="width: 100%; height: auto; display: block;">
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 text-center text-sm text-gray-500">
+                <p>💡 Prévisualisation au format A4 • Utilisez les boutons en bas pour télécharger ou envoyer</p>
+              </div>
+            </div>
+          `;
+
+          // Ajouter des styles CSS pour le contenu Word
+          const style = document.createElement('style');
+          style.textContent = `
+            .word-document-preview h1 {
+              font-size: 16pt;
+              font-weight: bold;
+              margin: 12pt 0 6pt 0;
+              color: #000000;
+            }
+            .word-document-preview h2 {
+              font-size: 14pt;
+              font-weight: bold;
+              margin: 10pt 0 5pt 0;
+              color: #000000;
+            }
+            .word-document-preview h3 {
+              font-size: 12pt;
+              font-weight: bold;
+              margin: 8pt 0 4pt 0;
+              color: #000000;
+            }
+            .word-document-preview p {
+              margin: 0 0 10pt 0;
+              text-align: justify;
+            }
+            .word-document-preview strong {
+              font-weight: bold;
+            }
+            .word-document-preview em {
+              font-style: italic;
+            }
+            .word-document-preview ul, .word-document-preview ol {
+              margin: 0 0 10pt 0;
+              padding-left: 40px;
+            }
+            .word-document-preview li {
+              margin-bottom: 5pt;
+            }
+            .word-document-preview table {
+              border-collapse: collapse;
+              width: 100%;
+              margin: 10pt 0;
+            }
+            .word-document-preview td, .word-document-preview th {
+              border: 1px solid #000000;
+              padding: 5pt;
+            }
+            .word-document-preview th {
+              background-color: #f0f0f0;
+              font-weight: bold;
+            }
+          `;
+          previewContent.appendChild(style);
+        })
+        .catch(err => {
+          console.error('Erreur Mammoth:', err);
+          previewContent.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-12">
+              <span class="material-icons text-6xl text-orange-500 mb-4">warning</span>
+              <p class="text-lg text-gray-700 font-semibold">Prévisualisation non disponible</p>
+              <p class="text-sm text-gray-600 mt-2">Le document a été généré mais la prévisualisation a échoué.</p>
+              <p class="text-sm text-gray-500 mt-4">Vous pouvez télécharger le document avec les boutons en bas.</p>
+            </div>
+          `;
+        });
+    }
+
+    console.log('✅ Document généré et prêt pour prévisualisation');
+
+  } catch (error) {
+    console.error('❌ Erreur lors de la génération:', error);
+
+    if (previewContent) {
+      previewContent.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-12">
+          <span class="material-icons text-6xl text-red-500 mb-4">error</span>
+          <p class="text-lg text-red-600 font-semibold">Erreur lors de la génération</p>
+          <p class="text-sm text-gray-600 mt-2">${error.message}</p>
+          <button onclick="this.closest('#previewModal').classList.add('hidden')" class="mt-6 px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg">
+            Fermer
+          </button>
+        </div>
+      `;
+    }
+  }
 }
 

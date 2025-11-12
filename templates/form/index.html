@@ -9,6 +9,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Mammoth.js pour prévisualisation Word -->
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
   
   <!-- Custom CSS -->
   <link rel="stylesheet" href="assets/css/base.css">
@@ -114,7 +117,7 @@
     .template-thumbnail {
       width: 100%;
       height: 100px;
-      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+      background: linear-gradient(135deg, #f3f4f6 0%, #c0c3a5 100%);
       border-radius: 8px;
       display: flex;
       align-items: center;
@@ -130,7 +133,7 @@
     }
     .template-thumbnail .material-icons {
       font-size: 40px;
-      color: #9ca3af;
+      color: #686a6c;
     }
     @media (min-width: 768px) {
       .template-thumbnail .material-icons {
@@ -138,7 +141,7 @@
       }
     }
     .template-card.selected .template-thumbnail {
-      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #adaea4 100%);
     }
     .template-card.selected .template-thumbnail .material-icons {
       color: white;
@@ -371,8 +374,8 @@
             Télécharger le document
           </button>
           <button id="sendEmailBtn" class="md3-button px-6 py-2.5 bg-[#0072ff] text-white hover:bg-[#0093ff] elevation-2 flex items-center gap-2">
-            <span class="material-icons">send</span>
-            Générer et envoyer
+            <span class="material-icons">share</span>
+            Partager
           </button>
         </div>
       </div>
@@ -442,18 +445,38 @@
       </div>
 
       <!-- Contenu -->
-      <div class="p-6">
-        <label class="block text-base font-semibold text-gray-900 mb-3">
-          Adresses email des destinataires <span style="color: #2563eb;">*</span>
-        </label>
-        <div class="relative">
-          <span class="material-icons absolute left-3 top-3 text-gray-400 text-base pointer-events-none">email</span>
-          <textarea id="shareEmailInput" class="w-full p-4 pl-10 border-2 rounded-xl focus:outline-none transition-all resize-none" style="border-color: #384151; border-radius: 0.375rem;" rows="4" placeholder="Entrez les emails séparés par des virgules&#10;Ex: contact@exemple.com, autre@exemple.com"></textarea>
+      <div class="p-6 space-y-4">
+        <!-- Destinataires -->
+        <div>
+          <label class="block text-base font-semibold text-gray-900 mb-3">
+            Adresses email des destinataires <span style="color: #2563eb;">*</span>
+          </label>
+          <div id="shareEmailContainer" class="md3-input w-full p-3 bg-white flex flex-wrap gap-2 items-center min-h-[52px] cursor-text rounded-xl border-2 border-[#E8DEF8] focus-within:border-[#0072ff] transition-all">
+            <input id="shareEmailInput" type="text" placeholder="Tapez une adresse email et appuyez sur virgule ou espace..." class="flex-1 outline-none min-w-[200px] text-base">
+          </div>
+          <p class="text-sm text-gray-600 mt-2">
+            <span class="material-icons text-base align-middle mr-1">info</span>
+            Séparez les adresses par des virgules, espaces ou point-virgules
+          </p>
         </div>
-        <p class="text-sm text-gray-600 mt-2">
-          <span class="material-icons text-base align-middle mr-1">info</span>
-          Séparez les adresses par des virgules
-        </p>
+
+        <!-- Message d'email -->
+        <div>
+          <label for="shareEmailMessage" class="block text-base font-semibold text-gray-900 mb-3">
+            Message de l'email
+          </label>
+          <textarea
+            id="shareEmailMessage"
+            rows="6"
+            class="w-full p-4 border-2 rounded-xl focus:outline-none transition-all resize-none focus:border-[#0072ff]"
+            style="border-color: #E8DEF8; font-family: 'Roboto', sans-serif;"
+            placeholder="Votre message ici..."
+          ></textarea>
+          <p class="text-sm text-gray-600 mt-2">
+            <span class="material-icons text-base align-middle mr-1">edit</span>
+            Personnalisez le message qui accompagnera le document
+          </p>
+        </div>
       </div>
 
       <!-- Footer avec actions -->

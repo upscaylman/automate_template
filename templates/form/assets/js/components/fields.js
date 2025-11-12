@@ -15,13 +15,23 @@ import { getElement } from '../core/config.js';
 export function createField(key, config) {
   const fieldContainer = document.createElement('div');
   fieldContainer.className = 'w-full';
-  
+
   const label = document.createElement('label');
   label.htmlFor = key;
   label.className = 'block text-xs font-medium text-gray-700 mb-1.5';
   label.textContent = config.label;
+
+  // Ajouter une astérisque rouge pour les champs obligatoires
+  if (config.required) {
+    const asterisk = document.createElement('span');
+    asterisk.textContent = ' *';
+    asterisk.style.color = '#c4232d'; // Rouge FO
+    asterisk.style.fontWeight = 'bold';
+    label.appendChild(asterisk);
+  }
+
   fieldContainer.appendChild(label);
-  
+
   if (config.type === 'select') {
     const select = createSelectField(key, config);
     fieldContainer.appendChild(select);
@@ -152,6 +162,37 @@ function createInputField(key, config) {
   input.required = config.required || false;
   if (config.default) input.value = config.default;
 
+  // Variable pour savoir si on est en train d'effacer via le bouton
+  let isClearing = false;
+
+  // Validation spéciale pour le champ statutDestinataire
+  if (key === 'statutDestinataire') {
+    input.addEventListener('input', (e) => {
+      const value = e.target.value.toLowerCase();
+      // Vérifier si le texte contient " le " ou " la " (avec espaces) ou commence par "le " ou "la "
+      if (value.match(/\b(le|la)\b/)) {
+        e.target.setCustomValidity('Les mots "le" ou "la" ne sont pas autorisés dans le statut');
+        e.target.style.borderColor = '#c4232d';
+      } else {
+        e.target.setCustomValidity('');
+        e.target.style.borderColor = '';
+      }
+    });
+
+    input.addEventListener('blur', (e) => {
+      // Ne pas afficher l'alerte si on est en train d'effacer
+      if (isClearing) {
+        isClearing = false;
+        return;
+      }
+
+      const value = e.target.value.toLowerCase();
+      if (value.match(/\b(le|la)\b/)) {
+        alert('⚠️ Les mots "le" ou "la" ne sont pas autorisés dans le statut. Utilisez directement le titre (ex: "Directeur" au lieu de "le Directeur")');
+      }
+    });
+  }
+
   // Bouton pour effacer le champ
   const clearBtn = document.createElement('button');
   clearBtn.type = 'button';
@@ -173,7 +214,17 @@ function createInputField(key, config) {
 
   // Effacer le champ au clic
   clearBtn.addEventListener('click', () => {
+    // Marquer qu'on est en train d'effacer pour éviter l'alerte de validation
+    if (key === 'statutDestinataire') {
+      isClearing = true;
+    }
+
     input.value = '';
+
+    // Réinitialiser la validation
+    input.setCustomValidity('');
+    input.style.borderColor = '';
+
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.dispatchEvent(new Event('change', { bubbles: true }));
     clearBtn.classList.add('hidden');

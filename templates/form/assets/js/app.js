@@ -381,11 +381,43 @@ function clearAllFormData() {
 }
 
 /**
+ * Générer le message d'email par défaut
+ */
+function generateDefaultEmailMessage() {
+  const data = {};
+
+  // Collecter les données du formulaire
+  const allInputs = document.querySelectorAll('#coordonneesFields input, #coordonneesFields select, #coordonneesFields textarea, #contenuFields input, #contenuFields select, #contenuFields textarea, #expediteurFields input, #expediteurFields select, #expediteurFields textarea');
+  allInputs.forEach(input => {
+    data[input.id] = input.value || '';
+  });
+
+  const civilite = data.civiliteDestinataire || 'Madame, Monsieur';
+  const nom = data.nomDestinataire || '';
+  const destinataire = nom ? `${civilite} ${nom}` : civilite;
+
+  const message = `Bonjour ${destinataire},
+
+Veuillez trouver ci-joint le document généré concernant votre demande.
+
+Cordialement,
+FO METAUX`;
+
+  return message;
+}
+
+/**
  * Ouvrir le modal de partage
  */
 function openShareModal() {
   const modal = document.getElementById('shareModal');
+  const messageTextarea = document.getElementById('shareEmailMessage');
+
   if (modal) {
+    // Préremplir le message d'email
+    if (messageTextarea) {
+      messageTextarea.value = generateDefaultEmailMessage();
+    }
     modal.classList.remove('hidden');
   }
 }
@@ -399,13 +431,96 @@ function initShareModal() {
   const closeBtnFooter = document.getElementById('closeShareModalBtn');
   const confirmBtn = document.getElementById('confirmShareBtn');
   const emailInput = document.getElementById('shareEmailInput');
+  const emailContainer = document.getElementById('shareEmailContainer');
 
   if (!modal) return;
+
+  // Tableau pour stocker les emails du modal de partage
+  let shareEmails = [];
+
+  // Créer un chip d'email pour le modal de partage
+  function createShareChip(email) {
+    const chip = document.createElement('div');
+    chip.className = 'email-chip flex items-center gap-1.5 bg-[#E8DEF8] text-[#21005D] px-3 py-1.5 rounded-full text-sm font-medium elevation-1';
+    chip.innerHTML = `
+      <span class="material-icons text-base">email</span>
+      <span>${email}</span>
+      <button type="button" class="ml-1 text-[#0072ff] hover:text-[#21005D] transition-colors">
+        <span class="material-icons text-base">close</span>
+      </button>
+    `;
+
+    chip.querySelector('button').addEventListener('click', () => {
+      const index = shareEmails.indexOf(email);
+      if (index > -1) {
+        shareEmails.splice(index, 1);
+      }
+      chip.remove();
+    });
+
+    return chip;
+  }
+
+  // Ajouter un email au modal de partage
+  function addShareEmail(email) {
+    email = email.trim();
+    if (!email || !email.includes('@')) return false;
+    if (shareEmails.includes(email)) return false;
+
+    shareEmails.push(email);
+    const chip = createShareChip(email);
+    emailContainer.insertBefore(chip, emailInput);
+    return true;
+  }
+
+  // Gérer l'input (virgule, point-virgule, espace)
+  emailInput?.addEventListener('input', (e) => {
+    const value = e.target.value;
+    if (value.includes(',') || value.includes(';') || value.includes(' ')) {
+      const parts = value.split(/[,;\s]+/);
+      parts.forEach(part => {
+        if (part.trim()) {
+          addShareEmail(part);
+        }
+      });
+      emailInput.value = '';
+    }
+  });
+
+  // Gérer la touche Backspace
+  emailInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && emailInput.value === '') {
+      if (shareEmails.length > 0) {
+        shareEmails.pop();
+        const chips = emailContainer.querySelectorAll('.email-chip');
+        if (chips.length > 0) {
+          chips[chips.length - 1].remove();
+        }
+      }
+    }
+
+    // Gérer la touche Enter
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (emailInput.value.trim()) {
+        addShareEmail(emailInput.value);
+        emailInput.value = '';
+      }
+    }
+  });
+
+  // Focus sur l'input quand on clique sur le conteneur
+  emailContainer?.addEventListener('click', () => {
+    emailInput.focus();
+  });
 
   // Fermer le modal
   const closeModal = () => {
     modal.classList.add('hidden');
     emailInput.value = '';
+    // Vider les chips
+    shareEmails = [];
+    emailContainer.querySelectorAll('.email-chip').forEach(chip => chip.remove());
   };
 
   closeBtn?.addEventListener('click', closeModal);
@@ -420,36 +535,39 @@ function initShareModal() {
 
   // Confirmer et envoyer
   confirmBtn?.addEventListener('click', async () => {
-    const emails = emailInput.value.trim();
+    // Ajouter l'email en cours de saisie s'il y en a un
+    if (emailInput && emailInput.value.trim()) {
+      addShareEmail(emailInput.value.trim());
+      emailInput.value = '';
+    }
 
-    if (!emails) {
+    if (shareEmails.length === 0) {
       alert('⚠️ Veuillez entrer au moins une adresse email pour partager le document');
       return;
     }
 
-    // Valider le format des emails
-    const emailList = emails.split(',').map(e => e.trim()).filter(e => e);
-    const invalidEmails = emailList.filter(email => !email.includes('@'));
-
-    if (invalidEmails.length > 0) {
-      alert('⚠️ Certaines adresses email sont invalides : ' + invalidEmails.join(', '));
-      return;
-    }
+    // Récupérer le message personnalisé
+    const messageTextarea = document.getElementById('shareEmailMessage');
+    const customMessage = messageTextarea ? messageTextarea.value.trim() : '';
 
     // Mettre à jour le champ destinataires caché
     const destinatairesInput = document.getElementById('destinataires');
     if (destinatairesInput) {
-      destinatairesInput.value = emails;
+      destinatairesInput.value = shareEmails.join(', ');
+    }
+
+    // Stocker le message personnalisé dans un champ caché ou dans le state
+    // On va le passer via un attribut data temporaire
+    if (customMessage) {
+      document.body.setAttribute('data-custom-email-message', customMessage);
     }
 
     // Fermer le modal
     closeModal();
 
-    // Déclencher l'envoi via le bouton existant
-    const sendBtn = document.getElementById('sendEmailBtn');
-    if (sendBtn) {
-      sendBtn.click();
-    }
+    // Appeler directement la fonction sendEmail au lieu de cliquer sur le bouton
+    const { sendEmail } = await import('./components/preview.js');
+    sendEmail();
   });
 }
 
