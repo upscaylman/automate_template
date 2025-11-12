@@ -3,7 +3,7 @@
 
 $Port = 3000
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$FormPath = Join-Path $ScriptDir "form.html"
+$FormPath = Join-Path $ScriptDir "index.html"
 $ConfigPath = Join-Path $ScriptDir "..\config\variables.json"
 
 # Check if port is available
@@ -48,18 +48,26 @@ function Proxy-ToN8n {
         
         try {
             $response = Invoke-WebRequest @params
-            $responseBody = $response.Content
-            
+
+            # Decode response as UTF-8 to preserve accents
+            if ($response.RawContentStream) {
+                $reader = [System.IO.StreamReader]::new($response.RawContentStream, [System.Text.Encoding]::UTF8)
+                $responseBody = $reader.ReadToEnd()
+                $reader.Close()
+            } else {
+                $responseBody = $response.Content
+            }
+
             if (-not $responseBody -or $responseBody.Trim() -eq "") {
                 Write-Host "[PROXY] Empty response from n8n for $Path" -ForegroundColor Yellow
             } else {
                 Write-Host "[PROXY] Response received: $($responseBody.Length) chars" -ForegroundColor Green
             }
-            
+
             return @{
                 StatusCode = $response.StatusCode
                 Body = if ($responseBody) { $responseBody } else { "" }
-                ContentType = if ($response.Headers.'Content-Type') { $response.Headers.'Content-Type' } else { "application/json" }
+                ContentType = if ($response.Headers.'Content-Type') { $response.Headers.'Content-Type' } else { "application/json; charset=utf-8" }
             }
         }
         catch {
@@ -156,11 +164,16 @@ function Handle-Request {
             $proxyResult = Proxy-ToN8n -Method $Request.HttpMethod -Path $Path -Headers $headers -Body $body
             
             $Response.StatusCode = $proxyResult.StatusCode
-            
+
+            # Force UTF-8 charset in Content-Type
             if ($proxyResult.ContentType) {
-                $Response.ContentType = $proxyResult.ContentType
+                $contentType = $proxyResult.ContentType
+                if ($contentType -notmatch 'charset=') {
+                    $contentType = "$contentType; charset=utf-8"
+                }
+                $Response.ContentType = $contentType
             } else {
-                $Response.ContentType = "application/json"
+                $Response.ContentType = "application/json; charset=utf-8"
             }
             
             $bodyContent = if ($null -eq $proxyResult.Body) { "" } else { $proxyResult.Body }
@@ -196,16 +209,49 @@ function Handle-Request {
         if (Test-Path $FormPath) {
             $Content = Get-Content $FormPath -Raw -Encoding UTF8
             $Buffer = [System.Text.Encoding]::UTF8.GetBytes($Content)
-            
+
             $Response.ContentType = "text/html; charset=utf-8"
             $Response.ContentLength64 = $Buffer.Length
             $Response.StatusCode = 200
-            
+
             $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
         } else {
             $Response.StatusCode = 404
             $Response.Close()
             return
+        }
+    }
+    # Serve CSS files
+    elseif ($Path -match "^/assets/css/(.+\.css)$") {
+        $cssFile = Join-Path $ScriptDir "assets\css\$($Matches[1])"
+        if (Test-Path $cssFile) {
+            $Content = Get-Content $cssFile -Raw -Encoding UTF8
+            $Buffer = [System.Text.Encoding]::UTF8.GetBytes($Content)
+
+            $Response.ContentType = "text/css; charset=utf-8"
+            $Response.ContentLength64 = $Buffer.Length
+            $Response.StatusCode = 200
+
+            $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+        } else {
+            $Response.StatusCode = 404
+        }
+    }
+    # Serve JS files
+    elseif ($Path -match "^/assets/js/(.+\.js)$") {
+        $jsPath = $Matches[1] -replace "/", "\"
+        $jsFile = Join-Path $ScriptDir "assets\js\$jsPath"
+        if (Test-Path $jsFile) {
+            $Content = Get-Content $jsFile -Raw -Encoding UTF8
+            $Buffer = [System.Text.Encoding]::UTF8.GetBytes($Content)
+
+            $Response.ContentType = "application/javascript; charset=utf-8"
+            $Response.ContentLength64 = $Buffer.Length
+            $Response.StatusCode = 200
+
+            $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+        } else {
+            $Response.StatusCode = 404
         }
     }
     elseif ($Path -eq "/config/variables.json") {

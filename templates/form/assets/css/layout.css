@@ -1,0 +1,185 @@
+/**
+ * Layout CSS
+ * Contient les styles de mise en page, grilles et responsive
+ */
+
+/* ========================================
+   Onglets de navigation
+   ======================================== */
+.tab-button {
+  transition: all var(--transition-slow);
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
+}
+
+.tab-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(103, 80, 164, 0.1) 0%, rgba(126, 87, 194, 0.1) 100%);
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+}
+
+.tab-button:hover::before {
+  opacity: 1;
+}
+
+.tab-button.active {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(103, 80, 164, 0.4);
+  transform: translateX(4px);
+}
+
+.tab-button:not(.active):hover {
+  background-color: var(--color-bg-surface);
+  transform: translateX(2px);
+}
+
+.tab-section {
+  display: none;
+  animation: fadeInUp 0.5s var(--transition-normal);
+}
+
+.tab-section.active {
+  display: block;
+}
+
+/* ========================================
+   Sections de formulaire
+   ======================================== */
+.section-card {
+  padding: 24px;
+  border-radius: var(--radius-md);
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-fields {
+  display: grid;
+  gap: 16px;
+}
+
+/* Couleurs des sections */
+.section-blue {
+  background: linear-gradient(to bottom right, var(--color-blue-50), var(--color-blue-100));
+  border-left: 4px solid var(--color-blue-500);
+}
+
+.section-blue .section-title {
+  color: var(--color-blue-900);
+}
+
+.section-green {
+  background: linear-gradient(to bottom right, var(--color-green-50), var(--color-green-100));
+  border-left: 4px solid var(--color-green-500);
+}
+
+.section-green .section-title {
+  color: var(--color-green-900);
+}
+
+.section-purple {
+  background: linear-gradient(to bottom right, var(--color-purple-50), var(--color-purple-100));
+  border-left: 4px solid var(--color-purple-500);
+}
+
+.section-purple .section-title {
+  color: var(--color-purple-900);
+}
+
+/* ========================================
+   Responsive - Mobile First
+   ======================================== */
+@media (max-width: 768px) {
+  body {
+    padding: var(--spacing-sm);
+    align-items: flex-start;
+  }
+
+  #docForm {
+    max-height: calc(100vh - 16px);
+    padding: var(--spacing-md) !important;
+  }
+
+  .tab-navigation {
+    flex-direction: row !important;
+    width: 100% !important;
+    overflow-x: auto;
+    gap: var(--spacing-sm) !important;
+    padding-bottom: var(--spacing-sm);
+    scrollbar-width: thin;
+  }
+
+  .tab-button {
+    flex: 1;
+    min-width: 100px;
+    padding: 12px 8px !important;
+    font-size: 11px !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+
+  .tab-button.active {
+    transform: translateY(-4px) !important;
+  }
+
+  .tab-button:not(.active):hover {
+    transform: translateY(-2px) !important;
+  }
+
+  .tab-button-text {
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .step-indicator {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+  }
+
+  #tabsContainer {
+    flex-direction: column !important;
+    gap: var(--spacing-md) !important;
+  }
+
+  .section-title {
+    font-size: 18px !important;
+  }
+
+  .section-fields {
+    grid-template-columns: 1fr !important;
+  }
+
+  .md3-button {
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+  }
+
+  .section-card {
+    padding: var(--spacing-md) !important;
+  }
+}
+

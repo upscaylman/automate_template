@@ -1,16 +1,16 @@
 # Serveur HTTP simple pour servir le formulaire HTML
 # Résout le problème CORS avec l'origine 'null'
 
-Write-Host "🌐 Démarrage du serveur de formulaire..." -ForegroundColor Cyan
+Write-Host "Demarrage du serveur de formulaire..." -ForegroundColor Cyan
 
 $Port = 3000
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$FormPath = Join-Path $ScriptDir "form.html"
+$FormPath = Join-Path $ScriptDir "index.html"
 
 # Vérifier si le port est disponible
 $PortInUse = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue
 if ($PortInUse) {
-    Write-Host "⚠️  Le port $Port est déjà utilisé. Tentative avec le port $($Port+1)..." -ForegroundColor Yellow
+    Write-Host "ATTENTION: Le port $Port est deja utilise. Tentative avec le port $($Port+1)..." -ForegroundColor Yellow
     $Port = $Port + 1
 }
 
@@ -37,23 +37,75 @@ function Handle-Request {
         return
     }
     
+    $Path = $Request.Url.AbsolutePath
+
     # Servir le fichier HTML
-    if ($Request.Url.AbsolutePath -eq "/" -or $Request.Url.AbsolutePath -eq "/form.html") {
+    if ($Path -eq "/" -or $Path -eq "/form.html" -or $Path -eq "/index.html") {
         if (Test-Path $FormPath) {
             $Content = Get-Content $FormPath -Raw -Encoding UTF8
             $Buffer = [System.Text.Encoding]::UTF8.GetBytes($Content)
-            
+
             $Response.ContentType = "text/html; charset=utf-8"
             $Response.ContentLength64 = $Buffer.Length
             $Response.StatusCode = 200
-            
+
             $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
         } else {
             $Response.StatusCode = 404
             $Response.Close()
             return
         }
-    } else {
+    }
+    # Servir les fichiers CSS
+    elseif ($Path -match "^/assets/css/(.+\.css)$") {
+        $cssFile = Join-Path $ScriptDir "assets\css\$($Matches[1])"
+        if (Test-Path $cssFile) {
+            $Content = Get-Content $cssFile -Raw -Encoding UTF8
+            $Buffer = [System.Text.Encoding]::UTF8.GetBytes($Content)
+
+            $Response.ContentType = "text/css; charset=utf-8"
+            $Response.ContentLength64 = $Buffer.Length
+            $Response.StatusCode = 200
+
+            $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+        } else {
+            $Response.StatusCode = 404
+        }
+    }
+    # Servir les fichiers JS
+    elseif ($Path -match "^/assets/js/(.+\.js)$") {
+        $jsPath = $Matches[1] -replace "/", "\"
+        $jsFile = Join-Path $ScriptDir "assets\js\$jsPath"
+        if (Test-Path $jsFile) {
+            $Content = Get-Content $jsFile -Raw -Encoding UTF8
+            $Buffer = [System.Text.Encoding]::UTF8.GetBytes($Content)
+
+            $Response.ContentType = "application/javascript; charset=utf-8"
+            $Response.ContentLength64 = $Buffer.Length
+            $Response.StatusCode = 200
+
+            $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+        } else {
+            $Response.StatusCode = 404
+        }
+    }
+    # Servir variables.json
+    elseif ($Path -eq "/config/variables.json") {
+        $ConfigPath = Join-Path $ScriptDir "..\config\variables.json"
+        if (Test-Path $ConfigPath) {
+            $Content = Get-Content $ConfigPath -Raw -Encoding UTF8
+            $Buffer = [System.Text.Encoding]::UTF8.GetBytes($Content)
+
+            $Response.ContentType = "application/json; charset=utf-8"
+            $Response.ContentLength64 = $Buffer.Length
+            $Response.StatusCode = 200
+
+            $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+        } else {
+            $Response.StatusCode = 404
+        }
+    }
+    else {
         $Response.StatusCode = 404
     }
     
@@ -66,9 +118,9 @@ $Listener.Prefixes.Add("http://localhost:$Port/")
 
 try {
     $Listener.Start()
-    Write-Host "✅ Serveur démarré sur http://localhost:$Port" -ForegroundColor Green
-    Write-Host "📋 Formulaire accessible sur: http://localhost:$Port/" -ForegroundColor Cyan
-    Write-Host "🛑 Appuyez sur Ctrl+C pour arrêter le serveur" -ForegroundColor Yellow
+    Write-Host "Serveur demarre sur http://localhost:$Port" -ForegroundColor Green
+    Write-Host "Formulaire accessible sur: http://localhost:$Port/" -ForegroundColor Cyan
+    Write-Host "Appuyez sur Ctrl+C pour arreter le serveur" -ForegroundColor Yellow
     Write-Host ""
     
     # Boucle principale pour gérer les requêtes
@@ -78,12 +130,12 @@ try {
     }
 }
 catch {
-    Write-Host "❌ Erreur: $_" -ForegroundColor Red
+    Write-Host "ERREUR: $_" -ForegroundColor Red
 }
 finally {
     if ($Listener.IsListening) {
         $Listener.Stop()
     }
-    Write-Host "🛑 Serveur arrêté" -ForegroundColor Yellow
+    Write-Host "Serveur arrete" -ForegroundColor Yellow
 }
 

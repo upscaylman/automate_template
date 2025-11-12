@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Génération de document</title>
+  
+  <!-- External Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/animations.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-start min-h-screen py-8 px-4">
+
+  <form id="docForm" class="bg-white p-6 md:p-10 md3-card elevation-3 w-full max-w-7xl space-y-8 rounded-3xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#0072ff] to-[#0093ff] rounded-3xl mb-4 elevation-2">
+        <span class="material-icons text-5xl text-white">description</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-[#1C1B1F] mb-3 bg-gradient-to-r from-[#0072ff] to-[#0093ff] bg-clip-text text-transparent">
+        Génération de document
+      </h1>
+      <p class="text-[#49454F] text-lg md:text-xl">Créez vos documents professionnels en quelques clics</p>
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="flex gap-3 justify-center mb-8">
+      <button type="button" id="fillTestData" class="md3-button px-6 py-3 bg-[#E8DEF8] text-[#0072ff] hover:bg-[#D0BCFF] elevation-2 flex items-center gap-2 rounded-full font-semibold transition-all hover:scale-105">
+        <span class="material-icons text-xl">casino</span>
+        <span class="hidden sm:inline">Remplir avec données de test</span>
+        <span class="sm:hidden">Test</span>
+      </button>
+    </div>
+
+    <!-- Sélecteur de template -->
+    <div class="mb-8 section-card">
+      <label class="block text-lg font-semibold text-[#1C1B1F] mb-4 flex items-center gap-3">
+        <span class="material-icons text-2xl text-[#0072ff]">description</span>
+        Type de document <span class="text-red-500">*</span>
+      </label>
+      <select id="template" class="md3-input md3-select w-full p-4 text-base rounded-xl border-2 border-[#E8DEF8] focus:border-[#0072ff] transition-all" required>
+        <option value="">📄 Choisir un type de document...</option>
+      </select>
+    </div>
+
+    <!-- Layout avec onglets à gauche et contenu à droite -->
+    <div id="tabsContainer" class="flex flex-col md:flex-row gap-6" style="display: none;">
+      <!-- Navigation par onglets -->
+      <div class="w-full md:w-64 flex-shrink-0">
+        <div class="tab-navigation md:sticky md:top-4 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-x-visible">
+          <button type="button" class="tab-button active w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-sm font-medium text-[#49454F]" data-tab="coordonnees">
+            <span class="step-indicator active w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-gray-200">1</span>
+            <span class="tab-button-text">Coordonnées</span>
+          </button>
+          <button type="button" class="tab-button w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-sm font-medium text-[#49454F]" data-tab="contenu">
+            <span class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-gray-200">2</span>
+            <span class="tab-button-text">Contenu</span>
+          </button>
+          <button type="button" class="tab-button w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-sm font-medium text-[#49454F]" data-tab="expediteur">
+            <span class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-gray-200">3</span>
+            <span class="tab-button-text">Expéditeur</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Contenu des onglets -->
+      <div class="flex-1 min-w-0" id="dynamicFields">
+        <!-- Section Coordonnées -->
+        <div id="tab-coordonnees" class="tab-section active section-card">
+          <h3 class="section-title text-xl font-bold text-[#1C1B1F] mb-4 flex items-center gap-2">
+            <span class="material-icons text-2xl text-[#0072ff]">person</span>
+            Coordonnées
+          </h3>
+          <div id="coordonneesFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- Section Contenu -->
+        <div id="tab-contenu" class="tab-section section-card">
+          <h3 class="section-title text-xl font-bold text-[#1C1B1F] mb-4 flex items-center gap-2">
+            <span class="material-icons text-2xl text-[#0072ff]">article</span>
+            Contenu de la demande
+          </h3>
+          <div id="contenuFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- Section Expéditeur -->
+        <div id="tab-expediteur" class="tab-section section-card">
+          <h3 class="section-title text-xl font-bold text-[#1C1B1F] mb-4 flex items-center gap-2">
+            <span class="material-icons text-2xl text-[#0072ff]">send</span>
+            Expéditeur
+          </h3>
+          <div id="expediteurFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Destinataires -->
+    <div id="destinatairesSection" class="w-full mt-6 section-card" style="display: none;">
+      <label class="block text-base font-semibold text-[#1C1B1F] mb-3 flex items-center gap-2">
+        <span class="material-icons text-xl text-[#0072ff]">email</span>
+        Destinataires <span class="text-red-500">*</span>
+      </label>
+      <div id="emailContainer" class="md3-input w-full p-3 bg-white flex flex-wrap gap-2 items-center min-h-[52px] cursor-text rounded-xl border-2 border-[#E8DEF8] focus-within:border-[#0072ff] transition-all">
+        <input id="emailInput" type="text" placeholder="Tapez une adresse email et appuyez sur virgule ou espace..." class="flex-1 outline-none min-w-[200px] text-base">
+      </div>
+      <input id="destinataires" type="hidden" required>
+    </div>
+
+    <!-- Bouton d'action -->
+    <div id="previewBtnContainer" class="flex gap-3 mt-6" style="display: none;">
+      <button type="button" id="previewBtn" disabled class="md3-button w-full py-3.5 bg-gradient-to-r from-[#0072ff] to-[#0093ff] text-white hover:shadow-2xl elevation-3 flex items-center justify-center gap-2 text-base font-bold rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none transition-all transform hover:scale-105 active:scale-95">
+        <span class="material-icons">visibility</span>
+        Prévisualiser le document
+      </button>
+    </div>
+
+    <p id="message" class="text-center text-[#49454F] text-sm"></p>
+  </form>
+
+  <!-- Modal de prévisualisation -->
+  <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50 backdrop-blur-sm">
+    <div class="bg-white md3-card elevation-3 w-full max-w-6xl max-h-[90vh] overflow-hidden relative m-4 flex flex-col">
+      <!-- Header du modal -->
+      <div class="flex items-center justify-between p-6 border-b border-gray-200">
+        <div class="flex items-center gap-3">
+          <span class="material-icons text-[#0072ff] text-3xl">preview</span>
+          <div>
+            <h2 class="text-2xl font-bold text-[#1C1B1F]">Prévisualisation du document</h2>
+            <p class="text-sm text-[#49454F]" id="previewSubtitle">Vérifiez les informations avant génération</p>
+          </div>
+        </div>
+        <button id="closeModal" class="text-[#49454F] hover:text-[#1C1B1F] transition-colors md3-button p-2 rounded-full hover:bg-gray-100">
+          <span class="material-icons text-3xl">close</span>
+        </button>
+      </div>
+
+      <!-- Contenu scrollable -->
+      <div class="flex-1 overflow-auto p-6">
+        <div id="previewContent"></div>
+      </div>
+
+      <!-- Footer avec actions -->
+      <div class="flex items-center justify-between gap-3 p-6 border-t border-gray-200 bg-gray-50">
+        <button id="closeModalBtn" class="md3-button px-6 py-2.5 bg-gray-200 text-[#1C1B1F] hover:bg-gray-300 elevation-1 flex items-center gap-2">
+          <span class="material-icons">close</span>
+          Fermer
+        </button>
+        <div class="flex gap-3">
+          <button id="downloadWordBtn" class="md3-button px-6 py-2.5 bg-[#E8DEF8] text-[#0072ff] hover:bg-[#D0BCFF] elevation-1 flex items-center gap-2">
+            <span class="material-icons">download</span>
+            Télécharger le document
+          </button>
+          <button id="sendEmailBtn" class="md3-button px-6 py-2.5 bg-[#0072ff] text-white hover:bg-[#0093ff] elevation-2 flex items-center gap-2">
+            <span class="material-icons">send</span>
+            Générer et envoyer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal pour afficher le document Word -->
+  <div id="wordViewerModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-[60] backdrop-blur-sm">
+    <div class="bg-white md3-card elevation-3 w-full max-w-7xl h-[95vh] overflow-hidden relative m-4 flex flex-col">
+      <!-- Header du modal Word -->
+      <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-[#0072ff]">
+        <div class="flex items-center gap-3">
+          <span class="material-icons text-white text-2xl">description</span>
+          <div>
+            <h2 class="text-xl font-bold text-white">Aperçu du document Word</h2>
+            <p class="text-sm text-white opacity-90" id="wordViewerSubtitle">Génération en cours...</p>
+          </div>
+        </div>
+        <button id="closeWordViewer" class="text-white hover:bg-white hover:bg-opacity-20 transition-colors md3-button p-2 rounded-full">
+          <span class="material-icons text-2xl">close</span>
+        </button>
+      </div>
+
+      <!-- Contenu iframe -->
+      <div class="flex-1 overflow-hidden relative bg-gray-100">
+        <div id="wordViewerLoading" class="absolute inset-0 flex items-center justify-center bg-white z-10">
+          <div class="text-center">
+            <div class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-[#0072ff] border-t-transparent mb-4"></div>
+            <p class="text-[#49454F] text-lg font-medium">Génération du document Word...</p>
+            <p class="text-[#49454F] text-sm mt-2">Cela peut prendre quelques secondes</p>
+          </div>
+        </div>
+        <iframe id="wordViewerFrame" class="w-full h-full border-0" style="display:none;"></iframe>
+      </div>
+
+      <!-- Footer avec actions -->
+      <div class="flex items-center justify-between gap-3 p-4 border-t border-gray-200 bg-gray-50">
+        <div class="text-sm text-[#49454F]">
+          <span class="material-icons text-base align-middle mr-1">info</span>
+          Le document est généré par n8n et affiché via Google Docs Viewer
+        </div>
+        <div class="flex gap-3">
+          <button id="closeWordViewerBtn" class="md3-button px-6 py-2.5 bg-gray-200 text-[#1C1B1F] hover:bg-gray-300 elevation-1 flex items-center gap-2">
+            <span class="material-icons">close</span>
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>
