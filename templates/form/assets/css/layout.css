@@ -63,8 +63,8 @@
    Sections de formulaire
    ======================================== */
 .section-card {
-  padding: 24px;
-  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  border-radius: 1rem;
 }
 
 .section-title {

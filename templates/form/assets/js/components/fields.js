@@ -65,36 +65,81 @@ function createSelectField(key, config) {
 }
 
 /**
- * Créer un champ textarea
+ * Créer un champ textarea avec icône optionnelle
  * @param {string} key - Clé du champ
  * @param {Object} config - Configuration du champ
- * @returns {HTMLTextAreaElement}
+ * @returns {HTMLElement}
  */
 function createTextareaField(key, config) {
-  const textarea = document.createElement('textarea');
-  textarea.id = key;
-  textarea.placeholder = config.placeholder || config.label;
-  textarea.rows = config.rows || 3;
-  textarea.className = 'md3-input w-full p-2.5 text-sm resize-none';
-  textarea.required = config.required || false;
-  return textarea;
+  // Si le champ a une icône, créer un wrapper avec icône
+  if (config.icon) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'relative';
+
+    const icon = document.createElement('span');
+    icon.className = 'material-icons absolute left-3 top-3 text-gray-400 text-base pointer-events-none';
+    icon.textContent = config.icon;
+
+    const textarea = document.createElement('textarea');
+    textarea.id = key;
+    textarea.placeholder = config.placeholder || config.label;
+    textarea.rows = config.rows || 3;
+    textarea.className = 'md3-input w-full p-2.5 pl-10 text-sm resize-none';
+    textarea.required = config.required || false;
+
+    wrapper.appendChild(icon);
+    wrapper.appendChild(textarea);
+    return wrapper;
+  } else {
+    // Textarea simple sans icône
+    const textarea = document.createElement('textarea');
+    textarea.id = key;
+    textarea.placeholder = config.placeholder || config.label;
+    textarea.rows = config.rows || 3;
+    textarea.className = 'md3-input w-full p-2.5 text-sm resize-none';
+    textarea.required = config.required || false;
+    return textarea;
+  }
 }
 
 /**
- * Créer un champ input
+ * Créer un champ input avec icône
  * @param {string} key - Clé du champ
  * @param {Object} config - Configuration du champ
- * @returns {HTMLInputElement}
+ * @returns {HTMLElement}
  */
 function createInputField(key, config) {
-  const input = document.createElement('input');
-  input.id = key;
-  input.type = config.type === 'email' ? 'email' : 'text';
-  input.placeholder = config.placeholder || config.label;
-  input.className = 'md3-input w-full p-2.5 text-sm';
-  input.required = config.required || false;
-  if (config.default) input.value = config.default;
-  return input;
+  // Si le champ a une icône, créer un wrapper avec icône
+  if (config.icon) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'relative';
+
+    const icon = document.createElement('span');
+    icon.className = 'material-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-base pointer-events-none';
+    icon.textContent = config.icon;
+
+    const input = document.createElement('input');
+    input.id = key;
+    input.type = config.type === 'email' ? 'email' : 'text';
+    input.placeholder = config.placeholder || config.label;
+    input.className = 'md3-input w-full p-2.5 pl-10 text-sm';
+    input.required = config.required || false;
+    if (config.default) input.value = config.default;
+
+    wrapper.appendChild(icon);
+    wrapper.appendChild(input);
+    return wrapper;
+  } else {
+    // Champ simple sans icône
+    const input = document.createElement('input');
+    input.id = key;
+    input.type = config.type === 'email' ? 'email' : 'text';
+    input.placeholder = config.placeholder || config.label;
+    input.className = 'md3-input w-full p-2.5 text-sm';
+    input.required = config.required || false;
+    if (config.default) input.value = config.default;
+    return input;
+  }
 }
 
 /**

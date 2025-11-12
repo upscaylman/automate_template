@@ -9,6 +9,16 @@ import { collectFormData } from '../utils/validation.js';
 import { showMessage, generateFilename } from '../utils/helpers.js';
 
 /**
+ * Ouvrir le modal de prévisualisation
+ */
+export function openPreviewModal() {
+  const previewBtn = getElement(CONFIG.SELECTORS.previewBtn);
+  if (previewBtn) {
+    previewBtn.click();
+  }
+}
+
+/**
  * Télécharger le document Word
  */
 export async function downloadWord() {

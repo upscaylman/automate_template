@@ -4,13 +4,15 @@
       "label": "Numéro du document",
       "type": "text",
       "required": true,
-      "placeholder": "Ex : DOC-2024-001"
+      "placeholder": "Ex : DOC-2024-001",
+      "icon": "description"
     },
     "entreprise": {
       "label": "Entreprise",
       "type": "text",
       "placeholder": "Ex: ACME Corp",
-      "required": true
+      "required": true,
+      "icon": "business"
     },
     "civiliteDestinataire": {
       "label": "Civilité Destinataire",
@@ -22,41 +24,51 @@
       "label": "Nom Destinataire",
       "type": "text",
       "required": false,
-      "placeholder": "Ex: Dupont"
+      "placeholder": "Ex: Dupont",
+      "icon": "person"
     },
     "statutDestinataire": {
       "label": "Statut Destinataire",
       "type": "text",
       "required": false,
-      "placeholder": "Ex: Président, Directeur..."
+      "placeholder": "Ex: Président, Directeur...",
+      "icon": "work"
     },
     "batiment": {
       "label": "Bâtiment",
       "type": "text",
-      "required": false
+      "required": false,
+      "placeholder": "Ex: Bâtiment A",
+      "icon": "apartment"
     },
     "adresse": {
       "label": "Adresse",
       "type": "text",
-      "required": false
+      "required": false,
+      "placeholder": "Ex: 123 rue de la Paix",
+      "icon": "place"
     },
     "cpVille": {
       "label": "Code postal + Ville",
       "type": "text",
       "required": false,
-      "placeholder": "Ex: 75001 Paris"
+      "placeholder": "Ex: 75001 Paris",
+      "icon": "location_city"
     },
     "emailDestinataire": {
       "label": "Email(s) destinataire(s)",
       "type": "email",
-      "required": true,
-      "description": "Plusieurs emails séparés par virgule"
+      "required": false,
+      "description": "Plusieurs emails séparés par virgule",
+      "placeholder": "contact@exemple.com",
+      "icon": "email"
     },
     "signatureExp": {
-      "label": "Signature Expéditeur",
+      "label": "Secrétaire Fédéral",
       "type": "text",
       "required": false,
-      "placeholder": "Ex: FO METAUX"
+      "placeholder": "Ex: FO METAUX",
+      "icon": "edit"
     }
   },
   "templates": {
@@ -69,7 +81,8 @@
           "label": "Numéro de Courrier",
           "type": "text",
           "required": true,
-          "placeholder": "Ex: 2025-001"
+          "placeholder": "Ex: 2025-001",
+          "icon": "tag"
         },
         "civiliteDelegue": {
           "label": "Civilité Délégué",
@@ -80,12 +93,16 @@
         "nomDelegue": {
           "label": "Nom Délégué",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "Ex: Martin Dupont",
+          "icon": "person"
         },
         "emailDelegue": {
           "label": "Email Délégué",
           "type": "email",
-          "required": false
+          "required": false,
+          "placeholder": "delegue@exemple.com",
+          "icon": "email"
         },
         "civiliteRemplace": {
           "label": "Civilité Remplaçant",
@@ -96,7 +113,9 @@
         "nomRemplace": {
           "label": "Nom Remplaçant",
           "type": "text",
-          "required": false
+          "required": false,
+          "placeholder": "Ex: Sophie Bernard",
+          "icon": "person"
         }
       }
     },
@@ -108,7 +127,9 @@
         "objet": {
           "label": "Objet du Mandat",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "Ex: Négociation accord temps de travail",
+          "icon": "subject"
         },
         "civiliteDelegue": {
           "label": "Civilité Mandataire",
@@ -119,12 +140,16 @@
         "nomDelegue": {
           "label": "Nom Mandataire",
           "type": "text",
-          "required": true
+          "required": true,
+          "placeholder": "Ex: Jean Durand",
+          "icon": "person"
         },
         "emailDelegue": {
           "label": "Email Mandataire",
           "type": "email",
-          "required": false
+          "required": false,
+          "placeholder": "mandataire@exemple.com",
+          "icon": "email"
         }
       }
     }

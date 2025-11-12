@@ -7,29 +7,36 @@
    Variables CSS
    ======================================== */
 :root {
-  /* Couleurs principales */
-  --color-primary: #0072ff;
-  --color-primary-light: #0093ff;
-  --color-primary-lighter: #4686ff;
-  --color-primary-bg: #E8DEF8;
-  --color-primary-hover: #D0BCFF;
-  
+  /* Couleurs principales - Bleu */
+  --color-primary: #2563eb;
+  --color-primary-light: #3b82f6;
+  --color-primary-lighter: #60a5fa;
+  --color-primary-bg: #eff6ff;
+  --color-primary-hover: #dbeafe;
+
+  /* Couleurs secondaires - Bleu foncé */
+  --color-secondary: #1e40af;
+  --color-secondary-light: #1d4ed8;
+  --color-secondary-lighter: #2563eb;
+
   /* Couleurs de texte */
-  --color-text-primary: #1C1B1F;
-  --color-text-secondary: #49454F;
-  --color-text-tertiary: #79747E;
-  --color-text-on-primary: #21005D;
-  
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #64748b;
+  --color-text-on-primary: #ffffff;
+
   /* Couleurs de fond */
-  --color-bg-surface: #F3EDF7;
+  --color-bg-surface: #f8fafc;
   --color-bg-white: #ffffff;
-  
+  --color-bg-gray: #f1f5f9;
+
   /* Couleurs de bordure */
-  --color-border: #79747E;
-  
+  --color-border: #e2e8f0;
+  --color-border-dark: #cbd5e1;
+
   /* Couleurs de statut */
-  --color-success: #4CAF50;
-  --color-success-light: #66BB6A;
+  --color-success: #22c55e;
+  --color-success-light: #4ade80;
   --color-error: #dc2626;
   
   /* Couleurs des sections */
@@ -87,7 +94,7 @@
 body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(-45deg, var(--color-primary-light), #0093ff40, #c9d7e9, #4686ff80);
+  background: linear-gradient(-45deg, #8a9ca3, #a0a095, #c9ccc3);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
   min-height: 100vh;
