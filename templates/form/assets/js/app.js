@@ -282,7 +282,8 @@ function getTemplateIcon(nom) {
 function getTemplateImage(templateKey) {
   const images = {
     'designation': 'assets/img/designation_template.png',
-    'nego': 'assets/img/nego_template.png'
+    'negociation': 'assets/img/nego_template.png',
+    'custom': 'assets/img/custom_template.png'
   };
 
   // Retourner l'image correspondante ou une image par défaut

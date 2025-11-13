@@ -162,6 +162,28 @@
           "icon": "email"
         }
       }
+    },
+    "custom": {
+      "nom": "Document Personnalisé",
+      "fichier": "template_custom.docx",
+      "description": "Document personnalisé avec contenu IA",
+      "variables_specifiques": {
+        "objet": {
+          "label": "Objet du Document",
+          "type": "text",
+          "required": true,
+          "placeholder": "Ex: Demande d'information",
+          "icon": "subject"
+        },
+        "texteIa": {
+          "label": "Contenu du Document",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "Saisissez le contenu du document (minimum 10 caractères pour déclencher l'IA)...",
+          "icon": "edit_note",
+          "rows": 5
+        }
+      }
     }
   }
 }

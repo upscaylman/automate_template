@@ -99,6 +99,12 @@ function createTextareaField(key, config) {
   textarea.className = config.icon ? 'md3-input w-full p-2.5 pl-10 pr-10 text-sm resize-none' : 'md3-input w-full p-2.5 pr-10 text-sm resize-none';
   textarea.required = config.required || false;
 
+  // Validation spéciale pour texteIa : minimum 10 caractères pour déclencher l'IA
+  if (key === 'texteIa') {
+    textarea.minLength = 10;
+    textarea.title = 'Minimum 10 caractères requis pour déclencher l\'IA';
+  }
+
   // Bouton pour effacer le champ
   const clearBtn = document.createElement('button');
   clearBtn.type = 'button';
@@ -106,12 +112,53 @@ function createTextareaField(key, config) {
   clearBtn.innerHTML = '<span class="material-icons text-base">close</span>';
   clearBtn.title = 'Effacer';
 
-  // Afficher/masquer le bouton selon si le champ est rempli
+  // Bouton "crayon magique" pour améliorer le texte avec l'IA (uniquement pour texteIa)
+  let magicBtn = null;
+  if (key === 'texteIa') {
+    magicBtn = document.createElement('button');
+    magicBtn.type = 'button';
+    magicBtn.className = 'absolute right-10 top-3 text-gray-400 hover:text-purple-500 transition-colors hidden';
+    magicBtn.innerHTML = '<span class="material-icons text-base">auto_fix_high</span>';
+    magicBtn.title = 'Améliorer avec l\'IA';
+  }
+
+  // Compteur de caractères pour texteIa
+  let charCounter = null;
+  if (key === 'texteIa') {
+    charCounter = document.createElement('div');
+    charCounter.className = 'text-xs text-gray-500 mt-1';
+    charCounter.innerHTML = '<span id="charCount">0</span> / 10 caractères minimum (pour déclencher l\'IA)';
+  }
+
+  // Afficher/masquer les boutons selon si le champ est rempli
   const toggleClearBtn = () => {
     if (textarea.value.trim()) {
       clearBtn.classList.remove('hidden');
+      if (magicBtn) {
+        magicBtn.classList.remove('hidden');
+      }
     } else {
       clearBtn.classList.add('hidden');
+      if (magicBtn) {
+        magicBtn.classList.add('hidden');
+      }
+    }
+
+    // Mettre à jour le compteur de caractères
+    if (charCounter) {
+      const count = textarea.value.length;
+      const countSpan = charCounter.querySelector('#charCount');
+      if (countSpan) {
+        countSpan.textContent = count;
+        // Changer la couleur selon si le minimum est atteint
+        if (count >= 10) {
+          countSpan.style.color = '#16a34a'; // Vert
+          countSpan.style.fontWeight = 'bold';
+        } else {
+          countSpan.style.color = '#c4232d'; // Rouge FO
+          countSpan.style.fontWeight = 'bold';
+        }
+      }
     }
   };
 
@@ -127,8 +174,75 @@ function createTextareaField(key, config) {
     textarea.focus();
   });
 
+  // Améliorer le texte avec l'IA au clic
+  if (magicBtn) {
+    magicBtn.addEventListener('click', async () => {
+      const originalText = textarea.value.trim();
+      if (!originalText || originalText.length < 10) {
+        alert('⚠️ Veuillez saisir au moins 10 caractères pour utiliser l\'IA');
+        return;
+      }
+
+      // Désactiver le bouton pendant le traitement
+      magicBtn.disabled = true;
+      magicBtn.innerHTML = '<span class="material-icons text-base animate-spin">autorenew</span>';
+      magicBtn.title = 'Amélioration en cours...';
+
+      try {
+        // Appeler Ollama directement pour améliorer le texte
+        const response = await fetch('http://localhost:11434/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'gemma2:2b',
+            prompt: `Tu es un assistant professionnel. Transforme ce texte simple en un texte professionnel et formel pour un document administratif. Garde le sens original mais améliore la formulation.\n\nTexte original: ${originalText}\n\nTexte amélioré:`,
+            stream: false
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de l\'appel à l\'IA');
+        }
+
+        const data = await response.json();
+        const improvedText = data.response.trim();
+
+        // Remplacer le texte dans le textarea
+        textarea.value = improvedText;
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        textarea.dispatchEvent(new Event('change', { bubbles: true }));
+
+        // Afficher un message de succès
+        const successMsg = document.createElement('div');
+        successMsg.className = 'text-xs text-green-600 mt-1';
+        successMsg.textContent = '✨ Texte amélioré avec l\'IA !';
+        if (charCounter) {
+          charCounter.parentNode.insertBefore(successMsg, charCounter.nextSibling);
+          setTimeout(() => successMsg.remove(), 3000);
+        }
+
+      } catch (error) {
+        console.error('Erreur IA:', error);
+        alert('❌ Erreur lors de l\'amélioration du texte. Vérifiez qu\'Ollama est actif.');
+      } finally {
+        // Réactiver le bouton
+        magicBtn.disabled = false;
+        magicBtn.innerHTML = '<span class="material-icons text-base">auto_fix_high</span>';
+        magicBtn.title = 'Améliorer avec l\'IA';
+      }
+    });
+  }
+
   wrapper.appendChild(textarea);
   wrapper.appendChild(clearBtn);
+  if (magicBtn) {
+    wrapper.appendChild(magicBtn);
+  }
+
+  // Ajouter le compteur de caractères si présent
+  if (charCounter) {
+    wrapper.appendChild(charCounter);
+  }
 
   // Vérifier initialement si le champ a une valeur
   toggleClearBtn();

@@ -5,8 +5,8 @@
 
 export const CONFIG = {
   // URLs des webhooks - appel direct à n8n (pas via proxy pour éviter limite de taille)
-  WEBHOOK_URL: 'http://localhost:5678/webhook/formulaire-doc',
-  WEBHOOK_EMAIL_URL: 'http://localhost:5678/webhook/validate-doc',
+  WEBHOOK_URL: 'http://localhost:5678/webhook/7f72ac69-35b7-4771-a5c6-7acb18947254',
+  WEBHOOK_EMAIL_URL: 'http://localhost:5678/webhook/1ee6e745-fc31-4fd8-bc59-531bd4a69997',
   
   // Chemins
   VARIABLES_CONFIG_PATH: '/config/variables.json',
