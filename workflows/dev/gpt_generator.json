@@ -185,7 +185,7 @@
         "url": "http://ollama:11434/api/generate",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"gemma2:2b\",\n  \"prompt\": \"Rédige un document professionnel en français basé sur ces informations : {{ $json.texte_ia }}\",\n  \"stream\": false,\n  \"options\": {\n    \"num_predict\": 500,\n    \"temperature\": 0.7\n  }\n}",
+        "jsonBody": "={\n  \"model\": \"gemma2:2b\",\n  \"prompt\": \"Rédige un document professionnel en français basé sur ces informations : {{ $json.texteIa }}\",\n  \"stream\": false,\n  \"options\": {\n    \"num_predict\": 500,\n    \"temperature\": 0.7\n  }\n}",
         "options": {
           "timeout": 120000
         }
@@ -202,8 +202,8 @@
           "assignments": [
             {
               "id": "texte_ia_genere",
-              "name": "texte_ia",
-              "value": "={{ $json.response || $('Préparer Données').item.json.texte_ia }}",
+              "name": "texteIa",
+              "value": "={{ $json.response || $('Préparer Données').item.json.texteIa }}",
               "type": "string"
             }
           ]

@@ -14,28 +14,29 @@ import { initPreviewButtons } from './components/preview.js';
 import { checkRequiredFields, generateLocalPreview } from './utils/validation.js';
 import { initTestDataButton } from './utils/testData.js';
 import { showMessage } from './utils/helpers.js';
+import { initFormBuilder, getSelectedFields, hasCustomConfig, hideCustomizeButton } from './components/formBuilder.js';
 
 /**
  * Initialiser l'application
  */
 async function initApp() {
   console.log('🚀 Initialisation de l\'application...');
-  
+
   try {
     // Charger la configuration des variables
     const config = await loadVariablesConfig();
     setVariablesConfig(config);
-    
+
     // Remplir le sélecteur de templates
     populateTemplateSelector(config);
-    
+
     // Initialiser les composants
     initEmailChips();
     initModals();
     initTabs();
     initPreviewButtons();
     initTestDataButton();
-    
+
     // Initialiser les événements
     initTemplateSelector();
     initPreviewButton();
@@ -43,6 +44,9 @@ async function initApp() {
     initTemplatesGallery(config);
     initFloatingActionBar();
     initShareModal();
+
+    // Restaurer le template sélectionné si on revient du builder
+    restoreLastTemplate();
 
     console.log('✅ Application initialisée avec succès');
   } catch (error) {
@@ -80,10 +84,21 @@ function initTemplateSelector() {
   const templateSelect = getElement(CONFIG.SELECTORS.templateSelect);
   if (!templateSelect) return;
   
-  templateSelect.addEventListener('change', (e) => {
+  templateSelect.addEventListener('change', async (e) => {
     const templateKey = e.target.value;
 
+    // Sauvegarder les valeurs du template actuel avant de changer
+    const currentTemplate = templateSelect.dataset.currentTemplate;
+    if (currentTemplate) {
+      saveFormValues(currentTemplate);
+    }
+
+    // Cacher le bouton personnaliser par défaut
+    hideCustomizeButton();
+
     if (templateKey) {
+      // Marquer le nouveau template comme actuel
+      templateSelect.dataset.currentTemplate = templateKey;
       // Afficher les sections
       const tabsContainer = document.getElementById('tabsContainer');
       const destinatairesSection = document.getElementById('destinatairesSection');
@@ -97,9 +112,29 @@ function initTemplateSelector() {
       generateFields(templateKey);
 
       // Ajouter des listeners sur tous les champs pour vérifier la validation
-      setTimeout(() => {
+      setTimeout(async () => {
         addFieldListeners();
         checkRequiredFields();
+
+        // Restaurer les valeurs sauvegardées pour ce template
+        restoreFormValues(templateKey);
+
+        // Initialiser le form builder pour le template "custom"
+        if (templateKey === 'custom') {
+          const config = await loadVariablesConfig();
+          console.log('📦 Config chargée:', config);
+          const templateConfig = config.templates ? config.templates[templateKey] : null;
+          console.log('📄 Template config:', templateConfig);
+          if (templateConfig && templateConfig.variables_specifiques) {
+            console.log('✅ Appel initFormBuilder');
+            initFormBuilder(templateKey, templateConfig.variables_specifiques, config.variables_communes || {});
+          } else {
+            console.error('❌ Pas de variables_specifiques trouvées');
+          }
+        }
+
+        // Ajouter auto-save sur tous les champs
+        initAutoSave(templateKey);
       }, 100);
     } else {
       // Masquer les sections
@@ -619,6 +654,119 @@ function initShareModal() {
     // Appeler directement la fonction sendEmail au lieu de cliquer sur le bouton
     const { sendEmail } = await import('./components/preview.js');
     sendEmail();
+  });
+}
+
+/**
+ * Restaurer le dernier template sélectionné
+ */
+function restoreLastTemplate() {
+  const lastTemplate = sessionStorage.getItem('lastSelectedTemplate');
+  if (lastTemplate) {
+    console.log('🔄 Restauration du template:', lastTemplate);
+    const templateSelect = document.getElementById('template');
+    if (templateSelect) {
+      templateSelect.value = lastTemplate;
+      // Déclencher l'événement change pour afficher le formulaire
+      templateSelect.dispatchEvent(new Event('change'));
+    }
+    // Nettoyer le sessionStorage
+    sessionStorage.removeItem('lastSelectedTemplate');
+  }
+}
+
+/**
+ * Sauvegarder les valeurs du formulaire pour un template
+ */
+function saveFormValues(templateKey) {
+  console.log('💾 Sauvegarde des valeurs pour:', templateKey);
+  const formData = {};
+
+  // Récupérer tous les champs du formulaire
+  const inputs = document.querySelectorAll('#dynamicFields input, #dynamicFields select, #dynamicFields textarea');
+  inputs.forEach(input => {
+    const fieldId = input.id || input.name;
+    if (fieldId) {
+      if (input.type === 'checkbox') {
+        formData[fieldId] = input.checked;
+      } else if (input.type === 'radio') {
+        if (input.checked) {
+          formData[fieldId] = input.value;
+        }
+      } else {
+        formData[fieldId] = input.value;
+      }
+    }
+  });
+
+  // Sauvegarder aussi les destinataires
+  const destinataires = document.getElementById('destinataires');
+  if (destinataires) {
+    formData['destinataires'] = destinataires.value;
+  }
+
+  console.log('📦 Données sauvegardées:', formData);
+  localStorage.setItem(`formValues_${templateKey}`, JSON.stringify(formData));
+}
+
+/**
+ * Restaurer les valeurs du formulaire pour un template
+ */
+function restoreFormValues(templateKey) {
+  const saved = localStorage.getItem(`formValues_${templateKey}`);
+  if (!saved) {
+    console.log('📂 Pas de valeurs sauvegardées pour:', templateKey);
+    return;
+  }
+
+  console.log('🔄 Restauration des valeurs pour:', templateKey);
+  const formData = JSON.parse(saved);
+  console.log('📦 Données restaurées:', formData);
+
+  // Restaurer les valeurs dans les champs
+  Object.entries(formData).forEach(([fieldId, value]) => {
+    // Chercher par ID d'abord, puis par name
+    let input = document.getElementById(fieldId);
+    if (!input) {
+      input = document.querySelector(`[name="${fieldId}"]`);
+    }
+
+    if (input) {
+      if (input.type === 'checkbox') {
+        input.checked = value;
+      } else if (input.type === 'radio') {
+        if (input.value === value) {
+          input.checked = true;
+        }
+      } else {
+        input.value = value;
+      }
+
+      // Déclencher l'événement input pour mettre à jour l'UI
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      console.log(`✅ Restauré ${fieldId}:`, value);
+    } else {
+      console.log(`❌ Champ non trouvé: ${fieldId}`);
+    }
+  });
+}
+
+/**
+ * Initialiser l'auto-save pour un template
+ */
+function initAutoSave(templateKey) {
+  console.log('🔄 Initialisation auto-save pour:', templateKey);
+
+  // Écouter tous les changements de champs
+  const inputs = document.querySelectorAll('#dynamicFields input, #dynamicFields select, #dynamicFields textarea');
+  inputs.forEach(input => {
+    input.addEventListener('input', () => {
+      // Debounce: sauvegarder après 500ms d'inactivité
+      clearTimeout(window.autoSaveTimeout);
+      window.autoSaveTimeout = setTimeout(() => {
+        saveFormValues(templateKey);
+      }, 500);
+    });
   });
 }
 

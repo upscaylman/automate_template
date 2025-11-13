@@ -12,7 +12,10 @@
 
   <!-- Mammoth.js pour prévisualisation Word -->
   <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
-  
+
+  <!-- SortableJS pour drag & drop -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/animations.css">
@@ -223,6 +226,10 @@
 
           <!-- Boutons d'action -->
           <div class="flex items-center gap-2">
+            <button type="button" id="customizeFieldsBtn" class="md3-button px-3 md:px-4 py-1.5 md:py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 elevation-1 flex items-center gap-1 md:gap-2 rounded-lg font-semibold transition-all text-xs md:text-sm whitespace-nowrap" style="display: none;">
+              <span class="material-icons text-base md:text-lg">build</span>
+              <span class="hidden sm:inline">Personnaliser</span>
+            </button>
             <button type="button" id="clearAllDataBtn" class="md3-button px-3 md:px-4 py-1.5 md:py-2 bg-red-50 text-red-600 hover:bg-red-100 elevation-1 flex items-center gap-1 md:gap-2 rounded-lg font-semibold transition-all text-xs md:text-sm whitespace-nowrap">
               <span class="material-icons text-base md:text-lg">delete_sweep</span>
               <span class="hidden sm:inline">Effacer tout</span>
