@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "description": "Formulaire de génération de documents pour n8n",
   "scripts": {
-    "build": "node netlify-config.js",
+    "build": "node netlify-config.js && npm run build:css",
+    "build:css": "tailwindcss -i ./src/input.css -o ./assets/css/tailwind.css --minify",
     "prebuild": "echo 'Building with environment variables...'"
   },
-  "keywords": ["n8n", "form", "netlify"],
+  "keywords": [
+    "n8n",
+    "form",
+    "netlify"
+  ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
 }
-
