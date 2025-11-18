@@ -189,14 +189,30 @@ function createTextareaField(key, config) {
       magicBtn.title = 'Amélioration en cours...';
 
       try {
+        // Récupérer l'objet si disponible
+        const objetField = document.getElementById('objet');
+        const objet = objetField ? objetField.value.trim() : '';
+        
+        // Construire le prompt avec objet et texteIa
+        let promptText = `Tu es un assistant professionnel. Écris un texte complet et professionnel pour un document administratif.\n\n`;
+        if (objet) {
+          promptText += `Objet du document : ${objet}\n\n`;
+        }
+        promptText += `Informations à utiliser : ${originalText}\n\n`;
+        promptText += `Instructions :\n- Écris un texte complet et structuré (pas de suggestions ni de listes)\n- Le texte doit être en lien direct avec l'objet du document\n- Utilise un style formel et professionnel\n- Le texte doit être prêt à être utilisé tel quel dans le document\n\nTexte du document :`;
+        
         // Appeler Ollama directement pour améliorer le texte
         const response = await fetch('http://localhost:11434/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: 'gemma2:2b',
-            prompt: `Tu es un assistant professionnel. Transforme ce texte simple en un texte professionnel et formel pour un document administratif. Garde le sens original mais améliore la formulation.\n\nTexte original: ${originalText}\n\nTexte amélioré:`,
-            stream: false
+            prompt: promptText,
+            stream: false,
+            options: {
+              num_predict: 1000,
+              temperature: 0.5
+            }
           })
         });
 

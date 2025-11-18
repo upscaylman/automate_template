@@ -249,6 +249,86 @@ Dans le workflow n8n, modifiez le nœud "Appel IA Gemma" :
 }
 ```
 
+**Configuration complète du nœud Ollama (nœud HTTP Request dans n8n) :**
+
+**1. Dans le champ "JSON Body" (jsonBody) :**
+
+```json
+{
+  "model": "gemma2:2b",
+  "prompt": "Rédige un document professionnel en français basé sur ces informations : {{ $json.texteIa }}",
+  "stream": false,
+  "options": {
+    "num_predict": 1000,
+    "temperature": 0.5,
+    "top_p": 0.9,
+    "top_k": 40,
+    "repeat_penalty": 1.1,
+    "seed": -1
+  }
+}
+```
+
+**2. Dans les "Options" du nœud HTTP Request :**
+
+```json
+{
+  "timeout": 30000,
+  "redirect": {
+    "followRedirects": true,
+    "maxRedirects": 5
+  },
+  "response": {
+    "response": {
+      "responseFormat": "json",
+      "fullResponse": false
+    }
+  }
+}
+```
+
+**3. Configuration complète du nœud (structure n8n) :**
+
+```json
+{
+  "parameters": {
+    "method": "POST",
+    "url": "http://ollama:11434/api/generate",
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={\n  \"model\": \"gemma2:2b\",\n  \"prompt\": \"Rédige un document professionnel en français basé sur ces informations : {{ $json.texteIa }}\",\n  \"stream\": false,\n  \"options\": {\n    \"num_predict\": 500,\n    \"temperature\": 0.7,\n    \"top_p\": 0.9,\n    \"top_k\": 40,\n    \"repeat_penalty\": 1.1,\n    \"seed\": -1\n  }\n}",
+    "options": {
+      "timeout": 30000,
+      "redirect": {
+        "followRedirects": true,
+        "maxRedirects": 5
+      },
+      "response": {
+        "response": {
+          "responseFormat": "json",
+          "fullResponse": false
+        }
+      }
+    }
+  },
+  "name": "Appel IA Gemma",
+  "type": "n8n-nodes-base.httpRequest",
+  "typeVersion": 4.2
+}
+```
+
+**Paramètres expliqués :**
+
+- **timeout** : 30000ms (30 secondes) - Évite les blocages
+- **num_predict** : 500 - Nombre maximum de tokens à générer
+- **temperature** : 0.7 - Créativité (0.0 = déterministe, 1.0 = créatif)
+- **top_p** : 0.9 - Filtrage par probabilité cumulative (qualité)
+- **top_k** : 40 - Limite le nombre de tokens candidats
+- **repeat_penalty** : 1.1 - Réduit la répétition (1.0 = neutre, >1.0 = moins de répétition)
+- **seed** : -1 - Aléatoire (fixez une valeur pour reproduire les résultats)
+
+**Note :** Dans n8n, le `jsonBody` doit être une expression (commence par `=`) pour permettre l'utilisation des variables `{{ $json.texteIa }}`.
+
 Ajoutez un nœud "IF" après pour gérer les timeouts :
 
 ```javascript

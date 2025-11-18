@@ -136,6 +136,7 @@
       color: #6b7280;
       border: none;
       cursor: pointer;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
     }
     .tab-button-floating:hover {
       background: #f3f4f6;
@@ -147,6 +148,7 @@
     .step-indicator-floating {
       background: #e5e7eb;
       color: #6b7280;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
     }
     .step-indicator-floating.active {
       background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
@@ -193,7 +195,7 @@
       <!-- Titre de section -->
       <div class="w-full max-w-5xl mb-4 md:mb-6">
         <div class="flex items-center gap-2 md:gap-3">
-          <div class="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 elevation-2" style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); border-radius: 12px;">
+          <div class="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 elevation-2" style="background: linear-gradient(135deg, #2563eb 0%, #e42626 100%); border-radius: 62px;">
             <span class="material-icons text-3xl md:text-4xl text-white">description</span>
           </div>
           <div>
@@ -210,15 +212,15 @@
         <div class="bg-white shadow-lg border border-gray-200 p-2 md:p-4 flex items-center justify-between gap-2 md:gap-4 flex-wrap" style="border-radius: 1rem;">
           <!-- Navigation par étapes -->
           <div class="flex items-center gap-1 md:gap-2 overflow-x-auto flex-1">
-            <button type="button" class="tab-button-floating active px-2 md:px-4 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium transition-all whitespace-nowrap" data-tab="coordonnees">
+            <button type="button" class="tab-button-floating active px-2 md:px-4 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium whitespace-nowrap" data-tab="coordonnees">
               <span class="step-indicator-floating active w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center text-xs font-bold">1</span>
               <span class="hidden sm:inline">Coordonnées</span>
             </button>
-            <button type="button" class="tab-button-floating px-2 md:px-4 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium transition-all whitespace-nowrap" data-tab="contenu">
+            <button type="button" class="tab-button-floating px-2 md:px-4 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium whitespace-nowrap" data-tab="contenu">
               <span class="step-indicator-floating w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center text-xs font-bold">2</span>
               <span class="hidden sm:inline">Contenu</span>
             </button>
-            <button type="button" class="tab-button-floating px-2 md:px-4 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium transition-all whitespace-nowrap" data-tab="expediteur">
+            <button type="button" class="tab-button-floating px-2 md:px-4 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 text-xs md:text-sm font-medium whitespace-nowrap" data-tab="expediteur">
               <span class="step-indicator-floating w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center text-xs font-bold">3</span>
               <span class="hidden sm:inline">Signataire</span>
             </button>
@@ -499,6 +501,15 @@
       </div>
     </aside>
   </div>
+
+  <!-- Configuration des variables d'environnement (pour Netlify) -->
+  <script>
+    // Variables d'environnement - peuvent être surchargées par Netlify
+    window.ENV = {
+      WEBHOOK_URL: 'http://localhost:5678/webhook/7f72ac69-35b7-4771-a5c6-7acb18947254',
+      WEBHOOK_EMAIL_URL: 'http://localhost:5678/webhook/1ee6e745-fc31-4fd8-bc59-531bd4a69997'
+    };
+  </script>
 
   <!-- JavaScript Modules -->
   <script type="module" src="assets/js/app.js"></script>

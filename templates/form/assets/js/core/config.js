@@ -3,10 +3,26 @@
  * Contient les constantes et la configuration
  */
 
+// Récupérer les URLs depuis les variables globales (définies dans index.html)
+// ou utiliser les valeurs par défaut pour le développement local
+const getWebhookUrl = () => {
+  if (typeof window !== 'undefined' && window.ENV && window.ENV.WEBHOOK_URL) {
+    return window.ENV.WEBHOOK_URL;
+  }
+  return 'http://localhost:5678/webhook/7f72ac69-35b7-4771-a5c6-7acb18947254';
+};
+
+const getWebhookEmailUrl = () => {
+  if (typeof window !== 'undefined' && window.ENV && window.ENV.WEBHOOK_EMAIL_URL) {
+    return window.ENV.WEBHOOK_EMAIL_URL;
+  }
+  return 'http://localhost:5678/webhook/1ee6e745-fc31-4fd8-bc59-531bd4a69997';
+};
+
 export const CONFIG = {
   // URLs des webhooks - appel direct à n8n (pas via proxy pour éviter limite de taille)
-  WEBHOOK_URL: 'http://localhost:5678/webhook/7f72ac69-35b7-4771-a5c6-7acb18947254',
-  WEBHOOK_EMAIL_URL: 'http://localhost:5678/webhook/1ee6e745-fc31-4fd8-bc59-531bd4a69997',
+  WEBHOOK_URL: getWebhookUrl(),
+  WEBHOOK_EMAIL_URL: getWebhookEmailUrl(),
   
   // Chemins
   VARIABLES_CONFIG_PATH: '/config/variables.json',
