@@ -81,3 +81,6 @@ templates/word/template_negociation.docx
 
 # MCP server (si c'est du dev local)
 mcp-server/
+
+# Local Netlify folder
+.netlify

@@ -6,13 +6,32 @@
 import { CONFIG } from './config.js';
 
 /**
+ * Créer les headers avec le bypass ngrok si nécessaire
+ * @param {string} url - URL de la requête
+ * @param {Object} additionalHeaders - Headers supplémentaires
+ * @returns {Object} Headers complets
+ */
+function createHeaders(url, additionalHeaders = {}) {
+  const headers = { ...additionalHeaders };
+  
+  // Ajouter le header pour bypasser l'avertissement ngrok
+  if (url && url.includes('ngrok')) {
+    headers['ngrok-skip-browser-warning'] = 'true';
+  }
+  
+  return headers;
+}
+
+/**
  * Charger la configuration des variables depuis le serveur
  * @returns {Promise<Object>} Configuration chargée
  * @throws {Error} Si le chargement échoue
  */
 export async function loadVariablesConfig() {
   try {
-    const response = await fetch(CONFIG.VARIABLES_CONFIG_PATH);
+    const response = await fetch(CONFIG.VARIABLES_CONFIG_PATH, {
+      headers: createHeaders(CONFIG.VARIABLES_CONFIG_PATH)
+    });
     
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -45,7 +64,7 @@ export async function generateWordDocument(data) {
 
     const response = await fetch(CONFIG.WEBHOOK_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: createHeaders(CONFIG.WEBHOOK_URL, { 'Content-Type': 'application/json' }),
       body: JSON.stringify(data)
     });
 
@@ -112,7 +131,7 @@ export async function sendEmailWithWord(data, wordBase64, customMessage = null) 
 
     const response = await fetch(CONFIG.WEBHOOK_EMAIL_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: createHeaders(CONFIG.WEBHOOK_EMAIL_URL, { 'Content-Type': 'application/json' }),
       body: JSON.stringify(payload)
     });
 

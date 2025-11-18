@@ -14,8 +14,8 @@ const indexHtmlPath = path.join(__dirname, 'index.html');
 let indexHtml = fs.readFileSync(indexHtmlPath, 'utf8');
 
 // Récupérer les variables d'environnement
-const webhookUrl = process.env.WEBHOOK_URL || 'http://localhost:5678/webhook/7f72ac69-35b7-4771-a5c6-7acb18947254';
-const webhookEmailUrl = process.env.WEBHOOK_EMAIL_URL || 'http://localhost:5678/webhook/1ee6e745-fc31-4fd8-bc59-531bd4a69997';
+const webhookUrl = process.env.WEBHOOK_URL || 'https://dee-wakeful-succulently.ngrok-free.dev/webhook/7f72ac69-35b7-4771-a5c6-7acb18947254';
+const webhookEmailUrl = process.env.WEBHOOK_EMAIL_URL || 'https://dee-wakeful-succulently.ngrok-free.dev/webhook/1ee6e745-fc31-4fd8-bc59-531bd4a69997';
 
 // Remplacer les valeurs dans index.html
 indexHtml = indexHtml.replace(

@@ -65,6 +65,20 @@ scripts/           → Utilitaires (start, stop, logs, backup)
 3. Ajustez les templates Word dans `templates/word/`
 4. Personnalisez les variables dans `templates/config/variables.json`
 
+## 🌐 Exposition Publique (Production)
+
+### Option 1 : Cloudflare Tunnel (Recommandé pour débutants)
+- ✅ Pas besoin d'ouvrir de ports
+- ✅ HTTPS automatique
+- ✅ Gratuit
+- 📖 Voir [docs/CONFIGURER_CLOUDFLARE_TUNNEL.md](docs/CONFIGURER_CLOUDFLARE_TUNNEL.md)
+- 🚀 Script d'aide : `scripts/setup-cloudflare-tunnel.ps1`
+
+### Option 2 : Caddy (Reverse Proxy)
+- ✅ Certificats Let's Encrypt automatiques
+- ✅ Rate limiting intégré
+- 📖 Voir `docker/Caddyfile` et `docs/MIGRATION.md`
+
 ## 🔧 Variables disponibles
 
 ### Variables communes

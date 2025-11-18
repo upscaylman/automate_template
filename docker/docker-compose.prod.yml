@@ -161,30 +161,52 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  caddy:
-    # Image Caddy avec module rate limiting compilé
-    build:
-      context: .
-      dockerfile: Dockerfile.caddy
-    container_name: n8n-caddy
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    networks:
-      - n8n-network
-    depends_on:
-      - n8n
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+  # Caddy - Reverse proxy HTTPS (alternative à Cloudflare Tunnel)
+  # Décommentez si vous n'utilisez PAS Cloudflare Tunnel
+  # caddy:
+  #   # Image Caddy avec module rate limiting compilé
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.caddy
+  #   container_name: n8n-caddy
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #     - "443:443/udp"
+  #   volumes:
+  #     - ./Caddyfile:/etc/caddy/Caddyfile:ro
+  #     - caddy_data:/data
+  #     - caddy_config:/config
+  #   networks:
+  #     - n8n-network
+  #   depends_on:
+  #     - n8n
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
+
+  # Cloudflare Tunnel - Expose n8n publiquement sans ouvrir de ports
+  # Décommentez si vous utilisez Cloudflare Tunnel au lieu de Caddy
+  # cloudflared:
+  #   image: cloudflare/cloudflared:latest
+  #   container_name: n8n-cloudflared
+  #   restart: unless-stopped
+  #   command: tunnel --config /etc/cloudflared/config.yml run
+  #   volumes:
+  #     - ./cloudflared-config.yml:/etc/cloudflared/config.yml:ro
+  #     - cloudflared_credentials:/etc/cloudflared:ro
+  #   networks:
+  #     - n8n-network
+  #   depends_on:
+  #     - n8n
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
 
 networks:
   n8n-network:
@@ -202,5 +224,7 @@ volumes:
   caddy_data:
     driver: local
   caddy_config:
+    driver: local
+  cloudflared_credentials:
     driver: local
 
