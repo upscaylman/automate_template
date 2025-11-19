@@ -101,8 +101,8 @@ Write-Host "3. Déployer sur Netlify:" -ForegroundColor Yellow
 Write-Host "   netlify deploy --dir=templates/form --prod" -ForegroundColor White
 Write-Host ""
 Write-Host "⚠️  IMPORTANT:" -ForegroundColor Red
-Write-Host "   - L'URL ngrok change à chaque redémarrage de ngrok" -ForegroundColor Yellow
-Write-Host "   - Vous devrez mettre à jour les URLs à chaque fois" -ForegroundColor Yellow
+Write-Host "   - L'URL ngrok change a chaque redemarrage de ngrok" -ForegroundColor Yellow
+Write-Host "   - Vous devrez mettre a jour les URLs a chaque fois" -ForegroundColor Yellow
 Write-Host "   - Pour une URL fixe, utilisez Cloudflare Tunnel (voir docs/)" -ForegroundColor Yellow
 Write-Host ""
 

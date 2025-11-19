@@ -12,6 +12,24 @@ if ($PortInUse) {
     $Port = $Port + 1
 }
 
+# Function to get ngrok URL if available
+function Get-NgrokUrl {
+    try {
+        $response = Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels" -Method GET -ErrorAction SilentlyContinue -TimeoutSec 2
+        if ($response.tunnels -and $response.tunnels.Count -gt 0) {
+            $httpsTunnel = $response.tunnels | Where-Object { $_.proto -eq "https" } | Select-Object -First 1
+            if ($httpsTunnel) {
+                return $httpsTunnel.public_url
+            } else {
+                return $response.tunnels[0].public_url
+            }
+        }
+    } catch {
+        # ngrok not available or not running
+    }
+    return $null
+}
+
 # Function to proxy to n8n
 function Proxy-ToN8n {
     param(
@@ -22,7 +40,15 @@ function Proxy-ToN8n {
     )
     
     try {
-        $n8nUrl = "http://localhost:5678$Path"
+        # Try to get ngrok URL first
+        $ngrokUrl = Get-NgrokUrl
+        if ($ngrokUrl) {
+            $n8nUrl = "$ngrokUrl$Path"
+            Write-Host "[PROXY] Using ngrok: $n8nUrl" -ForegroundColor Cyan
+        } else {
+            $n8nUrl = "http://localhost:5678$Path"
+            Write-Host "[PROXY] Using local n8n: $n8nUrl" -ForegroundColor Gray
+        }
         
         $params = @{
             Uri = $n8nUrl
