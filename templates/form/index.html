@@ -17,14 +17,15 @@
   <!-- SortableJS pour drag & drop (local pour éviter Tracking Prevention) -->
   <script src="assets/js/lib/Sortable.min.js"></script>
 
-  <!-- Design System -->
-  <link rel="stylesheet" href="assets/design-system/index.consolidated.css?v=1.0.0">
-  
   <!-- Custom CSS -->
   <link rel="stylesheet" href="assets/css/base.css?v=1.0.0">
   <link rel="stylesheet" href="assets/css/animations.css?v=1.0.0">
   <link rel="stylesheet" href="assets/css/components.css?v=1.0.0">
   <link rel="stylesheet" href="assets/css/layout.css?v=1.0.0">
+  
+  <!-- Design System - Chargé en dernier pour permettre les overrides -->
+  <link rel="stylesheet" href="assets/design-system/index.consolidated.css?v=1.0.0">
+  
   <style>
     body {
       margin: 0 !important;
@@ -332,21 +333,29 @@
       background: #363e45;
       color: white;
     }
-    #clearAllDataBtn {
+    /* Override Design System pour les boutons spécifiques */
+    #clearAllDataBtn.md3-button {
       color: #eb2f06 !important;
+      background: transparent !important;
       background-color: transparent !important;
+      box-shadow: none !important;
     }
-    #clearAllDataBtn:hover {
+    #clearAllDataBtn.md3-button:hover {
       background-color: #f8c29154 !important;
       color: #eb2f06 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
     }
-    #fillTestDataFloating {
+    #fillTestDataFloating.md3-button {
       color: #363e45 !important;
+      background: #f3f4f6 !important;
       background-color: #f3f4f6 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
     }
-    #fillTestDataFloating:hover {
+    #fillTestDataFloating.md3-button:hover {
       background-color: #e5e7eb !important;
+      background: #e5e7eb !important;
       color: #363e45 !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
     }
     #headerPreviewBtn:disabled,
     #headerDownloadBtn:disabled {
