@@ -96,7 +96,7 @@ function createTextareaField(key, config) {
   textarea.id = key;
   textarea.placeholder = config.placeholder || config.label;
   textarea.rows = config.rows || 3;
-  textarea.className = config.icon ? 'md3-input w-full p-2.5 pl-10 pr-10 text-sm resize-none' : 'md3-input w-full p-2.5 pr-10 text-sm resize-none';
+  textarea.className = config.icon ? 'md3-input w-full p-2.5 pl-12 pr-10 text-sm resize-none' : 'md3-input w-full p-2.5 pr-10 text-sm resize-none';
   textarea.required = config.required || false;
 
   // Validation spéciale pour texteIa : minimum 10 caractères pour déclencher l'IA
@@ -201,27 +201,66 @@ function createTextareaField(key, config) {
         promptText += `Informations à utiliser : ${originalText}\n\n`;
         promptText += `Instructions :\n- Écris un texte complet et structuré (pas de suggestions ni de listes)\n- Le texte doit être en lien direct avec l'objet du document\n- Utilise un style formel et professionnel\n- Le texte doit être prêt à être utilisé tel quel dans le document\n\nTexte du document :`;
         
-        // Appeler Ollama directement pour améliorer le texte
-        const response = await fetch('http://localhost:11434/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'gemma2:2b',
-            prompt: promptText,
-            stream: false,
-            options: {
-              num_predict: 1000,
-              temperature: 0.5
-            }
-          })
-        });
+        // Détecter si on est en production (pas localhost)
+        const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+        
+        let improvedText;
+        
+        if (isProduction) {
+          // En production : utiliser le webhook n8n principal avec un paramètre spécial
+          // Le workflow existant doit gérer l'amélioration de texte via le paramètre "action"
+          const { CONFIG } = await import('../core/config.js');
+          
+          const response = await fetch(CONFIG.WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'ngrok-skip-browser-warning': 'true'
+            },
+            body: JSON.stringify({
+              action: 'improve-text',
+              prompt: promptText,
+              originalText: originalText,
+              objet: objet
+            })
+          });
 
-        if (!response.ok) {
-          throw new Error('Erreur lors de l\'appel à l\'IA');
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Erreur webhook amélioration texte:', errorText);
+            throw new Error(`Erreur lors de l'appel à l'IA via n8n (${response.status}). Vérifiez que le workflow gère l'action "improve-text".`);
+          }
+
+          const data = await response.json();
+          // Le workflow doit retourner le texte amélioré dans improvedText, response, text ou texteAmeliore
+          improvedText = data.improvedText || data.response || data.text || data.texteAmeliore || '';
+        } else {
+          // En développement local : appeler Ollama directement
+          const response = await fetch('http://localhost:11434/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: 'gemma2:2b',
+              prompt: promptText,
+              stream: false,
+              options: {
+                num_predict: 1000,
+                temperature: 0.5
+              }
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error('Erreur lors de l\'appel à l\'IA');
+          }
+
+          const data = await response.json();
+          improvedText = data.response.trim();
         }
-
-        const data = await response.json();
-        const improvedText = data.response.trim();
+        
+        if (!improvedText || improvedText.length === 0) {
+          throw new Error('Réponse vide de l\'IA');
+        }
 
         // Remplacer le texte dans le textarea
         textarea.value = improvedText;
@@ -235,7 +274,8 @@ function createTextareaField(key, config) {
       } catch (error) {
         console.error('Erreur IA:', error);
         const { showErrorToast } = await import('../utils/toast.js');
-        showErrorToast('Erreur lors de l\'amélioration du texte. Vérifiez qu\'Ollama est actif.');
+        const errorMessage = error.message || 'Erreur lors de l\'amélioration du texte';
+        showErrorToast(errorMessage);
       } finally {
         // Réactiver le bouton
         magicBtn.disabled = false;
@@ -284,7 +324,7 @@ function createInputField(key, config) {
   input.id = key;
   input.type = config.type === 'email' ? 'email' : 'text';
   input.placeholder = config.placeholder || config.label;
-  input.className = config.icon ? 'md3-input w-full p-2.5 pl-10 pr-10 text-sm' : 'md3-input w-full p-2.5 pr-10 text-sm';
+  input.className = config.icon ? 'md3-input w-full p-2.5 pl-12 pr-10 text-sm' : 'md3-input w-full p-2.5 pr-10 text-sm';
   input.required = config.required || false;
   if (config.default) input.value = config.default;
 
