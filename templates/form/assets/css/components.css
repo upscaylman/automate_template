@@ -46,6 +46,24 @@
   border-radius: 0.375rem;
 }
 
+/* Placeholder des inputs */
+.md3-input::placeholder,
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: #a9a9a9 !important;
+  opacity: 1;
+}
+
+/* Icônes Material Icons dans les champs de formulaire */
+.relative .material-icons.text-gray-400,
+.relative .material-icons[class*="text-gray"],
+.md3-input ~ .material-icons,
+input ~ .material-icons,
+textarea ~ .material-icons {
+  color: #a9a9a9 !important;
+}
+
 .md3-select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%236750A4' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");

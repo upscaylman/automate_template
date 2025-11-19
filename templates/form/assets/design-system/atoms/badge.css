@@ -1,0 +1,485 @@
+/**
+ * Design System - Atom: Badge
+ * Composant badge réutilisable avec variations
+ */
+
+/* ========================================
+   Base Badge
+   ======================================== */
+.ds-badge {
+  /* Layout */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-1);
+  
+  /* Typography */
+  font-family: var(--ds-font-family-primary);
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  
+  /* Spacing */
+  padding: var(--ds-spacing-1) var(--ds-spacing-2);
+  
+  /* Appearance */
+  border-radius: var(--ds-radius-badge);
+  
+  /* Transitions */
+  transition: var(--ds-transition-all);
+}
+
+/* ========================================
+   Badge Variants
+   ======================================== */
+
+/* Primary - Utilise le système de couleur primaire centralisé */
+.ds-badge--primary {
+  background-color: var(--ds-color-primary-container);
+  color: var(--ds-color-on-primary-container);
+}
+
+.ds-badge--primary.ds-badge--solid {
+  background-color: var(--ds-color-primary);
+  color: var(--ds-color-on-primary);
+}
+
+.ds-badge--primary.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-primary);
+  border-color: var(--ds-color-primary);
+}
+
+/* Primary Variant 1 - #6a89cc */
+.ds-badge--primary-v1 {
+  background-color: var(--ds-color-primary-variant-1);
+  color: var(--ds-color-on-primary);
+}
+
+.ds-badge--primary-v1.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-primary-variant-1);
+  border-color: var(--ds-color-primary-variant-1);
+}
+
+/* Primary Variant 2 - #4a69bd */
+.ds-badge--primary-v2 {
+  background-color: var(--ds-color-primary-variant-2);
+  color: var(--ds-color-on-primary);
+}
+
+.ds-badge--primary-v2.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-primary-variant-2);
+  border-color: var(--ds-color-primary-variant-2);
+}
+
+/* Primary Variant 3 - #0c2461 */
+.ds-badge--primary-v3 {
+  background-color: var(--ds-color-primary-variant-3);
+  color: var(--ds-color-on-primary);
+}
+
+.ds-badge--primary-v3.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-primary-variant-3);
+  border-color: var(--ds-color-primary-variant-3);
+}
+
+/* Secondary */
+.ds-badge--secondary {
+  background-color: var(--ds-color-secondary-container);
+  color: var(--ds-color-on-secondary-container);
+}
+
+.ds-badge--secondary.ds-badge--solid {
+  background-color: var(--ds-color-secondary);
+  color: var(--ds-color-on-secondary);
+}
+
+.ds-badge--secondary.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-secondary);
+  border-color: var(--ds-color-secondary);
+}
+
+/* Secondary Variant 1 - #f8c291 */
+.ds-badge--secondary-v1 {
+  background-color: var(--ds-color-secondary-variant-1);
+  color: var(--ds-color-on-secondary);
+}
+
+.ds-badge--secondary-v1.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-secondary-variant-1);
+  border-color: var(--ds-color-secondary-variant-1);
+}
+
+/* Secondary Variant 2 - #e55039 */
+.ds-badge--secondary-v2 {
+  background-color: var(--ds-color-secondary-variant-2);
+  color: var(--ds-color-on-secondary);
+}
+
+.ds-badge--secondary-v2.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-secondary-variant-2);
+  border-color: var(--ds-color-secondary-variant-2);
+}
+
+/* Secondary Variant 3 - #b71540 */
+.ds-badge--secondary-v3 {
+  background-color: var(--ds-color-secondary-variant-3);
+  color: var(--ds-color-on-secondary);
+}
+
+.ds-badge--secondary-v3.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-secondary-variant-3);
+  border-color: var(--ds-color-secondary-variant-3);
+}
+
+/* Tertiary - Utilise le système de couleur tertiaire */
+.ds-badge--tertiary {
+  background-color: var(--ds-color-tertiary-container);
+  color: var(--ds-color-on-tertiary-container);
+}
+
+.ds-badge--tertiary.ds-badge--solid {
+  background-color: var(--ds-color-tertiary);
+  color: var(--ds-color-on-tertiary);
+}
+
+.ds-badge--tertiary.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-tertiary);
+  border-color: var(--ds-color-tertiary);
+}
+
+/* Tertiary Variant 1 - #fad390 */
+.ds-badge--tertiary-v1 {
+  background-color: var(--ds-color-tertiary-variant-1);
+  color: var(--ds-color-on-tertiary);
+}
+
+.ds-badge--tertiary-v1.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-tertiary-variant-1);
+  border-color: var(--ds-color-tertiary-variant-1);
+}
+
+/* Tertiary Variant 2 - #f6b93b */
+.ds-badge--tertiary-v2 {
+  background-color: var(--ds-color-tertiary-variant-2);
+  color: var(--ds-color-on-tertiary);
+}
+
+.ds-badge--tertiary-v2.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-tertiary-variant-2);
+  border-color: var(--ds-color-tertiary-variant-2);
+}
+
+/* Tertiary Variant 3 - #e58e26 */
+.ds-badge--tertiary-v3 {
+  background-color: var(--ds-color-tertiary-variant-3);
+  color: var(--ds-color-on-tertiary);
+}
+
+.ds-badge--tertiary-v3.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-tertiary-variant-3);
+  border-color: var(--ds-color-tertiary-variant-3);
+}
+
+/* Quaternary - Utilise le système de couleur quatrième */
+.ds-badge--quaternary {
+  background-color: var(--ds-color-quaternary-container);
+  color: var(--ds-color-on-quaternary-container);
+}
+
+.ds-badge--quaternary.ds-badge--solid {
+  background-color: var(--ds-color-quaternary);
+  color: var(--ds-color-on-quaternary);
+}
+
+.ds-badge--quaternary.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-quaternary);
+  border-color: var(--ds-color-quaternary);
+}
+
+/* Quaternary Variant 1 - #82ccdd */
+.ds-badge--quaternary-v1 {
+  background-color: var(--ds-color-quaternary-variant-1);
+  color: var(--ds-color-on-quaternary);
+}
+
+.ds-badge--quaternary-v1.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-quaternary-variant-1);
+  border-color: var(--ds-color-quaternary-variant-1);
+}
+
+/* Quaternary Variant 2 - #60a3bc */
+.ds-badge--quaternary-v2 {
+  background-color: var(--ds-color-quaternary-variant-2);
+  color: var(--ds-color-on-quaternary);
+}
+
+.ds-badge--quaternary-v2.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-quaternary-variant-2);
+  border-color: var(--ds-color-quaternary-variant-2);
+}
+
+/* Quaternary Variant 3 - #0a3d62 */
+.ds-badge--quaternary-v3 {
+  background-color: var(--ds-color-quaternary-variant-3);
+  color: var(--ds-color-on-quaternary);
+}
+
+.ds-badge--quaternary-v3.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-quaternary-variant-3);
+  border-color: var(--ds-color-quaternary-variant-3);
+}
+
+/* Quinary - Utilise le système de couleur cinquième */
+.ds-badge--quinary {
+  background-color: var(--ds-color-quinary-container);
+  color: var(--ds-color-on-quinary-container);
+}
+
+.ds-badge--quinary.ds-badge--solid {
+  background-color: var(--ds-color-quinary);
+  color: var(--ds-color-on-quinary);
+}
+
+.ds-badge--quinary.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-quinary);
+  border-color: var(--ds-color-quinary);
+}
+
+/* Quinary Variant 1 - #b8e994 */
+.ds-badge--quinary-v1 {
+  background-color: var(--ds-color-quinary-variant-1);
+  color: var(--ds-color-on-quinary);
+}
+
+.ds-badge--quinary-v1.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-quinary-variant-1);
+  border-color: var(--ds-color-quinary-variant-1);
+}
+
+/* Quinary Variant 2 - #78e08f */
+.ds-badge--quinary-v2 {
+  background-color: var(--ds-color-quinary-variant-2);
+  color: var(--ds-color-on-quinary);
+}
+
+.ds-badge--quinary-v2.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-quinary-variant-2);
+  border-color: var(--ds-color-quinary-variant-2);
+}
+
+/* Quinary Variant 3 - #079992 */
+.ds-badge--quinary-v3 {
+  background-color: var(--ds-color-quinary-variant-3);
+  color: var(--ds-color-on-quinary);
+}
+
+.ds-badge--quinary-v3.ds-badge--outlined {
+  background-color: transparent;
+  color: var(--ds-color-quinary-variant-3);
+  border-color: var(--ds-color-quinary-variant-3);
+}
+
+/* Success */
+.ds-badge--success {
+  background-color: var(--ds-color-success-bg);
+  color: var(--ds-color-success-text);
+}
+
+/* Error */
+.ds-badge--error {
+  background-color: var(--ds-color-error-bg);
+  color: var(--ds-color-error-text);
+}
+
+/* Warning */
+.ds-badge--warning {
+  background-color: var(--ds-color-warning-bg);
+  color: var(--ds-color-warning-text);
+}
+
+/* Info */
+.ds-badge--info {
+  background-color: var(--ds-color-info-bg);
+  color: var(--ds-color-info-text);
+}
+
+/* Outlined */
+.ds-badge--outlined {
+  background-color: transparent;
+  border: var(--ds-border-width-thin) solid currentColor;
+}
+
+.ds-badge--outlined.ds-badge--primary {
+  color: var(--ds-color-primary);
+  border-color: var(--ds-color-primary);
+}
+
+.ds-badge--outlined.ds-badge--success {
+  color: var(--ds-color-success);
+  border-color: var(--ds-color-success);
+}
+
+.ds-badge--outlined.ds-badge--error {
+  color: var(--ds-color-error);
+  border-color: var(--ds-color-error);
+}
+
+.ds-badge--outlined.ds-badge--warning {
+  color: var(--ds-color-warning);
+  border-color: var(--ds-color-warning);
+}
+
+.ds-badge--outlined.ds-badge--info {
+  color: var(--ds-color-info);
+  border-color: var(--ds-color-info);
+}
+
+/* Solid */
+.ds-badge--solid.ds-badge--primary {
+  background-color: var(--ds-color-primary);
+  color: var(--ds-color-on-primary);
+}
+
+.ds-badge--solid.ds-badge--success {
+  background-color: var(--ds-color-success);
+  color: var(--ds-color-on-primary);
+}
+
+.ds-badge--solid.ds-badge--error {
+  background-color: var(--ds-color-error);
+  color: var(--ds-color-on-primary);
+}
+
+.ds-badge--solid.ds-badge--warning {
+  background-color: var(--ds-color-warning);
+  color: var(--ds-color-on-primary);
+}
+
+.ds-badge--solid.ds-badge--info {
+  background-color: var(--ds-color-info);
+  color: var(--ds-color-on-primary);
+}
+
+/* ========================================
+   Badge Sizes
+   ======================================== */
+.ds-badge--small {
+  padding: 2px var(--ds-spacing-1);
+  font-size: 10px;
+  min-height: 18px;
+}
+
+.ds-badge--medium {
+  padding: var(--ds-spacing-1) var(--ds-spacing-2);
+  font-size: var(--ds-font-size-xs);
+  min-height: 20px;
+}
+
+.ds-badge--large {
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-size: var(--ds-font-size-sm);
+  min-height: 24px;
+}
+
+/* ========================================
+   Badge with Icon
+   ======================================== */
+.ds-badge .ds-badge__icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.ds-badge--icon-only {
+  padding: var(--ds-spacing-1);
+  min-width: 20px;
+  min-height: 20px;
+}
+
+.ds-badge--icon-only .ds-badge__icon {
+  margin: 0;
+}
+
+/* ========================================
+   Badge with Dot
+   ======================================== */
+.ds-badge--dot {
+  position: relative;
+  padding-left: var(--ds-spacing-4);
+}
+
+.ds-badge--dot::before {
+  content: '';
+  position: absolute;
+  left: var(--ds-spacing-1);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: var(--ds-radius-full);
+  background-color: currentColor;
+}
+
+/* ========================================
+   Badge Pulse Animation
+   ======================================== */
+.ds-badge--pulse {
+  animation: badgePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+}
+
+/* ========================================
+   Compatibilité avec l'ancien système
+   ======================================== */
+.email-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-1);
+  font-family: var(--ds-font-family-primary);
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  padding: var(--ds-spacing-1) var(--ds-spacing-2);
+  border-radius: var(--ds-radius-badge);
+  transition: var(--ds-transition-all);
+  background-color: var(--ds-color-primary-container);
+  color: var(--ds-color-on-primary-container);
+}
+
+.email-chip:hover {
+  background-color: var(--ds-color-primary-hover);
+}
+

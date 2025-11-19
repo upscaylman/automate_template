@@ -1,0 +1,58 @@
+/**
+ * Design System - Tokens de Typographie
+ * Variables CSS pour la typographie de l'application
+ * Basé sur Material Design 3
+ */
+
+:root {
+  /* ========================================
+     Familles de Polices
+     ======================================== */
+  --ds-font-family-primary: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ds-font-family-mono: 'Courier New', monospace;
+
+  /* ========================================
+     Tailles de Police
+     ======================================== */
+  --ds-font-size-xs: 12px;
+  --ds-font-size-sm: 14px;
+  --ds-font-size-base: 16px;
+  --ds-font-size-lg: 18px;
+  --ds-font-size-xl: 20px;
+  --ds-font-size-2xl: 24px;
+  --ds-font-size-3xl: 30px;
+  --ds-font-size-4xl: 36px;
+
+  /* ========================================
+     Poids de Police
+     ======================================== */
+  --ds-font-weight-light: 300;
+  --ds-font-weight-normal: 400;
+  --ds-font-weight-medium: 500;
+  --ds-font-weight-semibold: 600;
+  --ds-font-weight-bold: 700;
+
+  /* ========================================
+     Hauteurs de Ligne
+     ======================================== */
+  --ds-line-height-tight: 1.25;
+  --ds-line-height-normal: 1.5;
+  --ds-line-height-relaxed: 1.75;
+
+  /* ========================================
+     Espacement des Lettres
+     ======================================== */
+  --ds-letter-spacing-tight: -0.025em;
+  --ds-letter-spacing-normal: 0;
+  --ds-letter-spacing-wide: 0.025em;
+  --ds-letter-spacing-wider: 0.05em;
+
+  /* ========================================
+     Styles de Texte
+     ======================================== */
+  --ds-text-transform-none: none;
+  --ds-text-transform-uppercase: uppercase;
+  --ds-text-transform-lowercase: lowercase;
+  --ds-text-transform-capitalize: capitalize;
+}
+

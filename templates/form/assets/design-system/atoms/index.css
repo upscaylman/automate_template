@@ -1,0 +1,11 @@
+/**
+ * Design System - Atoms
+ * Point d'entrée pour tous les composants atoms
+ */
+
+/* Import de tous les atoms */
+@import './button.css';
+@import './input.css';
+@import './badge.css';
+@import './loader.css';
+

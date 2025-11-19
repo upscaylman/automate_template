@@ -1,0 +1,235 @@
+/**
+ * Design System - Atom: Loader
+ * Composant loader réutilisable avec variations
+ */
+
+/* ========================================
+   Base Loader (Spinner)
+   ======================================== */
+.ds-loader {
+  display: inline-block;
+  border: var(--ds-border-width-medium) solid transparent;
+  border-top-color: currentColor;
+  border-radius: var(--ds-radius-full);
+  animation: ds-loader-spin 1s linear infinite;
+}
+
+/* ========================================
+   Loader Sizes
+   ======================================== */
+.ds-loader--small {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.ds-loader--medium {
+  width: 24px;
+  height: 24px;
+  border-width: 3px;
+}
+
+.ds-loader--large {
+  width: 40px;
+  height: 40px;
+  border-width: 4px;
+}
+
+.ds-loader--xlarge {
+  width: 64px;
+  height: 64px;
+  border-width: 6px;
+}
+
+/* ========================================
+   Loader Colors
+   ======================================== */
+.ds-loader--primary {
+  color: var(--ds-color-primary);
+}
+
+.ds-loader--primary-blue {
+  color: var(--ds-color-info);
+}
+
+.ds-loader--white {
+  color: var(--ds-color-on-primary);
+}
+
+.ds-loader--success {
+  color: var(--ds-color-success);
+}
+
+.ds-loader--error {
+  color: var(--ds-color-error);
+}
+
+/* ========================================
+   Loader Variants
+   ======================================== */
+
+/* Spinner (default) */
+.ds-loader--spinner {
+  /* Style par défaut */
+}
+
+/* Dots */
+.ds-loader--dots {
+  display: inline-flex;
+  gap: var(--ds-spacing-1);
+  animation: none;
+  border: none;
+  border-radius: 0;
+}
+
+.ds-loader--dots::before,
+.ds-loader--dots::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: var(--ds-radius-full);
+  background-color: currentColor;
+  animation: ds-loader-dots 1.4s ease-in-out infinite both;
+}
+
+.ds-loader--dots::before {
+  animation-delay: -0.32s;
+}
+
+.ds-loader--dots::after {
+  animation-delay: -0.16s;
+}
+
+.ds-loader--dots.ds-loader--small::before,
+.ds-loader--dots.ds-loader--small::after {
+  width: 6px;
+  height: 6px;
+}
+
+.ds-loader--dots.ds-loader--large::before,
+.ds-loader--dots.ds-loader--large::after {
+  width: 12px;
+  height: 12px;
+}
+
+/* Pulse */
+.ds-loader--pulse {
+  animation: ds-loader-pulse 1.5s ease-in-out infinite;
+  border: none;
+  background-color: currentColor;
+  border-radius: var(--ds-radius-full);
+}
+
+/* Skeleton */
+.ds-loader--skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--ds-color-bg-gray-light) 25%,
+    var(--ds-color-bg-gray) 50%,
+    var(--ds-color-bg-gray-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: ds-loader-skeleton 1.5s ease-in-out infinite;
+  border-radius: var(--ds-radius-md);
+}
+
+.ds-loader--skeleton.ds-loader--text {
+  height: 1em;
+  width: 100%;
+}
+
+.ds-loader--skeleton.ds-loader--circle {
+  border-radius: var(--ds-radius-full);
+  width: 40px;
+  height: 40px;
+}
+
+/* ========================================
+   Loader Container
+   ======================================== */
+.ds-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-4);
+  padding: var(--ds-spacing-6);
+}
+
+.ds-loader-container .ds-loader__text {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-color-text-secondary);
+  text-align: center;
+}
+
+.ds-loader-container .ds-loader__subtext {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-color-text-tertiary);
+  text-align: center;
+  margin-top: var(--ds-spacing-2);
+}
+
+/* ========================================
+   Animations
+   ======================================== */
+@keyframes ds-loader-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ds-loader-dots {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ds-loader-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes ds-loader-skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ========================================
+   Loader Overlay
+   ======================================== */
+.ds-loader-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+}
+
+.ds-loader-overlay .ds-loader-container {
+  background-color: var(--ds-color-bg-white);
+  border-radius: var(--ds-radius-card);
+  padding: var(--ds-spacing-8);
+  box-shadow: var(--ds-shadow-3);
+}
+

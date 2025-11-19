@@ -1,0 +1,462 @@
+/**
+ * Design System - Tokens de Couleurs
+ * Variables CSS pour toutes les couleurs de l'application
+ * Basé sur Material Design 3
+ */
+
+:root {
+  /* ========================================
+     COULEUR PRIMAIRE - Système Centralisé
+     #1e3799 - Bleu foncé
+     ======================================== */
+  
+  /* Couleur primaire de base */
+  --ds-color-primary-base: #1e3799;
+  
+  /* Variantes de la couleur primaire (échelle complète) */
+  --ds-color-primary-50: #e8ecf5;
+  --ds-color-primary-100: #c5d0e8;
+  --ds-color-primary-200: #9fb3d9;
+  --ds-color-primary-300: #7896ca;
+  --ds-color-primary-400: #5b80be;
+  --ds-color-primary-500: var(--ds-color-primary-base); /* #1e3799 - Couleur principale */
+  --ds-color-primary-600: #1a3190;
+  --ds-color-primary-700: #162985;
+  --ds-color-primary-800: #122379;
+  --ds-color-primary-900: #0a1768;
+  
+  /* Variantes personnalisées de la couleur primaire */
+  --ds-color-primary-variant-1: #6a89cc; /* Variante claire */
+  --ds-color-primary-variant-2: #4a69bd; /* Variante moyenne */
+  --ds-color-primary-variant-3: #0c2461; /* Variante foncée */
+  
+  /* Couleurs primaires sémantiques (pour usage direct) */
+  --ds-color-primary: var(--ds-color-primary-500);
+  --ds-color-primary-light: var(--ds-color-primary-300);
+  --ds-color-primary-lighter: var(--ds-color-primary-200);
+  --ds-color-primary-dark: var(--ds-color-primary-700);
+  --ds-color-primary-darker: var(--ds-color-primary-900);
+  
+  /* Variantes personnalisées (alias pour usage simplifié) */
+  --ds-color-primary-v1: var(--ds-color-primary-variant-1); /* #6a89cc */
+  --ds-color-primary-v2: var(--ds-color-primary-variant-2); /* #4a69bd */
+  --ds-color-primary-v3: var(--ds-color-primary-variant-3); /* #0c2461 */
+  
+  /* Couleurs pour texte sur fond primaire */
+  --ds-color-on-primary: #ffffff;
+  --ds-color-on-primary-light: #ffffff;
+  
+  /* Containers primaires (fond clair avec texte primaire) */
+  --ds-color-primary-container: var(--ds-color-primary-100);
+  --ds-color-primary-container-light: var(--ds-color-primary-50);
+  --ds-color-on-primary-container: var(--ds-color-primary-900);
+  
+  /* États interactifs de la couleur primaire */
+  --ds-color-primary-hover: var(--ds-color-primary-600);
+  --ds-color-primary-active: var(--ds-color-primary-700);
+  --ds-color-primary-focus: var(--ds-color-primary-500);
+  --ds-color-primary-disabled: var(--ds-color-primary-300);
+  
+  /* Ombres avec couleur primaire (rgb(30, 55, 153)) */
+  --ds-color-primary-shadow: rgba(30, 55, 153, 0.4);
+  --ds-color-primary-shadow-light: rgba(30, 55, 153, 0.2);
+  --ds-color-primary-shadow-dark: rgba(30, 55, 153, 0.6);
+  
+  /* Gradients primaires */
+  --ds-gradient-primary: linear-gradient(135deg, var(--ds-color-primary-500) 0%, var(--ds-color-primary-600) 100%);
+  --ds-gradient-primary-light: linear-gradient(135deg, var(--ds-color-primary-300) 0%, var(--ds-color-primary-400) 100%);
+  --ds-gradient-primary-dark: linear-gradient(135deg, var(--ds-color-primary-700) 0%, var(--ds-color-primary-800) 100%);
+  --ds-gradient-primary-vertical: linear-gradient(180deg, var(--ds-color-primary-500) 0%, var(--ds-color-primary-600) 100%);
+  
+  /* Gradients avec variantes personnalisées */
+  --ds-gradient-primary-v1-v2: linear-gradient(135deg, var(--ds-color-primary-variant-1) 0%, var(--ds-color-primary-variant-2) 100%);
+  --ds-gradient-primary-v2-v3: linear-gradient(135deg, var(--ds-color-primary-variant-2) 0%, var(--ds-color-primary-variant-3) 100%);
+  --ds-gradient-primary-v1-v3: linear-gradient(135deg, var(--ds-color-primary-variant-1) 0%, var(--ds-color-primary-variant-3) 100%);
+  --ds-gradient-primary-base-v1: linear-gradient(135deg, var(--ds-color-primary-500) 0%, var(--ds-color-primary-variant-1) 100%);
+  --ds-gradient-primary-v3-base: linear-gradient(135deg, var(--ds-color-primary-variant-3) 0%, var(--ds-color-primary-500) 100%);
+
+  /* ========================================
+     COULEUR SECONDAIRE - #eb2f06 (Rouge/Orange)
+     ======================================== */
+  
+  --ds-color-secondary-base: #eb2f06;
+  
+  /* Variantes de la couleur secondaire */
+  --ds-color-secondary-50: #fde8e4;
+  --ds-color-secondary-100: #fbc5bb;
+  --ds-color-secondary-200: #f99e8e;
+  --ds-color-secondary-300: #f77761;
+  --ds-color-secondary-400: #f55a3f;
+  --ds-color-secondary-500: var(--ds-color-secondary-base); /* #eb2f06 */
+  --ds-color-secondary-600: #d42905;
+  --ds-color-secondary-700: #ba2304;
+  --ds-color-secondary-800: #a01d03;
+  --ds-color-secondary-900: #771202;
+  
+  /* Variantes personnalisées de la couleur secondaire */
+  --ds-color-secondary-variant-1: #f8c291; /* Variante claire */
+  --ds-color-secondary-variant-2: #e55039; /* Variante moyenne */
+  --ds-color-secondary-variant-3: #b71540; /* Variante foncée */
+  
+  /* Couleurs secondaires sémantiques */
+  --ds-color-secondary: var(--ds-color-secondary-500);
+  --ds-color-secondary-light: var(--ds-color-secondary-300);
+  --ds-color-secondary-lighter: var(--ds-color-secondary-200);
+  --ds-color-secondary-dark: var(--ds-color-secondary-700);
+  --ds-color-secondary-darker: var(--ds-color-secondary-900);
+  
+  /* Variantes personnalisées (alias pour usage simplifié) */
+  --ds-color-secondary-v1: var(--ds-color-secondary-variant-1); /* #f8c291 */
+  --ds-color-secondary-v2: var(--ds-color-secondary-variant-2); /* #e55039 */
+  --ds-color-secondary-v3: var(--ds-color-secondary-variant-3); /* #b71540 */
+  
+  /* Texte sur fond secondaire */
+  --ds-color-on-secondary: #ffffff;
+  
+  /* Containers secondaires */
+  --ds-color-secondary-container: var(--ds-color-secondary-100);
+  --ds-color-secondary-container-light: var(--ds-color-secondary-50);
+  --ds-color-on-secondary-container: var(--ds-color-secondary-900);
+  
+  /* États interactifs */
+  --ds-color-secondary-hover: var(--ds-color-secondary-600);
+  --ds-color-secondary-active: var(--ds-color-secondary-700);
+  --ds-color-secondary-focus: var(--ds-color-secondary-500);
+  --ds-color-secondary-disabled: var(--ds-color-secondary-300);
+  
+  /* Ombres secondaires (rgb(235, 47, 6)) */
+  --ds-color-secondary-shadow: rgba(235, 47, 6, 0.4);
+  --ds-color-secondary-shadow-light: rgba(235, 47, 6, 0.2);
+  --ds-color-secondary-shadow-dark: rgba(235, 47, 6, 0.6);
+  
+  /* Gradients secondaires */
+  --ds-gradient-secondary: linear-gradient(135deg, var(--ds-color-secondary-500) 0%, var(--ds-color-secondary-600) 100%);
+  
+  /* Gradients avec variantes personnalisées secondaires */
+  --ds-gradient-secondary-v1-v2: linear-gradient(135deg, var(--ds-color-secondary-variant-1) 0%, var(--ds-color-secondary-variant-2) 100%);
+  --ds-gradient-secondary-v2-v3: linear-gradient(135deg, var(--ds-color-secondary-variant-2) 0%, var(--ds-color-secondary-variant-3) 100%);
+  --ds-gradient-secondary-v1-v3: linear-gradient(135deg, var(--ds-color-secondary-variant-1) 0%, var(--ds-color-secondary-variant-3) 100%);
+  --ds-gradient-secondary-base-v1: linear-gradient(135deg, var(--ds-color-secondary-500) 0%, var(--ds-color-secondary-variant-1) 100%);
+  --ds-gradient-secondary-v3-base: linear-gradient(135deg, var(--ds-color-secondary-variant-3) 0%, var(--ds-color-secondary-500) 100%);
+
+  /* ========================================
+     COULEUR TERTIAIRE - #fa983a (Orange)
+     ======================================== */
+  
+  --ds-color-tertiary-base: #fa983a;
+  
+  /* Variantes de la couleur tertiaire */
+  --ds-color-tertiary-50: #fef5eb;
+  --ds-color-tertiary-100: #fde5cd;
+  --ds-color-tertiary-200: #fbd3ac;
+  --ds-color-tertiary-300: #f9c18b;
+  --ds-color-tertiary-400: #f8b372;
+  --ds-color-tertiary-500: var(--ds-color-tertiary-base); /* #fa983a */
+  --ds-color-tertiary-600: #e18933;
+  --ds-color-tertiary-700: #c5772c;
+  --ds-color-tertiary-800: #a96525;
+  --ds-color-tertiary-900: #7d4b1a;
+  
+  /* Variantes personnalisées de la couleur tertiaire */
+  --ds-color-tertiary-variant-1: #fad390; /* Variante claire */
+  --ds-color-tertiary-variant-2: #f6b93b; /* Variante moyenne */
+  --ds-color-tertiary-variant-3: #e58e26; /* Variante foncée */
+  
+  /* Couleurs tertiaires sémantiques */
+  --ds-color-tertiary: var(--ds-color-tertiary-500);
+  --ds-color-tertiary-light: var(--ds-color-tertiary-300);
+  --ds-color-tertiary-lighter: var(--ds-color-tertiary-200);
+  --ds-color-tertiary-dark: var(--ds-color-tertiary-700);
+  --ds-color-tertiary-darker: var(--ds-color-tertiary-900);
+  
+  /* Variantes personnalisées (alias pour usage simplifié) */
+  --ds-color-tertiary-v1: var(--ds-color-tertiary-variant-1); /* #fad390 */
+  --ds-color-tertiary-v2: var(--ds-color-tertiary-variant-2); /* #f6b93b */
+  --ds-color-tertiary-v3: var(--ds-color-tertiary-variant-3); /* #e58e26 */
+  
+  /* Texte sur fond tertiaire */
+  --ds-color-on-tertiary: #ffffff;
+  
+  /* Containers tertiaires */
+  --ds-color-tertiary-container: var(--ds-color-tertiary-100);
+  --ds-color-tertiary-container-light: var(--ds-color-tertiary-50);
+  --ds-color-on-tertiary-container: var(--ds-color-tertiary-900);
+  
+  /* États interactifs */
+  --ds-color-tertiary-hover: var(--ds-color-tertiary-600);
+  --ds-color-tertiary-active: var(--ds-color-tertiary-700);
+  --ds-color-tertiary-focus: var(--ds-color-tertiary-500);
+  --ds-color-tertiary-disabled: var(--ds-color-tertiary-300);
+  
+  /* Ombres tertiaires (rgb(250, 152, 58)) */
+  --ds-color-tertiary-shadow: rgba(250, 152, 58, 0.4);
+  --ds-color-tertiary-shadow-light: rgba(250, 152, 58, 0.2);
+  --ds-color-tertiary-shadow-dark: rgba(250, 152, 58, 0.6);
+  
+  /* Gradients tertiaires */
+  --ds-gradient-tertiary: linear-gradient(135deg, var(--ds-color-tertiary-500) 0%, var(--ds-color-tertiary-600) 100%);
+  
+  /* Gradients avec variantes personnalisées tertiaires */
+  --ds-gradient-tertiary-v1-v2: linear-gradient(135deg, var(--ds-color-tertiary-variant-1) 0%, var(--ds-color-tertiary-variant-2) 100%);
+  --ds-gradient-tertiary-v2-v3: linear-gradient(135deg, var(--ds-color-tertiary-variant-2) 0%, var(--ds-color-tertiary-variant-3) 100%);
+  --ds-gradient-tertiary-v1-v3: linear-gradient(135deg, var(--ds-color-tertiary-variant-1) 0%, var(--ds-color-tertiary-variant-3) 100%);
+  --ds-gradient-tertiary-base-v1: linear-gradient(135deg, var(--ds-color-tertiary-500) 0%, var(--ds-color-tertiary-variant-1) 100%);
+  --ds-gradient-tertiary-v3-base: linear-gradient(135deg, var(--ds-color-tertiary-variant-3) 0%, var(--ds-color-tertiary-500) 100%);
+
+  /* ========================================
+     COULEUR QUATRIÈME - #3c6382 (Bleu-gris)
+     ======================================== */
+  
+  --ds-color-quaternary-base: #3c6382;
+  
+  /* Variantes de la couleur quatrième */
+  --ds-color-quaternary-50: #e8edf2;
+  --ds-color-quaternary-100: #c5d2de;
+  --ds-color-quaternary-200: #9eb5c8;
+  --ds-color-quaternary-300: #7798b2;
+  --ds-color-quaternary-400: #5a82a2;
+  --ds-color-quaternary-500: var(--ds-color-quaternary-base); /* #3c6382 */
+  --ds-color-quaternary-600: #365975;
+  --ds-color-quaternary-700: #2e4e68;
+  --ds-color-quaternary-800: #28445b;
+  --ds-color-quaternary-900: #1d3249;
+  
+  /* Variantes personnalisées de la couleur quatrième */
+  --ds-color-quaternary-variant-1: #82ccdd; /* Variante claire */
+  --ds-color-quaternary-variant-2: #60a3bc; /* Variante moyenne */
+  --ds-color-quaternary-variant-3: #0a3d62; /* Variante foncée */
+  
+  /* Couleurs quatrième sémantiques */
+  --ds-color-quaternary: var(--ds-color-quaternary-500);
+  --ds-color-quaternary-light: var(--ds-color-quaternary-300);
+  --ds-color-quaternary-lighter: var(--ds-color-quaternary-200);
+  --ds-color-quaternary-dark: var(--ds-color-quaternary-700);
+  --ds-color-quaternary-darker: var(--ds-color-quaternary-900);
+  
+  /* Variantes personnalisées (alias pour usage simplifié) */
+  --ds-color-quaternary-v1: var(--ds-color-quaternary-variant-1); /* #82ccdd */
+  --ds-color-quaternary-v2: var(--ds-color-quaternary-variant-2); /* #60a3bc */
+  --ds-color-quaternary-v3: var(--ds-color-quaternary-variant-3); /* #0a3d62 */
+  
+  /* Texte sur fond quatrième */
+  --ds-color-on-quaternary: #ffffff;
+  
+  /* Containers quatrième */
+  --ds-color-quaternary-container: var(--ds-color-quaternary-100);
+  --ds-color-quaternary-container-light: var(--ds-color-quaternary-50);
+  --ds-color-on-quaternary-container: var(--ds-color-quaternary-900);
+  
+  /* États interactifs */
+  --ds-color-quaternary-hover: var(--ds-color-quaternary-600);
+  --ds-color-quaternary-active: var(--ds-color-quaternary-700);
+  --ds-color-quaternary-focus: var(--ds-color-quaternary-500);
+  --ds-color-quaternary-disabled: var(--ds-color-quaternary-300);
+  
+  /* Ombres quatrième (rgb(60, 99, 130)) */
+  --ds-color-quaternary-shadow: rgba(60, 99, 130, 0.4);
+  --ds-color-quaternary-shadow-light: rgba(60, 99, 130, 0.2);
+  --ds-color-quaternary-shadow-dark: rgba(60, 99, 130, 0.6);
+  
+  /* Gradients quatrième */
+  --ds-gradient-quaternary: linear-gradient(135deg, var(--ds-color-quaternary-500) 0%, var(--ds-color-quaternary-600) 100%);
+  
+  /* Gradients avec variantes personnalisées quatrième */
+  --ds-gradient-quaternary-v1-v2: linear-gradient(135deg, var(--ds-color-quaternary-variant-1) 0%, var(--ds-color-quaternary-variant-2) 100%);
+  --ds-gradient-quaternary-v2-v3: linear-gradient(135deg, var(--ds-color-quaternary-variant-2) 0%, var(--ds-color-quaternary-variant-3) 100%);
+  --ds-gradient-quaternary-v1-v3: linear-gradient(135deg, var(--ds-color-quaternary-variant-1) 0%, var(--ds-color-quaternary-variant-3) 100%);
+  --ds-gradient-quaternary-base-v1: linear-gradient(135deg, var(--ds-color-quaternary-500) 0%, var(--ds-color-quaternary-variant-1) 100%);
+  --ds-gradient-quaternary-v3-base: linear-gradient(135deg, var(--ds-color-quaternary-variant-3) 0%, var(--ds-color-quaternary-500) 100%);
+
+  /* ========================================
+     COULEUR CINQUIÈME - #38ada9 (Turquoise/Cyan)
+     ======================================== */
+  
+  --ds-color-quinary-base: #38ada9;
+  
+  /* Variantes de la couleur cinquième */
+  --ds-color-quinary-50: #e6f5f4;
+  --ds-color-quinary-100: #c0e6e4;
+  --ds-color-quinary-200: #96d6d3;
+  --ds-color-quinary-300: #6cc6c2;
+  --ds-color-quinary-400: #4dbab5;
+  --ds-color-quinary-500: var(--ds-color-quinary-base); /* #38ada9 */
+  --ds-color-quinary-600: #329d99;
+  --ds-color-quinary-700: #2b8a87;
+  --ds-color-quinary-800: #247875;
+  --ds-color-quinary-900: #175855;
+  
+  /* Variantes personnalisées de la couleur cinquième */
+  --ds-color-quinary-variant-1: #b8e994; /* Variante claire */
+  --ds-color-quinary-variant-2: #78e08f; /* Variante moyenne */
+  --ds-color-quinary-variant-3: #079992; /* Variante foncée */
+  
+  /* Couleurs cinquième sémantiques */
+  --ds-color-quinary: var(--ds-color-quinary-500);
+  --ds-color-quinary-light: var(--ds-color-quinary-300);
+  --ds-color-quinary-lighter: var(--ds-color-quinary-200);
+  --ds-color-quinary-dark: var(--ds-color-quinary-700);
+  --ds-color-quinary-darker: var(--ds-color-quinary-900);
+  
+  /* Variantes personnalisées (alias pour usage simplifié) */
+  --ds-color-quinary-v1: var(--ds-color-quinary-variant-1); /* #b8e994 */
+  --ds-color-quinary-v2: var(--ds-color-quinary-variant-2); /* #78e08f */
+  --ds-color-quinary-v3: var(--ds-color-quinary-variant-3); /* #079992 */
+  
+  /* Texte sur fond cinquième */
+  --ds-color-on-quinary: #ffffff;
+  
+  /* Containers cinquième */
+  --ds-color-quinary-container: var(--ds-color-quinary-100);
+  --ds-color-quinary-container-light: var(--ds-color-quinary-50);
+  --ds-color-on-quinary-container: var(--ds-color-quinary-900);
+  
+  /* États interactifs */
+  --ds-color-quinary-hover: var(--ds-color-quinary-600);
+  --ds-color-quinary-active: var(--ds-color-quinary-700);
+  --ds-color-quinary-focus: var(--ds-color-quinary-500);
+  --ds-color-quinary-disabled: var(--ds-color-quinary-300);
+  
+  /* Ombres cinquième (rgb(56, 173, 169)) */
+  --ds-color-quinary-shadow: rgba(56, 173, 169, 0.4);
+  --ds-color-quinary-shadow-light: rgba(56, 173, 169, 0.2);
+  --ds-color-quinary-shadow-dark: rgba(56, 173, 169, 0.6);
+  
+  /* Gradients cinquième */
+  --ds-gradient-quinary: linear-gradient(135deg, var(--ds-color-quinary-500) 0%, var(--ds-color-quinary-600) 100%);
+  
+  /* Gradients avec variantes personnalisées cinquième */
+  --ds-gradient-quinary-v1-v2: linear-gradient(135deg, var(--ds-color-quinary-variant-1) 0%, var(--ds-color-quinary-variant-2) 100%);
+  --ds-gradient-quinary-v2-v3: linear-gradient(135deg, var(--ds-color-quinary-variant-2) 0%, var(--ds-color-quinary-variant-3) 100%);
+  --ds-gradient-quinary-v1-v3: linear-gradient(135deg, var(--ds-color-quinary-variant-1) 0%, var(--ds-color-quinary-variant-3) 100%);
+  --ds-gradient-quinary-base-v1: linear-gradient(135deg, var(--ds-color-quinary-500) 0%, var(--ds-color-quinary-variant-1) 100%);
+  --ds-gradient-quinary-v3-base: linear-gradient(135deg, var(--ds-color-quinary-variant-3) 0%, var(--ds-color-quinary-500) 100%);
+
+  /* ========================================
+     Couleurs de Surface
+     ======================================== */
+  --ds-color-surface: #fffbff;
+  --ds-color-surface-variant: #f5ddda;
+  --ds-color-on-surface: #201a19;
+  --ds-color-on-surface-variant: #3e302f;
+
+  /* ========================================
+     Couleurs de Contour
+     ======================================== */
+  --ds-color-outline: #6f5b58;
+  --ds-color-outline-variant: #d8c2bf;
+
+  /* ========================================
+     Couleurs de Fond
+     ======================================== */
+  --ds-color-bg-white: #ffffff;
+  --ds-color-bg-surface: #fffbff;
+  --ds-color-bg-gray: #f5ddda;
+  --ds-color-bg-gray-light: #f9fafb;
+  --ds-color-bg-gray-dark: #e5e7eb;
+
+  /* ========================================
+     Couleurs de Texte
+     ======================================== */
+  --ds-color-text-primary: #201a19;
+  --ds-color-text-secondary: #3e302f;
+  --ds-color-text-tertiary: #64748b;
+  --ds-color-text-on-primary: #ffffff;
+  --ds-color-text-disabled: #9ca3af;
+
+  /* ========================================
+     Couleurs de Statut
+     ======================================== */
+  --ds-color-success: #22c55e;
+  --ds-color-success-light: #4ade80;
+  --ds-color-success-dark: #15803d;
+  --ds-color-success-bg: #f0fdf4;
+  --ds-color-success-text: #166534;
+
+  --ds-color-error: #dc2626;
+  --ds-color-error-light: #ef4444;
+  --ds-color-error-dark: #991b1b;
+  --ds-color-error-bg: #fef2f2;
+  --ds-color-error-text: #991b1b;
+
+  --ds-color-warning: #f59e0b;
+  --ds-color-warning-light: #fbbf24;
+  --ds-color-warning-dark: #d97706;
+  --ds-color-warning-bg: #fffbeb;
+  --ds-color-warning-text: #92400e;
+
+  --ds-color-info: #2563eb;
+  --ds-color-info-light: #3b82f6;
+  --ds-color-info-dark: #1e40af;
+  --ds-color-info-bg: #eff6ff;
+  --ds-color-info-text: #1e40af;
+
+  /* ========================================
+     Couleurs par Section (Thèmes)
+     ======================================== */
+  /* Bleu */
+  --ds-color-blue-50: #eff6ff;
+  --ds-color-blue-100: #dbeafe;
+  --ds-color-blue-500: #3b82f6;
+  --ds-color-blue-700: #1d4ed8;
+  --ds-color-blue-900: #1e3a8a;
+
+  /* Vert */
+  --ds-color-green-50: #f0fdf4;
+  --ds-color-green-100: #dcfce7;
+  --ds-color-green-500: #22c55e;
+  --ds-color-green-700: #15803d;
+  --ds-color-green-900: #14532d;
+
+  /* Violet */
+  --ds-color-purple-50: #faf5ff;
+  --ds-color-purple-100: #f3e8ff;
+  --ds-color-purple-500: #a855f7;
+  --ds-color-purple-700: #7e22ce;
+  --ds-color-purple-900: #581c87;
+
+  /* Rouge */
+  --ds-color-red-50: #fef2f2;
+  --ds-color-red-100: #fee2e2;
+  --ds-color-red-500: #ef4444;
+  --ds-color-red-700: #b91c1c;
+  --ds-color-red-900: #7f1d1d;
+
+  /* ========================================
+     Gradients Additionnels
+     ======================================== */
+  /* Gradient primaire bleu (alias pour compatibilité) */
+  --ds-gradient-primary-blue: var(--ds-gradient-primary);
+  
+  /* Gradient glassmorphism */
+  --ds-gradient-glass: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+  
+  /* Gradient succès */
+  --ds-gradient-success: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
+  
+  /* Gradients combinés */
+  --ds-gradient-primary-secondary: linear-gradient(135deg, var(--ds-color-primary-500) 0%, var(--ds-color-secondary-500) 100%);
+  --ds-gradient-tertiary-quinary: linear-gradient(135deg, var(--ds-color-tertiary-500) 0%, var(--ds-color-quinary-500) 100%);
+
+  /* ========================================
+     Compatibilité avec l'ancien système
+     ======================================== */
+  --color-primary: var(--ds-color-primary);
+  --color-primary-light: var(--ds-color-primary-light);
+  --color-primary-lighter: var(--ds-color-primary-lighter);
+  --color-primary-bg: var(--ds-color-primary-container);
+  --color-primary-hover: var(--ds-color-primary-hover);
+  --color-text-primary: var(--ds-color-text-primary);
+  --color-text-secondary: var(--ds-color-text-secondary);
+  --color-text-on-primary: var(--ds-color-text-on-primary);
+  --color-bg-white: var(--ds-color-bg-white);
+  --color-bg-surface: var(--ds-color-bg-surface);
+  --color-bg-gray: var(--ds-color-bg-gray);
+  --color-success: var(--ds-color-success);
+  --color-success-light: var(--ds-color-success-light);
+  --color-error: var(--ds-color-error);
+}
+

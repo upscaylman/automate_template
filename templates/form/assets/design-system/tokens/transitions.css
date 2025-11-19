@@ -1,0 +1,58 @@
+/**
+ * Design System - Tokens de Transitions
+ * Variables CSS pour les transitions et animations
+ */
+
+:root {
+  /* ========================================
+     Durées de Transition
+     ======================================== */
+  --ds-transition-duration-instant: 0ms;
+  --ds-transition-duration-fast: 100ms;
+  --ds-transition-duration-normal: 200ms;
+  --ds-transition-duration-medium: 300ms;
+  --ds-transition-duration-slow: 400ms;
+  --ds-transition-duration-slower: 600ms;
+
+  /* ========================================
+     Courbes d'Animation (Easing)
+     ======================================== */
+  --ds-easing-linear: linear;
+  --ds-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ds-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --ds-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ds-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 1, 1);
+  --ds-easing-expressive: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ========================================
+     Transitions Sémantiques
+     ======================================== */
+  --ds-transition-fast: var(--ds-transition-duration-normal) var(--ds-easing-standard);
+  --ds-transition-normal: var(--ds-transition-duration-medium) var(--ds-easing-standard);
+  --ds-transition-slow: var(--ds-transition-duration-slow) var(--ds-easing-emphasized);
+  --ds-transition-expressive: var(--ds-transition-duration-slow) var(--ds-easing-expressive);
+
+  /* ========================================
+     Transitions par Propriété
+     ======================================== */
+  --ds-transition-all: all var(--ds-transition-fast);
+  --ds-transition-colors: color var(--ds-transition-fast), background-color var(--ds-transition-fast), border-color var(--ds-transition-fast);
+  --ds-transition-transform: transform var(--ds-transition-fast);
+  --ds-transition-opacity: opacity var(--ds-transition-fast);
+  --ds-transition-shadow: box-shadow var(--ds-transition-fast);
+
+  /* ========================================
+     Compatibilité avec l'ancien système
+     ======================================== */
+  --transition-fast: var(--ds-transition-fast);
+  --transition-normal: var(--ds-transition-normal);
+  --transition-slow: var(--ds-transition-slow);
+  --transition-expressive: var(--ds-transition-expressive);
+  --md-sys-motion-duration-short-2: var(--ds-transition-duration-fast);
+  --md-sys-motion-duration-medium-2: var(--ds-transition-duration-medium);
+  --md-sys-motion-duration-medium-3: var(--ds-transition-duration-slow);
+  --md-sys-motion-easing-standard: var(--ds-easing-standard);
+  --md-sys-motion-easing-emphasized: var(--ds-easing-emphasized);
+  --md-sys-motion-easing-emphasized-decelerate: var(--ds-easing-emphasized-decelerate);
+}
+

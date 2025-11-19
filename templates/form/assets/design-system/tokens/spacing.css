@@ -1,0 +1,44 @@
+/**
+ * Design System - Tokens d'Espacement
+ * Variables CSS pour tous les espacements de l'application
+ * Basé sur une échelle de 4px
+ */
+
+:root {
+  /* ========================================
+     Espacements de Base (échelle 4px)
+     ======================================== */
+  --ds-spacing-0: 0;
+  --ds-spacing-1: 4px;
+  --ds-spacing-2: 8px;
+  --ds-spacing-3: 12px;
+  --ds-spacing-4: 16px;
+  --ds-spacing-5: 20px;
+  --ds-spacing-6: 24px;
+  --ds-spacing-8: 32px;
+  --ds-spacing-10: 40px;
+  --ds-spacing-12: 48px;
+  --ds-spacing-16: 64px;
+  --ds-spacing-20: 80px;
+  --ds-spacing-24: 96px;
+
+  /* ========================================
+     Espacements Sémantiques
+     ======================================== */
+  --ds-spacing-xs: var(--ds-spacing-1);    /* 4px - Très petit */
+  --ds-spacing-sm: var(--ds-spacing-2);    /* 8px - Petit */
+  --ds-spacing-md: var(--ds-spacing-4);    /* 16px - Moyen */
+  --ds-spacing-lg: var(--ds-spacing-6);    /* 24px - Grand */
+  --ds-spacing-xl: var(--ds-spacing-8);    /* 32px - Très grand */
+  --ds-spacing-2xl: var(--ds-spacing-12);  /* 48px - Extra grand */
+
+  /* ========================================
+     Compatibilité avec l'ancien système
+     ======================================== */
+  --spacing-xs: var(--ds-spacing-xs);
+  --spacing-sm: var(--ds-spacing-sm);
+  --spacing-md: var(--ds-spacing-md);
+  --spacing-lg: var(--ds-spacing-lg);
+  --spacing-xl: var(--ds-spacing-xl);
+}
+

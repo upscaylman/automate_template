@@ -263,7 +263,7 @@ export async function generateLocalPreview() {
       Promise.all([
         mammoth.convertToHtml({ arrayBuffer: arrayBuffer }, options),
         mammoth.extractRawText({ arrayBuffer: arrayBuffer })
-      ]).then(([htmlResult, textResult]) => {
+      ]).then(async ([htmlResult, textResult]) => {
           const htmlContent = htmlResult.value;
 
           // Vérifier s'il y a des messages d'avertissement
@@ -271,26 +271,13 @@ export async function generateLocalPreview() {
             console.log('Messages Mammoth:', htmlResult.messages);
           }
 
+          // Afficher un toast de succès
+          const { showSuccessToast } = await import('./toast.js');
+          const toastMessage = `<div><div style="font-weight: 600; margin-bottom: 4px;">Document généré avec succès !</div><div style="font-size: 13px; opacity: 0.8;">${typeDocumentLabel} • ${fileSizeKB} KB</div></div>`;
+          showSuccessToast(toastMessage, { icon: 'check_circle', duration: 5000, html: true });
+
           previewContent.innerHTML = `
             <div class="w-full h-full flex flex-col">
-              <!-- Message de succès -->
-              <div class="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-300 rounded-xl p-4 mb-4">
-                <div class="flex items-start gap-3">
-                  <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
-                    <span class="material-icons text-white text-2xl">check_circle</span>
-                  </div>
-                  <div class="flex-1">
-                    <h3 class="text-lg font-bold text-green-800 mb-1 flex items-center gap-2">
-                      <span class="material-icons text-green-600">check_circle</span>
-                      Document généré avec succès !
-                    </h3>
-                    <p class="text-sm text-gray-700 mb-2">
-                      <strong>${typeDocumentLabel}</strong> • ${fileSizeKB} KB
-                    </p>
-                  </div>
-                </div>
-              </div>
-
               <!-- Prévisualisation du document avec style Word -->
               <div class="bg-gray-200 rounded-xl p-4 overflow-auto" style="max-height: 600px;">
                 <!-- Page A4 simulée -->

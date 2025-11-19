@@ -1,0 +1,228 @@
+/**
+ * Design System - Molecule: Modal
+ * Composant modal réutilisable avec variations
+ */
+
+/* ========================================
+   Modal Overlay
+   ======================================== */
+.ds-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  padding: var(--ds-spacing-4);
+  animation: ds-modal-fade-in var(--ds-transition-normal);
+}
+
+.ds-modal-overlay--hidden {
+  display: none;
+}
+
+/* ========================================
+   Modal Container
+   ======================================== */
+.ds-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  background-color: var(--ds-color-bg-white);
+  border-radius: var(--ds-radius-modal);
+  box-shadow: var(--ds-shadow-5);
+  overflow: hidden;
+  animation: ds-modal-slide-up var(--ds-transition-slow);
+}
+
+.ds-modal--small {
+  max-width: 400px;
+}
+
+.ds-modal--medium {
+  max-width: 600px;
+}
+
+.ds-modal--large {
+  max-width: 800px;
+}
+
+.ds-modal--xlarge {
+  max-width: 1200px;
+}
+
+.ds-modal--fullscreen {
+  max-width: 100%;
+  max-height: 100vh;
+  border-radius: 0;
+}
+
+/* ========================================
+   Modal Header
+   ======================================== */
+.ds-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-4);
+  padding: var(--ds-spacing-6);
+  border-bottom: var(--ds-border-width-thin) solid var(--ds-color-outline-variant);
+  flex-shrink: 0;
+}
+
+.ds-modal__header-content {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+  flex: 1;
+  min-width: 0;
+}
+
+.ds-modal__header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--ds-radius-full);
+  color: var(--ds-color-primary);
+  flex-shrink: 0;
+  font-size: 24px;
+}
+
+.ds-modal__header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.ds-modal__header-title {
+  font-size: var(--ds-font-size-2xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-color-text-primary);
+  margin: 0;
+  margin-bottom: var(--ds-spacing-1);
+}
+
+.ds-modal__header-subtitle {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-color-text-tertiary);
+  margin: 0;
+}
+
+.ds-modal__header-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--ds-radius-full);
+  background-color: transparent;
+  border: none;
+  color: var(--ds-color-text-secondary);
+  cursor: pointer;
+  transition: var(--ds-transition-colors);
+  flex-shrink: 0;
+}
+
+.ds-modal__header-close:hover {
+  background-color: var(--ds-color-bg-gray-light);
+  color: var(--ds-color-text-primary);
+}
+
+.ds-modal__header-close:active {
+  transform: scale(0.95);
+}
+
+/* ========================================
+   Modal Body
+   ======================================== */
+.ds-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--ds-spacing-6);
+  min-height: 0;
+}
+
+.ds-modal__body--scrollable {
+  /* Style par défaut pour le scroll */
+}
+
+.ds-modal__body--no-padding {
+  padding: 0;
+}
+
+/* ========================================
+   Modal Footer
+   ======================================== */
+.ds-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-3);
+  padding: var(--ds-spacing-6);
+  border-top: var(--ds-border-width-thin) solid var(--ds-color-outline-variant);
+  background-color: var(--ds-color-bg-gray-light);
+  flex-shrink: 0;
+}
+
+.ds-modal__footer--actions {
+  display: flex;
+  gap: var(--ds-spacing-2);
+  margin-left: auto;
+}
+
+.ds-modal__footer--actions-left {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.ds-modal__footer--actions-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ========================================
+   Modal Animations
+   ======================================== */
+@keyframes ds-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ds-modal-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ========================================
+   Modal Sizes Responsive
+   ======================================== */
+@media (max-width: 640px) {
+  .ds-modal {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: var(--ds-radius-2xl) var(--ds-radius-2xl) 0 0;
+    margin: 0;
+  }
+  
+  .ds-modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+}
+

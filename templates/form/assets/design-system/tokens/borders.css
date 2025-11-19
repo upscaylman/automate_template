@@ -1,0 +1,52 @@
+/**
+ * Design System - Tokens de Bordures
+ * Variables CSS pour les rayons de bordure et les bordures
+ */
+
+:root {
+  /* ========================================
+     Rayons de Bordure
+     ======================================== */
+  --ds-radius-none: 0;
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 12px;
+  --ds-radius-xl: 16px;
+  --ds-radius-2xl: 20px;
+  --ds-radius-3xl: 24px;
+  --ds-radius-full: 9999px;
+
+  /* ========================================
+     Rayons Sémantiques
+     ======================================== */
+  --ds-radius-button: var(--ds-radius-lg);
+  --ds-radius-card: var(--ds-radius-xl);
+  --ds-radius-input: var(--ds-radius-md);
+  --ds-radius-badge: var(--ds-radius-full);
+  --ds-radius-modal: var(--ds-radius-2xl);
+
+  /* ========================================
+     Épaisseurs de Bordure
+     ======================================== */
+  --ds-border-width-none: 0;
+  --ds-border-width-thin: 1px;
+  --ds-border-width-medium: 2px;
+  --ds-border-width-thick: 4px;
+
+  /* ========================================
+     Styles de Bordure
+     ======================================== */
+  --ds-border-style-solid: solid;
+  --ds-border-style-dashed: dashed;
+  --ds-border-style-dotted: dotted;
+
+  /* ========================================
+     Compatibilité avec l'ancien système
+     ======================================== */
+  --radius-sm: var(--ds-radius-lg);
+  --radius-md: var(--ds-radius-xl);
+  --radius-lg: var(--ds-radius-2xl);
+  --radius-xl: var(--ds-radius-3xl);
+  --radius-full: var(--ds-radius-full);
+}
+

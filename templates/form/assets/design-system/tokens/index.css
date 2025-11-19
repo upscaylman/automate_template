@@ -1,0 +1,13 @@
+/**
+ * Design System - Tokens Principaux
+ * Point d'entrée pour tous les tokens de design
+ */
+
+/* Import de tous les tokens */
+@import './colors.css';
+@import './spacing.css';
+@import './typography.css';
+@import './borders.css';
+@import './shadows.css';
+@import './transitions.css';
+

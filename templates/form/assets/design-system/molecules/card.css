@@ -1,0 +1,210 @@
+/**
+ * Design System - Molecule: Card
+ * Composant card réutilisable avec variations
+ */
+
+/* ========================================
+   Base Card
+   ======================================== */
+.ds-card {
+  /* Layout */
+  display: block;
+  position: relative;
+  
+  /* Appearance */
+  background-color: var(--ds-color-bg-white);
+  border-radius: var(--ds-radius-card);
+  box-shadow: var(--ds-shadow-1);
+  
+  /* Spacing */
+  padding: var(--ds-spacing-6);
+  
+  /* Transitions */
+  transition: var(--ds-transition-all);
+}
+
+/* ========================================
+   Card Variants
+   ======================================== */
+
+/* Elevated */
+.ds-card--elevated {
+  box-shadow: var(--ds-shadow-2);
+}
+
+.ds-card--elevated:hover {
+  box-shadow: var(--ds-shadow-3);
+  transform: translateY(-2px);
+}
+
+/* Outlined */
+.ds-card--outlined {
+  box-shadow: none;
+  border: var(--ds-border-width-thin) solid var(--ds-color-outline-variant);
+}
+
+.ds-card--outlined:hover {
+  border-color: var(--ds-color-outline);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Filled */
+.ds-card--filled {
+  background-color: var(--ds-color-surface-variant);
+  box-shadow: none;
+}
+
+/* Interactive */
+.ds-card--interactive {
+  cursor: pointer;
+}
+
+.ds-card--interactive:hover {
+  box-shadow: var(--ds-shadow-2);
+  transform: translateY(-2px);
+}
+
+.ds-card--interactive:active {
+  transform: translateY(0);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* ========================================
+   Card Header
+   ======================================== */
+.ds-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-4);
+  padding-bottom: var(--ds-spacing-4);
+  margin-bottom: var(--ds-spacing-4);
+  border-bottom: var(--ds-border-width-thin) solid var(--ds-color-outline-variant);
+}
+
+.ds-card__header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--ds-radius-full);
+  background: var(--ds-gradient-primary);
+  color: var(--ds-color-on-primary);
+  flex-shrink: 0;
+}
+
+.ds-card__header-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ds-card__header-title {
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-color-text-primary);
+  margin: 0;
+  margin-bottom: var(--ds-spacing-1);
+}
+
+.ds-card__header-subtitle {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-color-text-tertiary);
+  margin: 0;
+}
+
+/* ========================================
+   Card Body
+   ======================================== */
+.ds-card__body {
+  /* Contenu par défaut */
+}
+
+.ds-card__body + .ds-card__footer {
+  margin-top: var(--ds-spacing-6);
+}
+
+/* ========================================
+   Card Footer
+   ======================================== */
+.ds-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-4);
+  padding-top: var(--ds-spacing-4);
+  margin-top: var(--ds-spacing-4);
+  border-top: var(--ds-border-width-thin) solid var(--ds-color-outline-variant);
+}
+
+.ds-card__footer--actions {
+  display: flex;
+  gap: var(--ds-spacing-2);
+  margin-left: auto;
+}
+
+/* ========================================
+   Card Media
+   ======================================== */
+.ds-card__media {
+  width: 100%;
+  height: auto;
+  border-radius: var(--ds-radius-card) var(--ds-radius-card) 0 0;
+  margin: calc(var(--ds-spacing-6) * -1) calc(var(--ds-spacing-6) * -1) var(--ds-spacing-6);
+  object-fit: cover;
+}
+
+.ds-card__media--top {
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.ds-card__media--bottom {
+  margin-top: var(--ds-spacing-6);
+  margin-bottom: calc(var(--ds-spacing-6) * -1);
+  border-radius: 0 0 var(--ds-radius-card) var(--ds-radius-card);
+}
+
+/* ========================================
+   Card Sizes
+   ======================================== */
+.ds-card--compact {
+  padding: var(--ds-spacing-4);
+}
+
+.ds-card--comfortable {
+  padding: var(--ds-spacing-8);
+}
+
+/* ========================================
+   Compatibilité avec l'ancien système
+   ======================================== */
+.md3-card {
+  display: block;
+  position: relative;
+  background-color: var(--ds-color-bg-white);
+  border-radius: var(--ds-radius-card);
+  box-shadow: var(--ds-shadow-2);
+  padding: var(--ds-spacing-6);
+  transition: var(--ds-transition-all);
+}
+
+.md3-card:hover {
+  box-shadow: var(--ds-shadow-3);
+  transform: translateY(-2px);
+}
+
+.section-card {
+  display: block;
+  position: relative;
+  background-color: var(--ds-color-bg-white);
+  border-radius: var(--ds-radius-card);
+  box-shadow: none;
+  border: var(--ds-border-width-thin) solid var(--ds-color-outline-variant);
+  padding: var(--ds-spacing-6);
+  transition: var(--ds-transition-all);
+}
+
+.section-card:hover {
+  border-color: var(--ds-color-outline);
+  box-shadow: var(--ds-shadow-1);
+}
+

@@ -262,7 +262,6 @@ function initTemplatesGallery(config) {
     card.innerHTML = `
       <img src="${imagePath}" alt="${template.nom}" class="template-thumbnail">
       <h3 class="font-bold text-gray-800 mb-1">${template.nom}</h3>
-      <p class="text-xs text-gray-600">${template.description || 'Document professionnel'}</p>
     `;
 
     card.addEventListener('click', () => {
@@ -479,14 +478,38 @@ function openShareModal() {
         if (email && email.includes('@')) {
           // Créer le chip manuellement pour le modal de partage
           const chip = document.createElement('div');
-          chip.className = 'email-chip flex items-center gap-1.5 bg-[#E8DEF8] text-[#21005D] px-3 py-1.5 rounded-full text-sm font-medium elevation-1';
+          chip.className = 'email-chip flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium elevation-1';
+          chip.style.backgroundColor = '#eb2f06';
+          chip.style.color = 'white';
           chip.innerHTML = `
             <span class="material-icons text-base">email</span>
             <span>${email}</span>
-            <button type="button" class="ml-1 text-[#0072ff] hover:text-[#21005D] transition-colors">
+            <button type="button" class="ml-1 text-white transition-colors">
               <span class="material-icons text-base">close</span>
             </button>
           `;
+          
+          // Hover effect
+          chip.addEventListener('mouseenter', () => {
+            chip.style.backgroundColor = '#f8c29154';
+            chip.style.color = '#363e45';
+            chip.querySelectorAll('span, button').forEach(el => {
+              if (el.classList.contains('material-icons') || el.tagName === 'SPAN') {
+                el.style.color = '#363e45';
+              }
+            });
+            chip.querySelector('button').style.color = '#363e45';
+          });
+          chip.addEventListener('mouseleave', () => {
+            chip.style.backgroundColor = '#eb2f06';
+            chip.style.color = 'white';
+            chip.querySelectorAll('span, button').forEach(el => {
+              if (el.classList.contains('material-icons') || el.tagName === 'SPAN') {
+                el.style.color = 'white';
+              }
+            });
+            chip.querySelector('button').style.color = 'white';
+          });
 
           chip.querySelector('button').addEventListener('click', () => {
             chip.remove();
@@ -520,14 +543,38 @@ function initShareModal() {
   // Créer un chip d'email pour le modal de partage
   function createShareChip(email) {
     const chip = document.createElement('div');
-    chip.className = 'email-chip flex items-center gap-1.5 bg-[#E8DEF8] text-[#21005D] px-3 py-1.5 rounded-full text-sm font-medium elevation-1';
+    chip.className = 'email-chip flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium elevation-1';
+    chip.style.backgroundColor = '#eb2f06';
+    chip.style.color = 'white';
     chip.innerHTML = `
       <span class="material-icons text-base">email</span>
       <span>${email}</span>
-      <button type="button" class="ml-1 text-[#0072ff] hover:text-[#21005D] transition-colors">
+      <button type="button" class="ml-1 text-white transition-colors">
         <span class="material-icons text-base">close</span>
       </button>
     `;
+    
+    // Hover effect
+    chip.addEventListener('mouseenter', () => {
+      chip.style.backgroundColor = '#f8c29154';
+      chip.style.color = '#363e45';
+      chip.querySelectorAll('span, button').forEach(el => {
+        if (el.classList.contains('material-icons') || el.tagName === 'SPAN') {
+          el.style.color = '#363e45';
+        }
+      });
+      chip.querySelector('button').style.color = '#363e45';
+    });
+    chip.addEventListener('mouseleave', () => {
+      chip.style.backgroundColor = '#eb2f06';
+      chip.style.color = 'white';
+      chip.querySelectorAll('span, button').forEach(el => {
+        if (el.classList.contains('material-icons') || el.tagName === 'SPAN') {
+          el.style.color = 'white';
+        }
+      });
+      chip.querySelector('button').style.color = 'white';
+    });
 
     chip.querySelector('button').addEventListener('click', () => {
       const index = shareEmails.indexOf(email);

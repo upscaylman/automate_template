@@ -158,7 +158,12 @@ export function showToast(message, type = TOAST_TYPES.INFO, options = {}) {
   // Message avec style MD3 Expressive
   const messageDiv = document.createElement('div');
   messageDiv.className = `flex-1 ${colors.text} font-medium`;
-  messageDiv.textContent = message;
+  // Permettre le HTML dans le message
+  if (options.html) {
+    messageDiv.innerHTML = message;
+  } else {
+    messageDiv.textContent = message;
+  }
   messageDiv.style.fontSize = '14px';
   messageDiv.style.lineHeight = '1.6';
   messageDiv.style.fontWeight = '500';

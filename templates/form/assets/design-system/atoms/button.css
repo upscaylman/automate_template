@@ -1,0 +1,662 @@
+/**
+ * Design System - Atom: Button
+ * Composant bouton réutilisable avec variations
+ */
+
+/* ========================================
+   Base Button
+   ======================================== */
+.ds-button {
+  /* Layout */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  
+  /* Typography */
+  font-family: var(--ds-font-family-primary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  letter-spacing: 0.1px;
+  text-transform: none;
+  line-height: var(--ds-line-height-normal);
+  
+  /* Spacing */
+  padding: var(--ds-spacing-3) var(--ds-spacing-6);
+  min-height: 44px; /* Accessibilité tactile */
+  
+  /* Appearance */
+  border: none;
+  border-radius: var(--ds-radius-button);
+  cursor: pointer;
+  
+  /* Transitions */
+  transition: var(--ds-transition-all);
+  
+  /* State */
+  position: relative;
+  overflow: hidden;
+}
+
+/* ========================================
+   Button Variants
+   ======================================== */
+
+/* Primary - Utilise le système de couleur primaire centralisé */
+.ds-button--primary {
+  background: var(--ds-gradient-primary);
+  color: var(--ds-color-on-primary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--primary:hover:not(:disabled) {
+  background-color: var(--ds-color-primary-hover);
+  box-shadow: var(--ds-shadow-primary);
+  transform: translateY(-1px);
+}
+
+.ds-button--primary:active:not(:disabled) {
+  background-color: var(--ds-color-primary-active);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--primary:focus-visible {
+  outline: 2px solid var(--ds-color-primary-focus);
+  outline-offset: 2px;
+}
+
+.ds-button--primary:disabled {
+  background-color: var(--ds-color-primary-disabled);
+  opacity: 0.6;
+}
+
+/* Primary Blue (variante) */
+.ds-button--primary-blue {
+  background: var(--ds-gradient-primary-blue);
+  color: var(--ds-color-on-primary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--primary-blue:hover:not(:disabled) {
+  box-shadow: var(--ds-shadow-primary-blue);
+  transform: translateY(-1px);
+}
+
+/* Primary Variant 1 - #6a89cc (claire) */
+.ds-button--primary-v1 {
+  background-color: var(--ds-color-primary-variant-1);
+  color: var(--ds-color-on-primary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--primary-v1:hover:not(:disabled) {
+  background-color: var(--ds-color-primary-variant-2);
+  box-shadow: var(--ds-shadow-primary);
+  transform: translateY(-1px);
+}
+
+.ds-button--primary-v1:active:not(:disabled) {
+  background-color: var(--ds-color-primary-500);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Primary Variant 2 - #4a69bd (moyenne) */
+.ds-button--primary-v2 {
+  background-color: var(--ds-color-primary-variant-2);
+  color: var(--ds-color-on-primary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--primary-v2:hover:not(:disabled) {
+  background-color: var(--ds-color-primary-500);
+  box-shadow: var(--ds-shadow-primary);
+  transform: translateY(-1px);
+}
+
+.ds-button--primary-v2:active:not(:disabled) {
+  background-color: var(--ds-color-primary-variant-3);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Primary Variant 3 - #0c2461 (foncée) */
+.ds-button--primary-v3 {
+  background-color: var(--ds-color-primary-variant-3);
+  color: var(--ds-color-on-primary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--primary-v3:hover:not(:disabled) {
+  background-color: var(--ds-color-primary-500);
+  box-shadow: var(--ds-shadow-primary);
+  transform: translateY(-1px);
+}
+
+.ds-button--primary-v3:active:not(:disabled) {
+  background-color: var(--ds-color-primary-700);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Secondary */
+.ds-button--secondary {
+  background-color: var(--ds-color-secondary-container);
+  color: var(--ds-color-on-secondary-container);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--secondary:hover:not(:disabled) {
+  background-color: var(--ds-color-secondary-container);
+  opacity: 0.9;
+  box-shadow: var(--ds-shadow-2);
+}
+
+/* Secondary Variant 1 - #f8c291 (claire) */
+.ds-button--secondary-v1 {
+  background-color: var(--ds-color-secondary-variant-1);
+  color: var(--ds-color-on-secondary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--secondary-v1:hover:not(:disabled) {
+  background-color: var(--ds-color-secondary-variant-2);
+  box-shadow: var(--ds-shadow-secondary);
+  transform: translateY(-1px);
+}
+
+.ds-button--secondary-v1:active:not(:disabled) {
+  background-color: var(--ds-color-secondary-500);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Secondary Variant 2 - #e55039 (moyenne) */
+.ds-button--secondary-v2 {
+  background-color: var(--ds-color-secondary-variant-2);
+  color: var(--ds-color-on-secondary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--secondary-v2:hover:not(:disabled) {
+  background-color: var(--ds-color-secondary-500);
+  box-shadow: var(--ds-shadow-secondary);
+  transform: translateY(-1px);
+}
+
+.ds-button--secondary-v2:active:not(:disabled) {
+  background-color: var(--ds-color-secondary-variant-3);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Secondary Variant 3 - #b71540 (foncée) */
+.ds-button--secondary-v3 {
+  background-color: var(--ds-color-secondary-variant-3);
+  color: var(--ds-color-on-secondary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--secondary-v3:hover:not(:disabled) {
+  background-color: var(--ds-color-secondary-500);
+  box-shadow: var(--ds-shadow-secondary);
+  transform: translateY(-1px);
+}
+
+.ds-button--secondary-v3:active:not(:disabled) {
+  background-color: var(--ds-color-secondary-700);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Outlined */
+.ds-button--outlined {
+  background-color: transparent;
+  color: var(--ds-color-primary);
+  border: var(--ds-border-width-medium) solid var(--ds-color-primary);
+}
+
+.ds-button--outlined:hover:not(:disabled) {
+  background-color: var(--ds-color-primary-container);
+  border-color: var(--ds-color-primary-light);
+}
+
+/* Text */
+.ds-button--text {
+  background-color: transparent;
+  color: var(--ds-color-primary);
+  box-shadow: none;
+}
+
+.ds-button--text:hover:not(:disabled) {
+  background-color: var(--ds-color-primary-container);
+}
+
+/* Ghost (sans fond, avec hover subtil) */
+.ds-button--ghost {
+  background-color: transparent;
+  color: var(--ds-color-text-secondary);
+}
+
+.ds-button--ghost:hover:not(:disabled) {
+  background-color: var(--ds-color-bg-gray-light);
+}
+
+/* Tertiary - Utilise le système de couleur tertiaire */
+.ds-button--tertiary {
+  background: var(--ds-gradient-tertiary);
+  color: var(--ds-color-on-tertiary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--tertiary:hover:not(:disabled) {
+  background-color: var(--ds-color-tertiary-hover);
+  box-shadow: var(--ds-shadow-tertiary);
+  transform: translateY(-1px);
+}
+
+.ds-button--tertiary:active:not(:disabled) {
+  background-color: var(--ds-color-tertiary-active);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--tertiary:focus-visible {
+  outline: 2px solid var(--ds-color-tertiary-focus);
+  outline-offset: 2px;
+}
+
+.ds-button--tertiary:disabled {
+  background-color: var(--ds-color-tertiary-disabled);
+  opacity: 0.6;
+}
+
+/* Tertiary Variant 1 - #fad390 (claire) */
+.ds-button--tertiary-v1 {
+  background-color: var(--ds-color-tertiary-variant-1);
+  color: var(--ds-color-on-tertiary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--tertiary-v1:hover:not(:disabled) {
+  background-color: var(--ds-color-tertiary-variant-2);
+  box-shadow: var(--ds-shadow-tertiary);
+  transform: translateY(-1px);
+}
+
+.ds-button--tertiary-v1:active:not(:disabled) {
+  background-color: var(--ds-color-tertiary-500);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Tertiary Variant 2 - #f6b93b (moyenne) */
+.ds-button--tertiary-v2 {
+  background-color: var(--ds-color-tertiary-variant-2);
+  color: var(--ds-color-on-tertiary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--tertiary-v2:hover:not(:disabled) {
+  background-color: var(--ds-color-tertiary-500);
+  box-shadow: var(--ds-shadow-tertiary);
+  transform: translateY(-1px);
+}
+
+.ds-button--tertiary-v2:active:not(:disabled) {
+  background-color: var(--ds-color-tertiary-variant-3);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Tertiary Variant 3 - #e58e26 (foncée) */
+.ds-button--tertiary-v3 {
+  background-color: var(--ds-color-tertiary-variant-3);
+  color: var(--ds-color-on-tertiary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--tertiary-v3:hover:not(:disabled) {
+  background-color: var(--ds-color-tertiary-500);
+  box-shadow: var(--ds-shadow-tertiary);
+  transform: translateY(-1px);
+}
+
+.ds-button--tertiary-v3:active:not(:disabled) {
+  background-color: var(--ds-color-tertiary-700);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Success */
+.ds-button--success {
+  background: var(--ds-gradient-success);
+  color: var(--ds-color-on-primary);
+  box-shadow: var(--ds-shadow-success);
+}
+
+.ds-button--success:hover:not(:disabled) {
+  box-shadow: var(--ds-shadow-success);
+  transform: translateY(-1px);
+}
+
+/* Quaternary - Utilise le système de couleur quatrième */
+.ds-button--quaternary {
+  background: var(--ds-gradient-quaternary);
+  color: var(--ds-color-on-quaternary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--quaternary:hover:not(:disabled) {
+  background-color: var(--ds-color-quaternary-hover);
+  box-shadow: var(--ds-shadow-quaternary);
+  transform: translateY(-1px);
+}
+
+.ds-button--quaternary:active:not(:disabled) {
+  background-color: var(--ds-color-quaternary-active);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--quaternary:focus-visible {
+  outline: 2px solid var(--ds-color-quaternary-focus);
+  outline-offset: 2px;
+}
+
+.ds-button--quaternary:disabled {
+  background-color: var(--ds-color-quaternary-disabled);
+  opacity: 0.6;
+}
+
+/* Quaternary Variant 1 - #82ccdd (claire) */
+.ds-button--quaternary-v1 {
+  background-color: var(--ds-color-quaternary-variant-1);
+  color: var(--ds-color-on-quaternary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--quaternary-v1:hover:not(:disabled) {
+  background-color: var(--ds-color-quaternary-variant-2);
+  box-shadow: var(--ds-shadow-quaternary);
+  transform: translateY(-1px);
+}
+
+.ds-button--quaternary-v1:active:not(:disabled) {
+  background-color: var(--ds-color-quaternary-500);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Quaternary Variant 2 - #60a3bc (moyenne) */
+.ds-button--quaternary-v2 {
+  background-color: var(--ds-color-quaternary-variant-2);
+  color: var(--ds-color-on-quaternary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--quaternary-v2:hover:not(:disabled) {
+  background-color: var(--ds-color-quaternary-500);
+  box-shadow: var(--ds-shadow-quaternary);
+  transform: translateY(-1px);
+}
+
+.ds-button--quaternary-v2:active:not(:disabled) {
+  background-color: var(--ds-color-quaternary-variant-3);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Quaternary Variant 3 - #0a3d62 (foncée) */
+.ds-button--quaternary-v3 {
+  background-color: var(--ds-color-quaternary-variant-3);
+  color: var(--ds-color-on-quaternary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--quaternary-v3:hover:not(:disabled) {
+  background-color: var(--ds-color-quaternary-500);
+  box-shadow: var(--ds-shadow-quaternary);
+  transform: translateY(-1px);
+}
+
+.ds-button--quaternary-v3:active:not(:disabled) {
+  background-color: var(--ds-color-quaternary-700);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Quinary - Utilise le système de couleur cinquième */
+.ds-button--quinary {
+  background: var(--ds-gradient-quinary);
+  color: var(--ds-color-on-quinary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--quinary:hover:not(:disabled) {
+  background-color: var(--ds-color-quinary-hover);
+  box-shadow: var(--ds-shadow-quinary);
+  transform: translateY(-1px);
+}
+
+.ds-button--quinary:active:not(:disabled) {
+  background-color: var(--ds-color-quinary-active);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--quinary:focus-visible {
+  outline: 2px solid var(--ds-color-quinary-focus);
+  outline-offset: 2px;
+}
+
+.ds-button--quinary:disabled {
+  background-color: var(--ds-color-quinary-disabled);
+  opacity: 0.6;
+}
+
+/* Quinary Variant 1 - #b8e994 (claire) */
+.ds-button--quinary-v1 {
+  background-color: var(--ds-color-quinary-variant-1);
+  color: var(--ds-color-on-quinary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--quinary-v1:hover:not(:disabled) {
+  background-color: var(--ds-color-quinary-variant-2);
+  box-shadow: var(--ds-shadow-quinary);
+  transform: translateY(-1px);
+}
+
+.ds-button--quinary-v1:active:not(:disabled) {
+  background-color: var(--ds-color-quinary-500);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Quinary Variant 2 - #78e08f (moyenne) */
+.ds-button--quinary-v2 {
+  background-color: var(--ds-color-quinary-variant-2);
+  color: var(--ds-color-on-quinary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--quinary-v2:hover:not(:disabled) {
+  background-color: var(--ds-color-quinary-500);
+  box-shadow: var(--ds-shadow-quinary);
+  transform: translateY(-1px);
+}
+
+.ds-button--quinary-v2:active:not(:disabled) {
+  background-color: var(--ds-color-quinary-variant-3);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Quinary Variant 3 - #079992 (foncée) */
+.ds-button--quinary-v3 {
+  background-color: var(--ds-color-quinary-variant-3);
+  color: var(--ds-color-on-quinary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.ds-button--quinary-v3:hover:not(:disabled) {
+  background-color: var(--ds-color-quinary-500);
+  box-shadow: var(--ds-shadow-quinary);
+  transform: translateY(-1px);
+}
+
+.ds-button--quinary-v3:active:not(:disabled) {
+  background-color: var(--ds-color-quinary-700);
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+/* Error */
+.ds-button--error {
+  background-color: var(--ds-color-error);
+  color: var(--ds-color-on-primary);
+  box-shadow: var(--ds-shadow-error);
+}
+
+.ds-button--error:hover:not(:disabled) {
+  background-color: var(--ds-color-error-light);
+  box-shadow: var(--ds-shadow-error);
+}
+
+/* ========================================
+   Button Sizes
+   ======================================== */
+.ds-button--small {
+  padding: var(--ds-spacing-2) var(--ds-spacing-4);
+  font-size: var(--ds-font-size-xs);
+  min-height: 36px;
+  gap: var(--ds-spacing-1);
+}
+
+.ds-button--medium {
+  padding: var(--ds-spacing-3) var(--ds-spacing-6);
+  font-size: var(--ds-font-size-sm);
+  min-height: 44px;
+}
+
+.ds-button--large {
+  padding: var(--ds-spacing-4) var(--ds-spacing-8);
+  font-size: var(--ds-font-size-base);
+  min-height: 52px;
+  gap: var(--ds-spacing-3);
+}
+
+/* ========================================
+   Button States
+   ======================================== */
+.ds-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.ds-button:focus-visible {
+  outline: 2px solid var(--ds-color-primary);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Button with Icon
+   ======================================== */
+.ds-button .ds-button__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.ds-button--icon-only {
+  padding: var(--ds-spacing-3);
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.ds-button--icon-only .ds-button__icon {
+  margin: 0;
+}
+
+/* ========================================
+   State Layer (Material Design 3)
+   ======================================== */
+.ds-button--state-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: currentColor;
+  opacity: 0;
+  transition: opacity var(--ds-transition-fast);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.ds-button--state-layer:hover::before {
+  opacity: 0.08;
+}
+
+.ds-button--state-layer:focus::before {
+  opacity: 0.12;
+}
+
+.ds-button--state-layer:active::before {
+  opacity: 0.16;
+}
+
+/* ========================================
+   Press Effect
+   ======================================== */
+.ds-button--press-effect:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* ========================================
+   Compatibilité avec l'ancien système
+   ======================================== */
+.md3-button {
+  /* Hérite des styles de ds-button */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  font-family: var(--ds-font-family-primary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  letter-spacing: 0.1px;
+  text-transform: none;
+  line-height: var(--ds-line-height-normal);
+  padding: var(--ds-spacing-3) var(--ds-spacing-6);
+  min-height: 44px;
+  border: none;
+  border-radius: var(--ds-radius-button);
+  cursor: pointer;
+  transition: var(--ds-transition-all);
+  position: relative;
+  overflow: hidden;
+  background: var(--ds-gradient-primary);
+  color: var(--ds-color-on-primary);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.md3-button:hover:not(:disabled) {
+  box-shadow: var(--ds-shadow-2);
+  transform: translateY(-1px);
+}
+
+.md3-button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ds-shadow-1);
+}
+
+.md3-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+

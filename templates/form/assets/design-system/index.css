@@ -1,0 +1,14 @@
+/**
+ * Design System - Point d'entrée principal
+ * Importe tous les tokens et composants du Design System
+ */
+
+/* Import des tokens */
+@import './tokens/index.css';
+
+/* Import des atoms */
+@import './atoms/index.css';
+
+/* Import des molecules */
+@import './molecules/index.css';
+

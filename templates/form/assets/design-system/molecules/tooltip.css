@@ -1,0 +1,209 @@
+/**
+ * Design System - Molecule: Tooltip
+ * Composant tooltip réutilisable avec variations
+ */
+
+/* ========================================
+   Base Tooltip
+   ======================================== */
+.ds-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.ds-tooltip__trigger {
+  /* Élément déclencheur (bouton, lien, etc.) */
+  cursor: pointer;
+}
+
+/* ========================================
+   Tooltip Content
+   ======================================== */
+.ds-tooltip__content {
+  position: absolute;
+  z-index: 10000;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-normal);
+  line-height: var(--ds-line-height-normal);
+  color: var(--ds-color-on-primary);
+  background-color: rgba(31, 41, 55, 0.9);
+  backdrop-filter: blur(8px);
+  border-radius: var(--ds-radius-md);
+  box-shadow: var(--ds-shadow-2);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity var(--ds-transition-fast), transform var(--ds-transition-fast);
+}
+
+.ds-tooltip:hover .ds-tooltip__content,
+.ds-tooltip--visible .ds-tooltip__content {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+/* ========================================
+   Tooltip Positions
+   ======================================== */
+
+/* Top */
+.ds-tooltip__content--top {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px) scale(0.95);
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.ds-tooltip:hover .ds-tooltip__content--top,
+.ds-tooltip--visible .ds-tooltip__content--top {
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* Bottom */
+.ds-tooltip__content--bottom {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px) scale(0.95);
+  margin-top: var(--ds-spacing-2);
+}
+
+.ds-tooltip:hover .ds-tooltip__content--bottom,
+.ds-tooltip--visible .ds-tooltip__content--bottom {
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* Left */
+.ds-tooltip__content--left {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-8px) scale(0.95);
+  margin-right: var(--ds-spacing-2);
+}
+
+.ds-tooltip:hover .ds-tooltip__content--left,
+.ds-tooltip--visible .ds-tooltip__content--left {
+  transform: translateY(-50%) translateX(0) scale(1);
+}
+
+/* Right */
+.ds-tooltip__content--right {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(8px) scale(0.95);
+  margin-left: var(--ds-spacing-2);
+}
+
+.ds-tooltip:hover .ds-tooltip__content--right,
+.ds-tooltip--visible .ds-tooltip__content--right {
+  transform: translateY(-50%) translateX(0) scale(1);
+}
+
+/* ========================================
+   Tooltip Arrow
+   ======================================== */
+.ds-tooltip__content::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* Arrow Top */
+.ds-tooltip__content--top::before {
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0 6px;
+  border-color: rgba(31, 41, 55, 0.9) transparent transparent transparent;
+}
+
+/* Arrow Bottom */
+.ds-tooltip__content--bottom::before {
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 6px 6px 6px;
+  border-color: transparent transparent rgba(31, 41, 55, 0.9) transparent;
+}
+
+/* Arrow Left */
+.ds-tooltip__content--left::before {
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 6px;
+  border-color: transparent transparent transparent rgba(31, 41, 55, 0.9);
+}
+
+/* Arrow Right */
+.ds-tooltip__content--right::before {
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 6px 6px 0;
+  border-color: transparent rgba(31, 41, 55, 0.9) transparent transparent;
+}
+
+/* ========================================
+   Tooltip Variants
+   ======================================== */
+.ds-tooltip__content--light {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: var(--ds-color-text-primary);
+  box-shadow: var(--ds-shadow-2);
+}
+
+.ds-tooltip__content--light::before {
+  border-color: transparent transparent rgba(255, 255, 255, 0.95) transparent;
+}
+
+.ds-tooltip__content--light.ds-tooltip__content--top::before {
+  border-color: rgba(255, 255, 255, 0.95) transparent transparent transparent;
+}
+
+.ds-tooltip__content--primary {
+  background-color: var(--ds-color-primary);
+  color: var(--ds-color-on-primary);
+}
+
+.ds-tooltip__content--primary::before {
+  border-color: transparent transparent var(--ds-color-primary) transparent;
+}
+
+.ds-tooltip__content--primary.ds-tooltip__content--top::before {
+  border-color: var(--ds-color-primary) transparent transparent transparent;
+}
+
+/* ========================================
+   Tooltip Sizes
+   ======================================== */
+.ds-tooltip__content--small {
+  padding: var(--ds-spacing-1) var(--ds-spacing-2);
+  font-size: 10px;
+}
+
+.ds-tooltip__content--medium {
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-size: var(--ds-font-size-xs);
+}
+
+.ds-tooltip__content--large {
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  font-size: var(--ds-font-size-sm);
+  white-space: normal;
+  max-width: 200px;
+}
+
+/* ========================================
+   Tooltip with Multiline
+   ======================================== */
+.ds-tooltip__content--multiline {
+  white-space: normal;
+  max-width: 250px;
+  text-align: left;
+}
+
