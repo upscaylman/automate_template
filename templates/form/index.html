@@ -27,6 +27,17 @@
   <link rel="stylesheet" href="assets/design-system/index.consolidated.css?v=1.0.0">
   
   <style>
+    /* Viewport-based automatic scaling */
+    :root {
+      --base-scale: 1;
+    }
+    
+    html {
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+    
     body {
       margin: 0 !important;
       padding: 0 !important;
@@ -36,7 +47,10 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
+      width: 100vw;
       overflow: hidden;
+      transform-origin: top left;
+      transform: scale(var(--base-scale));
     }
     header {
       width: 100%;
@@ -57,17 +71,23 @@
       gap: 0;
       overflow: hidden;
       position: relative;
+      min-height: 0;
     }
     @media (max-width: 767px) {
       /* Le form-container prend toute la hauteur disponible sur mobile */
       .form-container {
-        height: calc(100vh - var(--header-height, 64px) - 60px); /* Hauteur viewport - header - volet collapsed */
-        min-height: calc(100vh - var(--header-height, 64px) - 60px);
+        flex: 1 1 auto;
+        min-height: 0;
+        padding-bottom: 0;
       }
     }
     @media (min-width: 768px) {
       .main-content {
         flex-direction: row;
+      }
+      .form-container {
+        padding: 2rem 3rem;
+        max-width: 100%;
       }
     }
     @media (max-width: 767px) {
@@ -79,13 +99,14 @@
       }
     }
     .form-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+      flex: 1 !important;
+      display: grid !important;
+      grid-template-rows: 1fr auto !important;
       width: 100%;
       min-width: 0;
+      min-height: 0 !important;
       position: relative;
-      overflow: hidden;
+      overflow: hidden !important;
     }
     @media (min-width: 768px) {
       .form-wrapper {
@@ -95,22 +116,21 @@
       }
     }
     .form-container {
-      flex: 1;
       overflow-y: auto;
+      overflow-x: hidden;
       padding: 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       width: 100%;
-      padding-bottom: 0;
       position: relative;
+      min-height: 0;
     }
     @media (max-width: 767px) {
       /* Le form-container prend toute la hauteur disponible sur mobile */
       .form-container {
-        height: calc(100vh - var(--header-height, 64px) - 60px); /* Hauteur viewport - header - volet collapsed */
-        min-height: calc(100vh - var(--header-height, 64px) - 60px);
-        padding-bottom: 2rem;
+        min-height: 0;
+        padding-bottom: 0;
       }
     }
     @media (min-width: 768px) {
@@ -121,12 +141,12 @@
     }
     @media (min-width: 1024px) {
       .form-container {
-        padding: 3rem 4rem;
+        padding: 2rem 3rem;
       }
     }
     @media (min-width: 1280px) {
       .form-container {
-        padding: 3rem 5rem;
+        padding: 2rem 4rem;
       }
     }
     .templates-sidebar {
@@ -458,6 +478,7 @@
       left: 0;
       right: 0;
       z-index: 1;
+      flex: 0 0 auto;
     }
     @media (max-width: 767px) {
       /* Masquer complètement le footer sur mobile */
@@ -890,8 +911,8 @@
 
     <!-- Footer principal -->
     <footer class="main-footer">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10" style="padding-top: 1rem;padding-bottom: 1rem;">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div class="text-center md:text-left w-full md:w-auto md:pl-0">
             <h3 class="text-lg font-bold text-white">DocEase by FO Metaux</h3>
             <p class="text-sm text-white" style="font-weight: 200;">Votre solution pour créer vos documents.</p>
@@ -904,50 +925,8 @@
             <a href="https://www.fo-metaux.fr/" class="text-sm text-white underline px-3" style="font-weight: 200;" target="_blank" rel="noopener noreferrer">fo-metaux.fr</a>
           </nav>
         </div>
-        <div class="divider-gradient mt-10 mb-8"></div>
-        <div class="flex flex-col items-center gap-4">
-          <div class="flex items-center gap-3">
-            <div class="relative inline-block">
-              <a href="https://www.facebook.com/federationfometaux" target="_blank" rel="noopener noreferrer" class="text-white min-h-[40px] min-w-[40px] p-2 rounded-full" aria-label="Facebook">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook h-5 w-5" aria-hidden="true">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                </svg>
-              </a>
-            </div>
-            <div class="relative inline-block">
-              <a href="https://x.com/fedefometaux" target="_blank" rel="noopener noreferrer" class="text-white min-h-[40px] min-w-[40px] p-2 rounded-full" aria-label="X">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter h-5 w-5" aria-hidden="true">
-                  <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                </svg>
-              </a>
-            </div>
-            <div class="relative inline-block">
-              <a href="https://www.linkedin.com/company/f%C3%A9d%C3%A9ration-fo-de-la-m%C3%A9tallurgie/" target="_blank" rel="noopener noreferrer" class="text-white min-h-[40px] min-w-[40px] p-2 rounded-full" aria-label="LinkedIn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin h-5 w-5" aria-hidden="true">
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                  <rect width="4" height="12" x="2" y="9"></rect>
-                  <circle cx="4" cy="4" r="2"></circle>
-                </svg>
-              </a>
-            </div>
-            <div class="relative inline-block">
-              <a href="https://www.youtube.com/user/fometauxtpe" target="_blank" rel="noopener noreferrer" class="text-white min-h-[40px] min-w-[40px] p-2 rounded-full" aria-label="YouTube">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-youtube h-5 w-5" aria-hidden="true">
-                  <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path>
-                  <path d="m10 15 5-3-5-3z"></path>
-                </svg>
-              </a>
-            </div>
-            <div class="relative inline-block">
-              <a href="https://www.instagram.com/fometallurgie/" target="_blank" rel="noopener noreferrer" class="text-white min-h-[40px] min-w-[40px] p-2 rounded-full" aria-label="Instagram">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram h-5 w-5" aria-hidden="true">
-                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-                </svg>
-              </a>
-            </div>
-          </div>
+         <div class="divider-gradient mt-10" style="margin-top: 1.5rem;"></div>
+        <div class="flex flex-col items-center gap-4 mt-10" style="position: relative;bottom: 6px; margin-top: 1.5rem;">
           <p class="text-xs text-white">Site réalisé par FO Métaux © <span id="currentYear">2025</span> FO Métaux. Tous droits réservés.<span class="ml-2 text-white">Version <span id="appVersion">1.2.0</span></span></p>
         </div>
       </div>
@@ -990,8 +969,8 @@
     // En développement local, utilisez le proxy sur localhost:3000
     // En production (Netlify), ces valeurs seront remplacées par les variables d'environnement
     window.ENV = {
-      WEBHOOK_URL: 'http://localhost:3000/webhook/7f72ac69-35b7-4771-a5c6-7acb18947254',
-      WEBHOOK_EMAIL_URL: 'http://localhost:3000/webhook/1ee6e745-fc31-4fd8-bc59-531bd4a69997'
+      WEBHOOK_URL: 'https://dee-wakeful-succulently.ngrok-free.dev/webhook/7f72ac69-35b7-4771-a5c6-7acb18947254',
+      WEBHOOK_EMAIL_URL: 'https://dee-wakeful-succulently.ngrok-free.dev/webhook/1ee6e745-fc31-4fd8-bc59-531bd4a69997'
     };
     
     // Configuration de la version de l'application
@@ -1019,7 +998,10 @@
       }
     });
   </script>
-  
+   
+  <!-- Script pour l'adaptation automatique au viewport (auto-scaling) -->
+  <script src="assets/js/viewport-scale.js"></script>
+
   <!-- Script pour le collapse des templates sur mobile -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
