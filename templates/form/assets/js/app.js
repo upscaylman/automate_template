@@ -539,7 +539,7 @@ FO METAUX`;
 /**
  * Ouvrir le modal de partage
  */
-function openShareModal() {
+export function openShareModal() {
   const modal = document.getElementById('shareModal');
   const messageTextarea = document.getElementById('shareEmailMessage');
   const emailInput = document.getElementById('shareEmailInput');
@@ -551,37 +551,55 @@ function openShareModal() {
       messageTextarea.value = generateDefaultEmailMessage();
     }
 
-    // Pré-remplir les emails depuis le champ caché (données de test)
+    // Pré-remplir les emails depuis le champ caché ou directement depuis le champ "Email Destinataire"
     const destinatairesInput = document.getElementById('destinataires');
-    if (destinatairesInput && destinatairesInput.value && emailContainer) {
-      const emails = destinatairesInput.value.split(',').map(e => e.trim()).filter(e => e);
-
-      // Vider les chips existants
+    const emailDestinataireField = document.getElementById('emailDestinataire');
+    
+    // Vider les chips existants
+    if (emailContainer) {
       const existingChips = emailContainer.querySelectorAll('.email-chip');
       existingChips.forEach(chip => chip.remove());
-
-      // Ajouter les emails comme chips dans le modal
+    }
+    
+    // Déterminer quelle adresse email utiliser
+    let emailToUse = null;
+    
+    // Priorité 1: Champ caché destinataires (si rempli)
+    if (destinatairesInput && destinatairesInput.value && destinatairesInput.value.trim()) {
+      emailToUse = destinatairesInput.value.trim();
+    }
+    // Priorité 2: Champ "Email Destinataire" directement
+    else if (emailDestinataireField && emailDestinataireField.value && emailDestinataireField.value.trim()) {
+      emailToUse = emailDestinataireField.value.trim();
+      // Mettre à jour le champ caché pour cohérence
+      if (destinatairesInput) {
+        destinatairesInput.value = emailToUse;
+      }
+    }
+    
+    // Ajouter l'email comme chip dans le modal
+    if (emailToUse && emailContainer) {
+      const emails = emailToUse.split(',').map(e => e.trim()).filter(e => e && e.includes('@'));
+      
       emails.forEach(email => {
-        if (email && email.includes('@')) {
-          // Créer le chip manuellement pour le modal de partage
-          const chip = document.createElement('div');
-          chip.className = 'email-chip share-email-chip flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium elevation-1';
-          chip.style.backgroundColor = '#e04142';
-          chip.style.color = 'white';
-          chip.innerHTML = `
-            <span class="material-icons text-base">email</span>
-            <span>${email}</span>
-            <button type="button" class="ml-1 text-white">
-              <span class="material-icons text-base">close</span>
-            </button>
-          `;
+        // Créer le chip manuellement pour le modal de partage
+        const chip = document.createElement('div');
+        chip.className = 'email-chip share-email-chip flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium elevation-1';
+        chip.style.backgroundColor = '#e04142';
+        chip.style.color = 'white';
+        chip.innerHTML = `
+          <span class="material-icons text-base">email</span>
+          <span>${email}</span>
+          <button type="button" class="ml-1 text-white">
+            <span class="material-icons text-base">close</span>
+          </button>
+        `;
 
-          chip.querySelector('button').addEventListener('click', () => {
-            chip.remove();
-          });
+        chip.querySelector('button').addEventListener('click', () => {
+          chip.remove();
+        });
 
-          emailContainer.insertBefore(chip, emailInput);
-        }
+        emailContainer.insertBefore(chip, emailInput);
       });
     }
 

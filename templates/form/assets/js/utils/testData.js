@@ -28,8 +28,7 @@ const TEST_DATA = {
   nomDelegue: ['Lefebvre', 'Girard', 'Rousseau', 'Leroy'],
   emailDelegue: ['lefebvre@example.com', 'girard@example.com', 'rousseau@example.com'],
   signatureExp: ['Bruno REYNES', 'Eric KELLER', 'Nathalie CAPART', 'Olivier LEFEBVRE'],
-  objet: ['Négociation accord temps de travail', 'Accord sur les salaires', 'Conditions de travail'],
-  emails: ['epheandrill@gmail.com', 'bouvier.jul@gmail.com']
+  objet: ['Négociation accord temps de travail', 'Accord sur les salaires', 'Conditions de travail']
 };
 
 /**
@@ -75,20 +74,45 @@ export function fillTestData() {
  */
 function fillFieldsWithTestData() {
   // Remplir tous les champs dynamiques
+  let emailDestinataireValue = null;
+  
   Object.keys(TEST_DATA).forEach(key => {
-    if (key === 'emails') return; // Géré séparément
-
     const field = getElement(`#${key}`);
     if (field) {
-      field.value = getRandomValue(TEST_DATA[key]);
+      const value = getRandomValue(TEST_DATA[key]);
+      field.value = value;
+      
+      // Sauvegarder la valeur de l'email destinataire pour l'utiliser après
+      if (key === 'emailDestinataire') {
+        emailDestinataireValue = value;
+      }
     }
   });
 
-  // Remplir le champ destinataires caché avec les emails de test
-  // (pour que le modal de partage puisse les utiliser)
+  // Remplir le champ destinataires caché avec l'email du champ "Email Destinataire"
+  // (pour que le modal de partage puisse l'utiliser)
+  // IMPORTANT: Toujours utiliser emailDestinataire, même pour le template "Lettre de désignation"
   const destinatairesInput = getElement(CONFIG.SELECTORS.destinatairesHidden);
-  if (destinatairesInput) {
-    destinatairesInput.value = TEST_DATA.emails.join(', ');
+  const emailDestinataireField = getElement('#emailDestinataire');
+  
+  // Utiliser la valeur sauvegardée ou celle du champ si disponible
+  let emailToUse = emailDestinataireValue || (emailDestinataireField ? emailDestinataireField.value : null);
+  
+  // Si le champ emailDestinataire n'a pas encore été rempli (délai de chargement des champs),
+  // attendre un peu et réessayer
+  if (!emailToUse && emailDestinataireField) {
+    setTimeout(() => {
+      const retryValue = emailDestinataireField.value;
+      if (retryValue && retryValue.trim() && destinatairesInput) {
+        destinatairesInput.value = retryValue.trim();
+      }
+    }, 200);
+  }
+  
+  if (destinatairesInput && emailToUse && emailToUse.trim()) {
+    // Utiliser l'email du champ "Email Destinataire" rempli par les données de test
+    // Ne JAMAIS utiliser emailDelegue pour le champ destinataires, même pour le template "designation"
+    destinatairesInput.value = emailToUse.trim();
   }
 
   // Afficher un message pour informer l'utilisateur

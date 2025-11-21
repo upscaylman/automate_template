@@ -123,7 +123,10 @@ export async function sendEmailWithWord(data, wordBase64, customMessage = null) 
     };
 
     // Ajouter le message personnalisé s'il existe
+    // S'assurer que les sauts de ligne sont correctement formatés
     if (customMessage) {
+      // Le message contient déjà de vrais sauts de ligne depuis le textarea
+      // On les garde tels quels, n8n devrait les traiter correctement
       payload.customEmailMessage = customMessage;
     }
 

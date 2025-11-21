@@ -472,6 +472,31 @@
       transform: scale(1.1);
       width: 2.5rem;
     }
+    /* Styles mobile pour la barre d'action principale */
+    @media (max-width: 767px) {
+      /* Masquer les boutons de flèches sur mobile */
+      #actionPrevBtn,
+      #actionNextBtn {
+        display: none !important;
+      }
+      /* Width réduite pour l'indicateur actif sur mobile */
+      .step-indicator-floating.active {
+        width: 1.25rem !important;
+      }
+      /* Cacher les labels de texte des pages sur mobile */
+      .tab-label-floating {
+        display: none !important;
+        max-width: 0 !important;
+        opacity: 0 !important;
+        margin-left: 0 !important;
+      }
+      .tab-button-floating.active .tab-label-floating {
+        display: none !important;
+        max-width: 0 !important;
+        opacity: 0 !important;
+        margin-left: 0 !important;
+      }
+    }
     /* Override Design System pour les boutons spécifiques */
     #clearAllDataBtn {
       color: #eb2f06 !important;
@@ -522,7 +547,59 @@
     }
     #headerDownloadBtn:disabled:hover {
       transform: none !important;
+    }
+    /* Styles mobile pour les boutons du header */
+    @media (max-width: 767px) {
+      /* Bouton Prévisualiser - background transparent, icône #a84383 */
+      #headerPreviewBtn {
+        background: transparent !important;
+        padding: 0.5rem !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+      }
+      #headerPreviewBtn .material-icons {
+        color: #a84383 !important;
+      }
+      #headerPreviewBtn:hover {
+        background: rgba(168, 67, 131, 0.1) !important;
+      }
+      /* Bouton Télécharger - background transparent, icône #dd60b0 */
+      #headerDownloadBtn {
+        background: transparent !important;
+        padding: 0.5rem !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+      }
+      #headerDownloadBtn .material-icons {
+        color: #dd60b0 !important;
+      }
+      #headerDownloadBtn:hover {
+        background: rgba(221, 96, 176, 0.1) !important;
+      }
+      /* Bouton Partager - background transparent, icône #a64182 */
+      #headerSendBtn {
+        background: transparent !important;
+        border: none !important;
+        padding: 0.5rem !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+      }
+      #headerSendBtn .material-icons {
+        color: #a64182 !important;
+      }
+      #headerSendBtn:hover {
+        background: rgba(166, 65, 130, 0.1) !important;
+      }
+    }
+    /* Chips d'email du modal de partage - pas de hover */
+    .share-email-chip {
       background-color: #e04142 !important;
+    }
+    .share-email-chip:hover {
+      background-color: #e04142 !important;
+    }
+    .share-email-chip button:hover {
+      color: white !important;
     }
     /* Placeholders et icônes des champs de formulaire */
     input::placeholder,

@@ -149,17 +149,33 @@ export function initPreviewButtons() {
 
   if (sendEmailBtn) {
     // Le bouton "Partager" ouvre maintenant le modal de partage
-    sendEmailBtn.addEventListener('click', () => {
+    sendEmailBtn.addEventListener('click', async () => {
       // Fermer le modal de prévisualisation
       const previewModal = getElement(CONFIG.SELECTORS.previewModal);
       if (previewModal) {
         previewModal.classList.add('hidden');
       }
 
-      // Ouvrir le modal de partage
-      const shareModal = document.getElementById('shareModal');
-      if (shareModal) {
-        shareModal.classList.remove('hidden');
+      // S'assurer que le champ destinataires est rempli avec l'email du champ "Email Destinataire"
+      const emailDestinataireField = document.getElementById('emailDestinataire');
+      const destinatairesInput = document.getElementById('destinataires');
+      
+      if (emailDestinataireField && emailDestinataireField.value && destinatairesInput) {
+        // Utiliser l'email du champ "Email Destinataire" pour remplir le champ caché
+        destinatairesInput.value = emailDestinataireField.value.trim();
+      }
+
+      // Ouvrir le modal de partage avec le message par défaut et l'email pré-rempli
+      // La fonction openShareModal est maintenant exportée depuis app.js
+      const { openShareModal } = await import('../app.js');
+      if (openShareModal) {
+        openShareModal();
+      } else {
+        // Fallback si la fonction n'est pas disponible
+        const shareModal = document.getElementById('shareModal');
+        if (shareModal) {
+          shareModal.classList.remove('hidden');
+        }
       }
     });
   }
