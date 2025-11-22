@@ -413,6 +413,7 @@
     .tab-button-floating.active {
       background: #ffecf8;
       color: #181a1c;
+      border-radius: 2rem;
     }
     .step-indicator-floating {
       background: #a9a9a9;
@@ -450,6 +451,53 @@
       color: #181a1c !important;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
     }
+    /* Styles mobile pour les boutons d'action (Effacer tout, Données de test, Personnaliser) */
+    @media (max-width: 767px) {
+      .action-buttons-container {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.25rem !important;
+        width: auto;
+        min-width: 90px;
+        flex-shrink: 0;
+      }
+      .action-btn {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        padding: 0.375rem !important;
+        min-height: auto !important;
+        height: auto !important;
+        width: 100%;
+        justify-content: center;
+        box-shadow: none !important;
+      }
+      /* Couleur des icônes selon le bouton */
+      #customizeFieldsBtn .action-icon {
+        color: #3d5264 !important;
+        font-size: 24px !important;
+      }
+      #clearAllDataBtn .action-icon {
+        color: #eb2f06 !important;
+        font-size: 24px !important;
+      }
+      #fillTestDataFloating .action-icon {
+        color: #181a1c !important;
+        font-size: 24px !important;
+      }
+      .action-btn:hover {
+        background: transparent !important;
+        background-color: transparent !important;
+        transform: scale(1.1) !important;
+      }
+      .action-btn:active {
+        transform: scale(0.95) !important;
+      }
+      .action-btn:disabled .action-icon,
+      .action-btn[disabled] .action-icon {
+        opacity: 0.5 !important;
+      }
+    }
     #headerPreviewBtn:disabled,
     #headerDownloadBtn:disabled {
       opacity: 0.5 !important;
@@ -462,6 +510,52 @@
     #headerDownloadBtn:disabled:hover {
       transform: none !important;
       background-color: #e04142 !important;
+    }
+    /* Styles mobile pour les boutons du header */
+    @media (max-width: 767px) {
+      .header-actions {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.25rem !important;
+        width: auto;
+        min-width: 90px;
+        flex-shrink: 0;
+      }
+      .header-action-btn {
+        background: transparent !important;
+        background-color: transparent !important;
+        padding: 0.375rem !important;
+        min-height: auto !important;
+        min-width: auto !important;
+        width: 100%;
+        justify-content: center;
+        box-shadow: none !important;
+      }
+      /* Couleur des icônes selon le bouton */
+      #headerPreviewBtn .header-icon {
+        color: #4a69bd !important;
+        font-size: 24px !important;
+      }
+      #headerDownloadBtn .header-icon {
+        color: #e04142 !important;
+        font-size: 24px !important;
+      }
+      #headerSendBtn .header-icon {
+        color: #d557a6 !important;
+        font-size: 24px !important;
+      }
+      .header-action-btn:hover {
+        background: transparent !important;
+        background-color: transparent !important;
+        transform: scale(1.1) !important;
+      }
+      .header-action-btn:active {
+        transform: scale(0.95) !important;
+      }
+      .header-action-btn.disabled .header-icon,
+      .header-action-btn:disabled .header-icon {
+        opacity: 0.5 !important;
+      }
     }
     /* Placeholders et icônes des champs de formulaire */
     input::placeholder,
@@ -504,15 +598,6 @@
       height: 1px;
       background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
     }
-    @media (min-width: 768px) {
-      .main-footer .text-center.md\:text-left {
-        text-align: left !important;
-      }
-      .main-footer .text-center.md\:text-left h3,
-      .main-footer .text-center.md\:text-left p {
-        text-align: left !important;
-      }
-    }
     /* Alignement du début du carré du logo avec le début du container du formulaire */
     header .container {
       max-width: 1280px !important;
@@ -521,6 +606,15 @@
       padding-left: 2rem !important;
       padding-right: 2rem !important;
     }
+    @media (max-width: 767px) {
+      header .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      header .container > div {
+        gap: 0.5rem !important;
+      }
+    }
     /* Alignement du footer avec le container du formulaire */
     .main-footer .container {
       max-width: 1280px;
@@ -528,6 +622,7 @@
       margin-right: auto;
       padding-left: 1rem; /* même que form-container mobile */
       padding-right: 1rem;
+      margin-bottom: 1rem;
     }
     @media (min-width: 768px) {
       .main-footer .container {
@@ -545,6 +640,36 @@
       .main-footer .container {
         padding-left: 5rem; /* même que form-container xl: 3rem 5rem */
         padding-right: 5rem;
+        margin-bottom: 1rem;
+      }
+    }
+    /* Styles pour le stepper de navigation */
+    #formStepper {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+    }
+    .stepper-nav-btn,
+    .stepper-action-btn {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
+    }
+    .stepper-nav-btn:hover:not(:disabled),
+    .stepper-action-btn:hover:not(:disabled) {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+    .stepper-nav-btn:active:not(:disabled),
+    .stepper-action-btn:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+    @media (max-width: 767px) {
+      #formStepper {
+        margin-top: 1rem;
+        padding-top: 1rem;
+      }
+      .stepper-nav-btn,
+      .stepper-action-btn {
+        padding: 0.625rem 1rem !important;
+        font-size: 0.875rem !important;
       }
     }
   </style>
@@ -569,16 +694,16 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 header-actions">
           <!-- Bouton Prévisualiser -->
           <button 
             type="button" 
             id="headerPreviewBtn" 
             disabled 
-            class="flex items-center justify-center min-h-[44px] px-4 py-2 rounded-full text-sm font-medium text-white elevation-1 state-layer state-layer-blue disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 press-effect gap-2"
+            class="header-action-btn flex items-center justify-center min-h-[44px] px-4 py-2 rounded-full text-sm font-medium text-white elevation-1 state-layer state-layer-blue disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 press-effect gap-2"
             style="background: #4a69bd;"
           >
-            <span class="material-icons" style="font-size: 20px; line-height: 1;">visibility</span>
+            <span class="material-icons header-icon" style="font-size: 20px; line-height: 1;">visibility</span>
             <span class="hidden sm:inline">Prévisualiser</span>
           </button>
 
@@ -587,10 +712,10 @@
             type="button" 
             id="headerDownloadBtn" 
             disabled 
-            class="flex items-center justify-center min-h-[44px] px-4 py-2 rounded-full text-sm font-medium text-white elevation-1 state-layer state-layer-blue disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 press-effect gap-2"
+            class="header-action-btn flex items-center justify-center min-h-[44px] px-4 py-2 rounded-full text-sm font-medium text-white elevation-1 state-layer state-layer-blue disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 press-effect gap-2"
             style="background: #e04142;"
           >
-            <span class="material-icons" style="font-size: 20px; line-height: 1;">download</span>
+            <span class="material-icons header-icon" style="font-size: 20px; line-height: 1;">download</span>
             <span class="hidden md:inline">Télécharger</span>
           </button>
 
@@ -599,10 +724,10 @@
             type="button" 
             id="headerSendBtn" 
             disabled 
-            class="flex items-center justify-center min-h-[44px] px-4 py-2 rounded-full text-sm font-medium text-white elevation-1 state-layer state-layer-blue disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 press-effect gap-2"
+            class="header-action-btn flex items-center justify-center min-h-[44px] px-4 py-2 rounded-full text-sm font-medium text-white elevation-1 state-layer state-layer-blue disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 press-effect gap-2"
             style="background: #d557a6;"
           >
-            <span class="material-icons" style="font-size: 20px; line-height: 1;">share</span>
+            <span class="material-icons header-icon" style="font-size: 20px; line-height: 1;">share</span>
             <span class="hidden sm:inline">Partager</span>
           </button>
         </div>
@@ -654,17 +779,17 @@
           </div>
 
           <!-- Boutons d'action -->
-          <div class="flex items-center gap-2">
-            <button type="button" id="customizeFieldsBtn" class="md3-button px-3 md:px-4 py-1.5 md:py-2 elevation-1 flex items-center gap-1 md:gap-2 rounded-lg font-semibold transition-all text-xs md:text-sm whitespace-nowrap" style="display: none; background: #FFF; color: #3d5264 !important; border: 2px solid #3d5264; border-radius: 2rem; height: 3rem;">
-              <span class="material-icons text-base md:text-lg">build</span>
+          <div class="flex items-center gap-2 action-buttons-container">
+            <button type="button" id="customizeFieldsBtn" class="action-btn md3-button px-3 md:px-4 py-1.5 md:py-2 elevation-1 flex items-center gap-1 md:gap-2 rounded-lg font-semibold transition-all text-xs md:text-sm whitespace-nowrap" style="display: none; background: #FFF; color: #3d5264 !important; border: 2px solid #3d5264; border-radius: 2rem; height: 3rem;">
+              <span class="material-icons action-icon text-base md:text-lg">build</span>
               <span class="hidden sm:inline">Personnaliser</span>
             </button>
-            <button type="button" id="clearAllDataBtn" class="md3-button px-3 md:px-4 py-1.5 md:py-2 elevation-1 flex items-center gap-1 md:gap-2 rounded-lg font-semibold transition-all text-xs md:text-sm whitespace-nowrap">
-              <span class="material-icons text-base md:text-lg">delete_sweep</span>
+            <button type="button" id="clearAllDataBtn" class="action-btn md3-button px-3 md:px-4 py-1.5 md:py-2 elevation-1 flex items-center gap-1 md:gap-2 rounded-lg font-semibold transition-all text-xs md:text-sm whitespace-nowrap">
+              <span class="material-icons action-icon text-base md:text-lg">delete_sweep</span>
               <span class="hidden sm:inline">Effacer tout</span>
             </button>
-            <button type="button" id="fillTestDataFloating" class="md3-button px-3 md:px-4 py-1.5 md:py-2 elevation-1 flex items-center gap-1 md:gap-2 rounded-lg font-semibold transition-all text-xs md:text-sm whitespace-nowrap">
-              <span class="material-icons text-base md:text-lg">casino</span>
+            <button type="button" id="fillTestDataFloating" class="action-btn md3-button px-3 md:px-4 py-1.5 md:py-2 elevation-1 flex items-center gap-1 md:gap-2 rounded-lg font-semibold transition-all text-xs md:text-sm whitespace-nowrap">
+              <span class="material-icons action-icon text-base md:text-lg">casino</span>
               <span class="hidden sm:inline">Données de test</span>
             </button>
           </div>
@@ -768,6 +893,64 @@
     <button type="button" id="previewBtn" disabled style="display: none;"></button>
 
     <p id="message" class="text-center text-[#49454F] text-sm"></p>
+
+    <!-- Stepper de navigation en bas du formulaire -->
+    <div id="formStepper" class="w-full max-w-6xl mt-6 pt-6 border-t border-gray-200" style="display: none;">
+      <div class="flex items-center justify-between">
+        <!-- Bouton Précédent -->
+        <button 
+          type="button" 
+          id="stepperPrevBtn" 
+          class="stepper-nav-btn flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all hover:scale-105"
+          style="background: #f3f4f6; color: #181a1c;"
+        >
+          <span class="material-icons" style="font-size: 20px;">arrow_back</span>
+          <span class="hidden sm:inline">Précédent</span>
+        </button>
+
+        <!-- Indicateur de page -->
+        <div class="flex-1 flex items-center justify-center">
+          <span id="stepperPageIndicator" class="text-sm font-medium" style="color: #181a1c;">Page 1 sur 3</span>
+        </div>
+
+        <!-- Boutons de navigation (Suivant ou Actions finales) -->
+        <div id="stepperNextContainer" class="flex items-center gap-2">
+          <button 
+            type="button" 
+            id="stepperNextBtn" 
+            class="stepper-nav-btn flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium text-white transition-all hover:scale-105"
+            style="background: #4a69bd;"
+          >
+            <span class="hidden sm:inline">Suivant</span>
+            <span class="material-icons" style="font-size: 20px;">arrow_forward</span>
+          </button>
+        </div>
+
+        <!-- Boutons d'action finale (affichés uniquement sur la dernière page) -->
+        <div id="stepperActionsContainer" class="flex items-center gap-2" style="display: none;">
+          <button 
+            type="button" 
+            id="stepperPreviewBtn" 
+            disabled
+            class="stepper-action-btn flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium text-white transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            style="background: #4a69bd;"
+          >
+            <span class="material-icons" style="font-size: 20px;">visibility</span>
+            <span class="hidden sm:inline">Prévisualiser</span>
+          </button>
+          <button 
+            type="button" 
+            id="stepperDownloadBtn" 
+            disabled
+            class="stepper-action-btn flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium text-white transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            style="background: #e04142;"
+          >
+            <span class="material-icons" style="font-size: 20px;">download</span>
+            <span class="hidden sm:inline">Télécharger</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </form>
 
   <!-- Modal de prévisualisation -->
@@ -919,23 +1102,12 @@
 
     <!-- Footer principal -->
     <footer class="main-footer">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10" style="padding-top: 1rem;padding-bottom: 1rem;">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div class="text-center md:text-left w-full md:w-auto md:pl-0">
-            <h3 class="text-lg font-bold text-white">DocEase by FO Metaux</h3>
-            <p class="text-sm text-white" style="font-weight: 200;">Votre solution pour créer vos documents.</p>
-          </div>
-          <nav class="flex flex-row flex-wrap justify-center md:justify-end items-center gap-x-8 gap-y-3 w-full md:w-auto">
-            <a href="https://www.fo-metaux.org/pages/organisation-fo-metaux" class="text-sm text-white underline px-3" style="font-weight: 200;" target="_blank" rel="noopener noreferrer">A propos de nous</a>
-            <a href="https://www.fo-metaux.fr/nous-contacter" class="text-sm text-white underline px-3" style="font-weight: 200;" target="_blank" rel="noopener noreferrer">Contact</a>
-            <a href="https://www.fo-metaux.org/mentions-legales" class="text-sm text-white underline px-3" style="font-weight: 200;" target="_blank" rel="noopener noreferrer">Mentions Légales</a>
-            <a href="https://www.fo-metaux.org/politique-de-confidentialite" class="text-sm text-white underline px-3" style="font-weight: 200;" target="_blank" rel="noopener noreferrer">Politique de confidentialité</a>
-            <a href="https://www.fo-metaux.fr/" class="text-sm text-white underline px-3" style="font-weight: 200;" target="_blank" rel="noopener noreferrer">fo-metaux.fr</a>
-          </nav>
-        </div>
-         <div class="divider-gradient mt-10" style="margin-top: 1.5rem;"></div>
-        <div class="flex flex-col items-center gap-4 mt-10" style="position: relative;bottom: 6px; margin-top: 1.3rem;">
-          <p class="text-xs text-white">Site réalisé par FO Métaux © <span id="currentYear">2025</span> FO Métaux. Tous droits réservés.<span class="ml-2 text-white">Version <span id="appVersion">1.2.0</span></span></p>
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
+        <!-- Divider -->
+        <div class="divider-gradient mb-4"></div>
+        <!-- Copyright centré -->
+        <div class="flex flex-col items-center">
+          <p class="text-xs text-white text-center">Site réalisé par FO Métaux © <span id="currentYear">2025</span> FO Métaux. Tous droits réservés. Version <span id="appVersion">1.2.0</span></p>
         </div>
       </div>
     </footer>

@@ -9,7 +9,7 @@ import { loadVariablesConfig } from './core/api.js';
 import { generateFields } from './components/fields.js';
 import { initEmailChips } from './components/emailChips.js';
 import { initModals } from './components/modal.js';
-import { initTabs, switchTab } from './components/tabs.js';
+import { initTabs, switchTab, nextTab, previousTab, updateStepper } from './components/tabs.js';
 import { initPreviewButtons } from './components/preview.js';
 import { checkRequiredFields, generateLocalPreview } from './utils/validation.js';
 import { initTestDataButton } from './utils/testData.js';
@@ -43,6 +43,7 @@ async function initApp() {
     initHeaderPreviewButton();
     initTemplatesGallery(config);
     initFloatingActionBar();
+    initStepper();
     initShareModal();
 
     // Restaurer le template sélectionné si on revient du builder
@@ -110,6 +111,9 @@ function initTemplateSelector() {
 
       // S'assurer que la première section est active
       switchTab('coordonnees');
+      
+      // Mettre à jour le stepper
+      updateStepper();
 
       // Générer les champs dynamiques
       generateFields(templateKey);
@@ -148,6 +152,10 @@ function initTemplateSelector() {
       if (tabsContainer) tabsContainer.style.display = 'none';
       if (destinatairesSection) destinatairesSection.style.display = 'none';
       if (previewBtnContainer) previewBtnContainer.style.display = 'none';
+
+      // Masquer le stepper
+      const formStepper = document.getElementById('formStepper');
+      if (formStepper) formStepper.style.display = 'none';
 
       // Vider les conteneurs de champs
       const coordonneesFields = getElement(CONFIG.SELECTORS.coordonneesFields);
@@ -465,6 +473,68 @@ function initFloatingActionBar() {
       }
     });
   }
+}
+
+/**
+ * Initialiser le stepper de navigation
+ */
+function initStepper() {
+  // Bouton précédent
+  const prevBtn = document.getElementById('stepperPrevBtn');
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      previousTab();
+    });
+  }
+
+  // Bouton suivant
+  const nextBtn = document.getElementById('stepperNextBtn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      nextTab();
+    });
+  }
+
+  // Boutons d'action finale (prévisualisation et téléchargement)
+  const previewBtn = document.getElementById('stepperPreviewBtn');
+  const downloadBtn = document.getElementById('stepperDownloadBtn');
+  const headerPreviewBtn = document.getElementById('headerPreviewBtn');
+  const headerDownloadBtn = document.getElementById('headerDownloadBtn');
+
+  if (previewBtn && headerPreviewBtn) {
+    previewBtn.addEventListener('click', () => {
+      headerPreviewBtn.click();
+    });
+  }
+
+  if (downloadBtn && headerDownloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+      headerDownloadBtn.click();
+    });
+  }
+
+  // Synchroniser l'état des boutons du stepper avec ceux du header
+  function syncStepperButtons() {
+    if (previewBtn && headerPreviewBtn) {
+      previewBtn.disabled = headerPreviewBtn.disabled;
+    }
+    if (downloadBtn && headerDownloadBtn) {
+      downloadBtn.disabled = headerDownloadBtn.disabled;
+    }
+  }
+
+  // Observer les changements d'état des boutons du header
+  if (headerPreviewBtn && headerDownloadBtn) {
+    const observer = new MutationObserver(() => {
+      syncStepperButtons();
+    });
+    observer.observe(headerPreviewBtn, { attributes: true, attributeFilter: ['disabled'] });
+    observer.observe(headerDownloadBtn, { attributes: true, attributeFilter: ['disabled'] });
+    syncStepperButtons();
+  }
+
+  // Mettre à jour le stepper initialement
+  updateStepper();
 }
 
 /**

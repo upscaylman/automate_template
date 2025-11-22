@@ -85,6 +85,9 @@ export function switchTab(tabName) {
   
   // Mettre à jour les indicateurs d'étapes complétées
   updateStepIndicators();
+  
+  // Mettre à jour le stepper
+  updateStepper();
 }
 
 /**
@@ -158,6 +161,58 @@ export function isCurrentTabValid() {
   });
   
   return allFilled;
+}
+
+/**
+ * Mettre à jour le stepper de navigation
+ */
+export function updateStepper() {
+  const currentTab = getActiveTab();
+  const currentIndex = TABS.indexOf(currentTab);
+  const totalPages = TABS.length;
+  const isFirstPage = currentIndex === 0;
+  const isLastPage = currentIndex === totalPages - 1;
+  
+  // Mettre à jour l'indicateur de page
+  const pageIndicator = document.getElementById('stepperPageIndicator');
+  if (pageIndicator) {
+    pageIndicator.textContent = `Page ${currentIndex + 1} sur ${totalPages}`;
+  }
+  
+  // Mettre à jour le bouton précédent (masquer sur la première page mais garder l'espace)
+  const prevBtn = document.getElementById('stepperPrevBtn');
+  if (prevBtn) {
+    if (isFirstPage) {
+      prevBtn.style.visibility = 'hidden';
+    } else {
+      prevBtn.style.visibility = 'visible';
+    }
+  }
+  
+  // Afficher/masquer les boutons de navigation et d'action
+  const nextContainer = document.getElementById('stepperNextContainer');
+  const actionsContainer = document.getElementById('stepperActionsContainer');
+  
+  if (isLastPage) {
+    // Dernière page : afficher les boutons d'action
+    if (nextContainer) nextContainer.style.display = 'none';
+    if (actionsContainer) actionsContainer.style.display = 'flex';
+  } else {
+    // Autres pages : afficher le bouton suivant
+    if (nextContainer) nextContainer.style.display = 'flex';
+    if (actionsContainer) actionsContainer.style.display = 'none';
+  }
+  
+  // Afficher le stepper si le formulaire est visible
+  const formStepper = document.getElementById('formStepper');
+  const tabsContainer = document.getElementById('tabsContainer');
+  if (formStepper) {
+    if (tabsContainer && tabsContainer.style.display !== 'none') {
+      formStepper.style.display = 'block';
+    } else {
+      formStepper.style.display = 'none';
+    }
+  }
 }
 
 /**
