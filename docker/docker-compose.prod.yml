@@ -75,6 +75,11 @@ services:
       # Configuration CORS
       - N8N_CORS_ENABLED=${N8N_CORS_ENABLED:-true}
       - N8N_CORS_ALLOW_ORIGIN=${N8N_CORS_ALLOW_ORIGIN:-*}
+
+      # Configuration CORS pour les webhooks
+      - WEBHOOK_CORS_ALLOWED_ORIGINS=${WEBHOOK_CORS_ALLOWED_ORIGINS:-https://fo-docease.netlify.app,https://*.ngrok-free.dev}
+      - WEBHOOK_CORS_ALLOWED_METHODS=GET,HEAD,POST,PUT,DELETE,OPTIONS
+      - WEBHOOK_CORS_ALLOWED_HEADERS=Content-Type,Authorization,ngrok-skip-browser-warning
       
       # Workflows et templates
       - N8N_USER_FOLDER=/data/n8n

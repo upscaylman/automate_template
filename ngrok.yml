@@ -1,0 +1,20 @@
+version: "2"
+authtoken: YOUR_NGROK_AUTH_TOKEN
+
+tunnels:
+  powershell:
+    proto: http
+    addr: 8080
+    inspect: true
+    # Configuration CORS pour ngrok
+    request_headers:
+      add:
+        - "Access-Control-Allow-Origin: *"
+        - "Access-Control-Allow-Methods: GET, POST, OPTIONS"
+        - "Access-Control-Allow-Headers: Content-Type, Authorization, ngrok-skip-browser-warning"
+    response_headers:
+      add:
+        - "Access-Control-Allow-Origin: *"
+        - "Access-Control-Allow-Methods: GET, POST, OPTIONS"
+        - "Access-Control-Allow-Headers: Content-Type, Authorization, ngrok-skip-browser-warning"
+

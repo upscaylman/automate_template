@@ -69,19 +69,11 @@ if ($ngrokProcess) {
     Start-Sleep -Seconds 2
 }
 
-# Démarrer ngrok en arrière-plan avec headers CORS
-Write-Host "Démarrage de ngrok sur le port $Port avec headers CORS..." -ForegroundColor Cyan
+# Démarrer ngrok
+Write-Host "Démarrage de ngrok sur le port $Port..." -ForegroundColor Cyan
 
-# Arguments ngrok avec headers CORS pour éviter les problèmes de preflight
-$ngrokArgs = @(
-    "http",
-    $Port,
-    "--response-header-add=Access-Control-Allow-Origin: *",
-    "--response-header-add=Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE",
-    "--response-header-add=Access-Control-Allow-Headers: Content-Type, Authorization, ngrok-skip-browser-warning"
-)
-
-$ngrokProcess = Start-Process -FilePath $NgrokPath -ArgumentList $ngrokArgs -PassThru -WindowStyle Normal
+# Lancer ngrok dans une nouvelle fenêtre visible
+$ngrokProcess = Start-Process -FilePath $NgrokPath -ArgumentList "http", $Port -PassThru
 
 if (-not $ngrokProcess) {
     Write-Host "Impossible de démarrer ngrok" -ForegroundColor Red

@@ -46,7 +46,11 @@ scripts/           → Utilitaires (start, stop, logs, backup)
 
 **Windows:**
 ```bash
-.\start.bat
+# Démarrer tous les services
+.\DEMARRER.bat
+
+# Arrêter tous les services
+.\ARRETER.bat
 ```
 
 **Linux/Mac:**
@@ -55,8 +59,11 @@ scripts/           → Utilitaires (start, stop, logs, backup)
 ```
 
 ### Accès
-- **Formulaire**: http://localhost:3000
 - **n8n Interface**: http://localhost:5678
+- **Formulaire**: http://localhost:8080
+- **PostgreSQL**: localhost:5432
+- **Ollama**: http://localhost:11434
+- **ngrok Interface**: http://localhost:4040
 
 ## 📝 Configuration
 

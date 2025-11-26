@@ -1,6 +1,18 @@
 @echo off
+
+REM Vérifier si on est déjà administrateur
+net session >nul 2>&1
+if %errorLevel% == 0 (
+    goto :admin
+) else (
+    echo Elevation en administrateur...
+    powershell -Command "Start-Process '%~f0' -Verb RunAs"
+    exit /b
+)
+
+:admin
 echo ========================================
-echo 🚀 DÉMARRAGE - MODE DÉVELOPPEMENT
+echo DEMARRAGE - MODE DEVELOPPEMENT
 echo ========================================
 echo.
 
@@ -51,25 +63,32 @@ if errorlevel 1 (
 REM Retour au répertoire racine
 cd /d "%~dp0"
 
-REM Démarrer ngrok automatiquement
-echo.
-echo 🌐 Démarrage du tunnel ngrok...
-powershell -ExecutionPolicy Bypass -File "%~dp0scripts\start-ngrok.ps1"
-if errorlevel 1 (
-    echo    ⚠️  Erreur lors du démarrage de ngrok, utilisation de localhost
-    echo    Vous pouvez démarrer ngrok manuellement avec: start-ngrok.bat
-)
-
 REM Démarrer le serveur de formulaire en arrière-plan
 echo.
 echo 🌐 Démarrage du serveur de formulaire...
 if exist "templates\form\serve-form.ps1" (
     start "Serveur Formulaire" powershell -ExecutionPolicy Bypass -NoExit -Command "cd '%~dp0templates\form'; .\serve-form.ps1"
-    timeout /t 2 /nobreak >nul
+    timeout /t 3 /nobreak >nul
     echo    ✅ Serveur de formulaire démarré
 ) else (
     echo ⚠️  Script serve-form.ps1 introuvable, serveur formulaire non démarré
 )
+
+REM Démarrer ngrok avec monitoring
+echo.
+echo 🌐 Démarrage du tunnel ngrok avec monitoring...
+start /B powershell -WindowStyle Hidden -Command "ngrok http 8080"
+timeout /t 5 /nobreak >nul
+start /MIN "Monitoring ngrok" powershell -ExecutionPolicy Bypass -File "%~dp0scripts\monitor-ngrok.ps1"
+echo    ✅ ngrok et monitoring démarrés
+
+REM Attendre un peu pour récupérer l'URL ngrok
+timeout /t 3 /nobreak >nul
+
+REM Essayer de récupérer l'URL ngrok
+echo.
+echo 🔍 Récupération de l'URL ngrok...
+powershell -Command "$response = Invoke-RestMethod -Uri 'http://localhost:4040/api/tunnels' -ErrorAction SilentlyContinue; if ($response.tunnels) { $url = $response.tunnels[0].public_url; Write-Host '   URL ngrok: ' -NoNewline; Write-Host $url -ForegroundColor Green } else { Write-Host '   Consultez http://localhost:4040 pour voir l URL' -ForegroundColor Yellow }"
 
 echo.
 echo ========================================
@@ -77,16 +96,20 @@ echo ✅ TOUT EST DÉMARRÉ !
 echo ========================================
 echo.
 echo 📋 Accès aux services:
-echo    - n8n Interface: http://localhost:5678
+echo    - n8n Interface:  http://localhost:5678
 echo    - Formulaire:     http://localhost:8080
 echo    - PostgreSQL:     localhost:5432
 echo    - Ollama:         http://localhost:11434
+echo    - ngrok Interface: http://localhost:4040
+echo.
+echo 🔔 Monitoring ngrok actif (fenêtre minimisée)
+echo    - Notifications Windows activées
+echo    - Pour configurer les emails: config\ngrok-monitor.json
 echo.
 echo 💡 Commandes utiles:
 echo    - Arrêter:        stop.bat
 echo    - Voir les logs:  cd docker ^&^& docker compose logs -f
 echo    - Redémarrer:     stop.bat puis start.bat
-echo    - Démarrer ngrok: start-ngrok.bat
 echo    - Arrêter ngrok:  stop-ngrok.bat
 echo.
 echo 📝 Mode: DÉVELOPPEMENT (docker-compose.yml)

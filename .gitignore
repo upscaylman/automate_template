@@ -33,6 +33,7 @@ desktop.ini
 tmp/
 temp/
 *.tmp
+archive/
 
 # Continue session files
 .continue/

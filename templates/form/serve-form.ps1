@@ -36,20 +36,29 @@ function Handle-Request {
     $Request = $Context.Request
     $Response = $Context.Response
     
-    Write-Host "[$([DateTime]::Now.ToString('HH:mm:ss'))] $($Request.HttpMethod) $($Request.Url.PathAndQuery)" -ForegroundColor Gray
-    
-    # Headers CORS
+    $Timestamp = [DateTime]::Now.ToString('HH:mm:ss')
+    $Method = $Request.HttpMethod
+    $Path = $Request.Url.PathAndQuery
+
+    Write-Host "[$Timestamp] $Method $Path" -ForegroundColor Gray
+
+    # CORS headers (AVANT tout traitement)
     $Response.Headers.Add("Access-Control-Allow-Origin", "*")
-    $Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-    $Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, ngrok-skip-browser-warning")
-    
-    # Gérer les requêtes OPTIONS (preflight)
-    if ($Request.HttpMethod -eq "OPTIONS") {
+    $Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
+    $Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, ngrok-skip-browser-warning, Authorization")
+    $Response.Headers.Add("Access-Control-Max-Age", "86400")
+
+    # OPTIONS (préflight CORS) - Réponse immédiate
+    if ($Method -eq "OPTIONS") {
         $Response.StatusCode = 204
+        $Response.ContentLength64 = 0
+        $Response.OutputStream.Flush()
         $Response.Close()
+        Write-Host "[$Timestamp] OPTIONS $Path - CORS Preflight OK" -ForegroundColor Green
         return
     }
-    
+
+    # Utiliser AbsolutePath pour le routage (sans query string)
     $Path = $Request.Url.AbsolutePath
 
     # Servir le fichier HTML
@@ -449,6 +458,30 @@ function Handle-Request {
 # Créer le listener HTTP
 $Listener = New-Object System.Net.HttpListener
 
+# Variable globale pour le nettoyage
+$global:ListenerToClean = $Listener
+$global:PortToClean = $Port
+
+# Gestionnaire d'arrêt propre (Ctrl+C, fermeture de fenêtre, etc.)
+$null = Register-EngineEvent -SourceIdentifier PowerShell.Exiting -Action {
+    Write-Host "`n[CLEANUP] Nettoyage des ressources..." -ForegroundColor Yellow
+
+    if ($global:ListenerToClean -and $global:ListenerToClean.IsListening) {
+        $global:ListenerToClean.Stop()
+        $global:ListenerToClean.Close()
+        Write-Host "[CLEANUP] Listener arrete" -ForegroundColor Yellow
+    }
+
+    # Supprimer les réservations HTTP.sys
+    try {
+        netsh http delete urlacl url="http://+:$($global:PortToClean)/" 2>&1 | Out-Null
+        Write-Host "[CLEANUP] Reservation HTTP.sys supprimee" -ForegroundColor Yellow
+    }
+    catch {
+        # Ignorer les erreurs
+    }
+}
+
 # Écouter sur toutes les interfaces pour permettre l'accès depuis Docker/n8n
 try {
     # Essayer d'écouter sur toutes les interfaces (nécessite admin ou urlacl)
@@ -497,9 +530,24 @@ catch {
     Write-Host "ERREUR: $_" -ForegroundColor Red
 }
 finally {
+    Write-Host "`nArret du serveur..." -ForegroundColor Yellow
+
     if ($Listener.IsListening) {
         $Listener.Stop()
+        $Listener.Close()
+        Write-Host "Listener arrete" -ForegroundColor Yellow
     }
-    Write-Host "Serveur arrete" -ForegroundColor Yellow
+
+    # Supprimer les réservations HTTP.sys pour libérer les ports
+    Write-Host "Nettoyage des reservations HTTP.sys..." -ForegroundColor Yellow
+    try {
+        netsh http delete urlacl url="http://+:$Port/" 2>&1 | Out-Null
+        Write-Host "Reservation HTTP.sys supprimee pour le port $Port" -ForegroundColor Green
+    }
+    catch {
+        # Ignorer les erreurs si la réservation n'existe pas
+    }
+
+    Write-Host "Serveur arrete proprement" -ForegroundColor Green
 }
 
