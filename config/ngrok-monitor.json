@@ -1,7 +1,7 @@
 {
   "email": {
     "enabled": true,
-    "to": "bouvier.jul@gmail.com",
+    "to": ["bouvier.jul@gmail.com", "aguillermin@fo-metaux.fr"],
     "smtp": {
       "server": "smtp.office365.com",
       "port": 587,

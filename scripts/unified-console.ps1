@@ -36,6 +36,11 @@ function Send-EmailAlert {
         $smtpPassword = $config.email.smtp.password
         $to = $config.email.to
 
+        # Convertir en tableau si c'est une seule adresse
+        if ($to -is [string]) {
+            $to = @($to)
+        }
+
         $securePassword = ConvertTo-SecureString $smtpPassword -AsPlainText -Force
         $credential = New-Object System.Management.Automation.PSCredential($smtpUser, $securePassword)
 
@@ -51,7 +56,8 @@ function Send-EmailAlert {
         }
 
         Send-MailMessage @mailParams
-        Write-Host "[$((Get-Date).ToString('HH:mm:ss'))][EMAIL] Email envoye a $to" -ForegroundColor Green
+        $recipients = $to -join ", "
+        Write-Host "[$((Get-Date).ToString('HH:mm:ss'))][EMAIL] Email envoye a $recipients" -ForegroundColor Green
     }
     catch {
         Write-Host "[$((Get-Date).ToString('HH:mm:ss'))][EMAIL] Erreur: $_" -ForegroundColor Red
