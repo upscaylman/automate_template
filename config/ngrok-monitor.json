@@ -1,12 +1,12 @@
 {
   "email": {
-    "enabled": false,
-    "to": "bouvier.julien@gmail.com",
+    "enabled": true,
+    "to": "bouvier.jul@gmail.com",
     "smtp": {
       "server": "smtp.office365.com",
       "port": 587,
       "user": "contact@fo-metaux.fr",
-      "password": "CTCFede19!"
+      "password": "CTCfede19!"
     }
   },
   "monitoring": {

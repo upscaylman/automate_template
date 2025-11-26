@@ -10,6 +10,87 @@ Write-Host ""
 
 $scriptRoot = Split-Path -Parent $PSScriptRoot
 
+# Charger la configuration
+$configPath = Join-Path $scriptRoot "config\ngrok-monitor.json"
+$config = $null
+if (Test-Path $configPath) {
+    $config = Get-Content $configPath -Raw | ConvertFrom-Json
+    Write-Host "Configuration chargee depuis $configPath" -ForegroundColor Gray
+}
+
+# Fonction pour envoyer un email
+function Send-EmailAlert {
+    param(
+        [string]$Subject,
+        [string]$Body
+    )
+
+    if (-not $config -or -not $config.email.enabled) {
+        return
+    }
+
+    try {
+        $smtpServer = $config.email.smtp.server
+        $smtpPort = $config.email.smtp.port
+        $smtpUser = $config.email.smtp.user
+        $smtpPassword = $config.email.smtp.password
+        $to = $config.email.to
+
+        $securePassword = ConvertTo-SecureString $smtpPassword -AsPlainText -Force
+        $credential = New-Object System.Management.Automation.PSCredential($smtpUser, $securePassword)
+
+        $mailParams = @{
+            From = $smtpUser
+            To = $to
+            Subject = $Subject
+            Body = $Body
+            SmtpServer = $smtpServer
+            Port = $smtpPort
+            UseSsl = $true
+            Credential = $credential
+        }
+
+        Send-MailMessage @mailParams
+        Write-Host "[$((Get-Date).ToString('HH:mm:ss'))][EMAIL] Email envoye a $to" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "[$((Get-Date).ToString('HH:mm:ss'))][EMAIL] Erreur: $_" -ForegroundColor Red
+    }
+}
+
+# Fonction pour envoyer une notification Windows
+function Send-WindowsNotification {
+    param(
+        [string]$Title,
+        [string]$Message,
+        [string]$Icon = "Info"
+    )
+
+    if (-not $config -or -not $config.notifications.windows) {
+        return
+    }
+
+    try {
+        # Remplacer les accents pour eviter les problemes d'encodage
+        $TitleClean = $Title -replace 'é','e' -replace 'è','e' -replace 'ê','e' -replace 'à','a' -replace 'ç','c'
+        $MessageClean = $Message -replace 'é','e' -replace 'è','e' -replace 'ê','e' -replace 'à','a' -replace 'ç','c' -replace 'ù','u'
+
+        Add-Type -AssemblyName System.Windows.Forms
+        $notification = New-Object System.Windows.Forms.NotifyIcon
+        $notification.Icon = [System.Drawing.SystemIcons]::Information
+        $notification.BalloonTipIcon = $Icon
+        $notification.BalloonTipTitle = $TitleClean
+        $notification.BalloonTipText = $MessageClean
+        $notification.Visible = $true
+        $notification.ShowBalloonTip(10000)
+        Start-Sleep -Seconds 2
+        $notification.Dispose()
+    }
+    catch {
+        Write-Host "[$((Get-Date).ToString('HH:mm:ss'))][NOTIF] Erreur: $_" -ForegroundColor Red
+    }
+}
+
 # Initialiser le system tray
 Write-Host "Initialisation system tray..." -ForegroundColor Gray
 $trayScript = Join-Path $PSScriptRoot "console-with-tray.ps1"
@@ -158,6 +239,25 @@ while ($true) {
             if (-not $wasOnline) {
                 Write-Log "ngrok CONNECTE: $($tunnel.public_url)" "Green" "NGROK"
                 $wasOnline = $true
+
+                # Envoyer notification Windows
+                Send-WindowsNotification -Title "DOCEASE - ngrok Connecte" -Message "Tunnel actif: $($tunnel.public_url)" -Icon "Info"
+
+                # Envoyer email
+                if ($config -and $config.notifications.email) {
+                    $emailBody = @"
+Le tunnel ngrok est maintenant actif !
+
+URL publique: $($tunnel.public_url)
+Region: $($tunnel.region)
+Protocole: $($tunnel.proto)
+Heure: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
+Serveur: $env:COMPUTERNAME
+
+Vous pouvez maintenant acceder au formulaire via cette URL.
+"@
+                    Send-EmailAlert -Subject "INFO: ngrok connecte sur $env:COMPUTERNAME" -Body $emailBody
+                }
             } else {
                 if ($checkCount % 10 -eq 0) {
                     Write-Log "ngrok OK - $connections connexions" "Gray" "NGROK"
@@ -169,6 +269,30 @@ while ($true) {
         if ($wasOnline) {
             Write-Log "ngrok DECONNECTE !" "Red" "NGROK"
             $wasOnline = $false
+
+            # Envoyer notification Windows
+            Send-WindowsNotification -Title "DOCEASE - ngrok Deconnecte" -Message "Le tunnel ngrok s'est arrete !" -Icon "Warning"
+
+            # Envoyer email d'alerte
+            if ($config -and $config.notifications.email) {
+                $emailBody = @"
+ALERTE: Le tunnel ngrok s'est arrete !
+
+Heure de deconnexion: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
+Serveur: $env:COMPUTERNAME
+
+Le formulaire DOCEASE n'est plus accessible publiquement.
+
+ACTIONS A EFFECTUER:
+1. Double-cliquez sur DEMARRER.bat pour relancer tous les services
+2. Entrez le mot de passe "joubert"
+3. Verifiez que Docker est lance (icone de bateau en bas a droite dans le systeme tray)
+4. Verifiez que ngrok se reconnecte (vous recevrez un email de confirmation)
+
+Si le probleme persiste, contactez l'administrateur systeme.
+"@
+                Send-EmailAlert -Subject "ALERTE: ngrok deconnecte sur $env:COMPUTERNAME" -Body $emailBody
+            }
         }
     }
     
