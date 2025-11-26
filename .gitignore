@@ -38,6 +38,9 @@ archive/
 # Continue session files
 .continue/
 
+# Augment AI files
+.augment/
+
 # Documentation temporaire et debug
 *_DYNAMIQUE.md
 CORRECTIONS_*.md
