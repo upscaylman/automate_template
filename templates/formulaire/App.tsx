@@ -647,7 +647,7 @@ const App: React.FC = () => {
                   </div>
 
                   {/* Divider - Desktop Only */}
-                  <div className="hidden md:block w-px h-10 bg-gradient-to-b from-transparent via-gray-200 to-transparent mx-2"></div>
+                  <div className="hidden md:block w-px h-10 bg-gradient-to-b from-transparent via-[#9da3af] to-transparent mx-2"></div>
 
                   {/* Actions Area */}
                   <div className="flex items-center justify-between w-full md:w-auto gap-3 md:gap-4 pl-1 md:pl-0">
