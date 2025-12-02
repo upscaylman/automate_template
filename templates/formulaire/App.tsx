@@ -41,6 +41,10 @@ const App: React.FC = () => {
   // Cache des documents générés par template (évite de régénérer si les données n'ont pas changé)
   const [documentCache, setDocumentCache] = useState<Record<string, { word: string; pdf: Blob; dataHash: string }>>({});
 
+  // État pour le swipe mobile
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
   // Toast hook
   const { toast, showSuccess, showError, hideToast } = useToast();
 
@@ -137,6 +141,38 @@ const App: React.FC = () => {
       .map(word => word.charAt(0).toUpperCase())
       .join('');
     return initials;
+  };
+
+  // Gestion du swipe mobile
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && !isLastStep) {
+      // Swipe gauche = page suivante (seulement si validation OK ou mode builder)
+      if (isCustomizing || isStepValid(currentStep.id as StepType)) {
+        handleStepChange(currentStepIdx + 1);
+      }
+    }
+
+    if (isRightSwipe && !isFirstStep) {
+      // Swipe droite = page précédente
+      handleStepChange(currentStepIdx - 1);
+    }
   };
 
   // Optimisation: mémoriser handleInputChange
@@ -541,10 +577,15 @@ const App: React.FC = () => {
 
             {/* Floating Navigation Bar - IMPROVED MD3 Expressive */}
             <div className="sticky top-6 z-30 mb-10 mx-auto max-w-6xl px-1">
-               <div className="bg-white/90 dark:bg-[#2f2f2f]/90 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-white/40 dark:border-white/10 p-2.5 flex flex-col md:flex-row items-center justify-between gap-3 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.18)] hover:scale-[1.005] ring-1 ring-black/5 dark:ring-white/5 transform-gpu will-change-transform">
+               <div className="bg-white/90 dark:bg-[#2f2f2f]/90 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-white/40 dark:border-white/10 p-2.5 flex flex-col md:flex-row items-center justify-between gap-3 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.18)] hover:scale-[1.005] ring-1 ring-black/5 dark:ring-white/5 transform-gpu will-change-transform overflow-hidden">
 
                   {/* Step Indicators */}
-                  <div className="flex items-center gap-2 w-full md:w-auto px-1 py-1">
+                  <div
+                    className="flex items-center gap-2 w-full md:w-auto px-1 py-1 overflow-x-auto scrollbar-thin"
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                  >
                     {STEPS.map((step, idx) => {
                       const isActive = currentStepIdx === idx;
                       const isCompleted = currentStepIdx > idx;
@@ -588,10 +629,10 @@ const App: React.FC = () => {
                   <div className="hidden md:block w-px h-10 bg-gradient-to-b from-transparent via-gray-200 to-transparent mx-2"></div>
 
                   {/* Actions Area */}
-                  <div className="flex items-center justify-between w-full md:w-auto gap-3 md:gap-4 pl-1 md:pl-0">
-                     
+                  <div className="flex items-center justify-between w-full md:w-auto gap-3 md:gap-4 pl-1 md:pl-0 overflow-x-auto">
+
                      {/* Utilities Group */}
-                     <div className="flex items-center gap-1 bg-gray-50/80 rounded-full p-1 border border-gray-100/50">
+                     <div className="flex items-center gap-1 bg-gray-50/80 rounded-full p-1 border border-gray-100/50 flex-shrink-0">
                        {/* Bouton Personnaliser (uniquement pour template custom) */}
                        {selectedTemplate === 'custom' && (
                          <button
@@ -626,14 +667,14 @@ const App: React.FC = () => {
                      </div>
 
                      {/* Navigation Group */}
-                     <div className="flex items-center gap-2">
-                       <button 
+                     <div className="flex items-center gap-2 flex-shrink-0">
+                       <button
                          onClick={() => handleStepChange(currentStepIdx - 1)}
                          disabled={isFirstStep}
                          className={`
-                           h-12 px-4 rounded-full flex items-center justify-center gap-2 transition-all duration-300
-                           ${isFirstStep 
-                             ? 'text-gray-300 cursor-not-allowed' 
+                           h-12 px-4 rounded-full flex items-center justify-center gap-2 transition-all duration-300 flex-shrink-0
+                           ${isFirstStep
+                             ? 'text-gray-300 cursor-not-allowed'
                              : 'text-[#1c1b1f] hover:bg-gray-100 active:scale-95 font-medium'}
                          `}
                        >
@@ -645,7 +686,7 @@ const App: React.FC = () => {
                          onClick={() => handleStepChange(currentStepIdx + 1)}
                          disabled={isLastStep || (!isCustomizing && !isStepValid(currentStep.id as StepType))}
                          className={`
-                           h-12 px-6 rounded-full flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:shadow-[#a84383]/30 transition-all duration-300
+                           h-12 px-6 rounded-full flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:shadow-[#a84383]/30 transition-all duration-300 flex-shrink-0
                            ${isLastStep || (!isCustomizing && !isStepValid(currentStep.id as StepType))
                              ? 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none'
                              : 'bg-[#a84383] text-white active:scale-95'}

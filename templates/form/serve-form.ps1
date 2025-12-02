@@ -291,6 +291,30 @@ function Handle-Request {
         }
     }
     # ============================================
+    # HEALTH CHECK (détection tunnel actif)
+    # ============================================
+    elseif ($Path -eq "/api/health") {
+        try {
+            $healthResponse = @{
+                status = "ok"
+                timestamp = [DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss")
+                service = "PowerShell Server"
+            } | ConvertTo-Json
+
+            $Buffer = [System.Text.Encoding]::UTF8.GetBytes($healthResponse)
+            $Response.ContentType = "application/json; charset=utf-8"
+            $Response.ContentLength64 = $Buffer.Length
+            $Response.StatusCode = 200
+            $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+
+            Write-Host "[HEALTH] Health check OK" -ForegroundColor Green
+        }
+        catch {
+            Write-Host "[ERROR] Health check failed: $_" -ForegroundColor Red
+            $Response.StatusCode = 500
+        }
+    }
+    # ============================================
     # CONVERSION PDF (route directe)
     # ============================================
     elseif ($Path -eq "/api/convert-pdf" -and $Request.HttpMethod -eq "POST") {
@@ -481,6 +505,7 @@ try {
 
     Write-Host ""
     Write-Host "Services disponibles:" -ForegroundColor Cyan
+    Write-Host "  - /api/health          -> Health check (detection tunnel)" -ForegroundColor White
     Write-Host "  - /api/convert-pdf     -> Conversion Word -> PDF" -ForegroundColor White
     Write-Host "  - /webhook/*           -> Proxy vers n8n ($N8nUrl)" -ForegroundColor White
     Write-Host ""

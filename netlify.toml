@@ -1,6 +1,6 @@
 [build]
   base = "templates/formulaire"
-  publish = "templates/formulaire/dist"
+  publish = "dist"
   command = "npm install && npm run build"
 
 # Redirections pour le SPA React
