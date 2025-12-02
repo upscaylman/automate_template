@@ -18,6 +18,7 @@ $ngrokCheck = Get-Command $NgrokPath -ErrorAction SilentlyContinue
 if (-not $ngrokCheck) {
     $programFilesX86Path = [Environment]::GetFolderPath('ProgramFilesX86')
     $commonPaths = @(
+        "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\Ngrok.Ngrok_Microsoft.Winget.Source_8wekyb3d8bbwe\ngrok.exe",
         "$env:LOCALAPPDATA\Microsoft\WindowsApps\ngrok.exe",
         "$env:ProgramFiles\ngrok\ngrok.exe",
         "$programFilesX86Path\ngrok\ngrok.exe",

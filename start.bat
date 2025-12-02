@@ -1,4 +1,13 @@
 @echo off
+
+REM Vérifier si le script est exécuté en tant qu'administrateur
+net session >nul 2>&1
+if %errorLevel% neq 0 (
+    echo Demande d'élévation des privilèges administrateur...
+    powershell -Command "Start-Process '%~f0' -Verb RunAs"
+    exit /b
+)
+
 echo ========================================
 echo 🚀 DÉMARRAGE - MODE DÉVELOPPEMENT
 echo ========================================
@@ -60,15 +69,22 @@ if errorlevel 1 (
     echo    Vous pouvez démarrer ngrok manuellement avec: start-ngrok.bat
 )
 
+REM Démarrer ngrok http 8080
+echo.
+echo 🌐 Démarrage de ngrok http 8080...
+start "🌐 ngrok http 8080" /min cmd /c "%~dp0scripts\start-ngrok-8080.bat"
+timeout /t 2 /nobreak >nul
+echo    ✅ ngrok http 8080 démarré
+
 REM Démarrer le serveur de formulaire en arrière-plan
 echo.
 echo 🌐 Démarrage du serveur de formulaire...
-if exist "templates\form\serve-form.ps1" (
-    start "Serveur Formulaire" powershell -ExecutionPolicy Bypass -NoExit -Command "cd '%~dp0templates\form'; .\serve-form.ps1"
+if exist "templates\form\serve-form-wrapper.ps1" (
+    start "Serveur Formulaire" powershell -ExecutionPolicy Bypass -NoExit -Command "cd '%~dp0templates\form'; .\serve-form-wrapper.ps1"
     timeout /t 2 /nobreak >nul
     echo    ✅ Serveur de formulaire démarré
 ) else (
-    echo ⚠️  Script serve-form.ps1 introuvable, serveur formulaire non démarré
+    echo ⚠️  Script serve-form-wrapper.ps1 introuvable, serveur formulaire non démarré
 )
 
 echo.
@@ -92,5 +108,5 @@ echo.
 echo 📝 Mode: DÉVELOPPEMENT (docker-compose.yml)
 echo    Pour la production: cd docker ^&^& docker compose -f docker-compose.prod.yml up -d
 echo.
-echo Appuyez sur une touche pour fermer cette fenêtre...
-pause >nul
+echo Fermeture automatique dans 3 secondes...
+timeout /t 3 /nobreak >nul
