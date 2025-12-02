@@ -566,7 +566,7 @@ const App: React.FC = () => {
                 <span className="material-icons text-[#e062b1] text-4xl">edit_document</span>
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-white drop-shadow-md">Génération de document</h1>
+                <h1 className="text-4xl font-bold text-white drop-shadow-md">Génération de documents</h1>
                 <p className="text-white/70 text-lg mt-1">
                    {selectedTemplate
                      ? `Modèle sélectionné : ${TEMPLATES.find(t => t.id === selectedTemplate)?.title}`
