@@ -101,6 +101,17 @@ body {
   scrollbar-width: none;  /* Firefox */
 }
 
+/* Hide scrollbar on mobile - only show when actually scrolling */
+@media (max-width: 768px) {
+  .scrollbar-mobile-hidden::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-mobile-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 /* Animations Helpers */
 @keyframes fadeIn {
   from { opacity: 0; }

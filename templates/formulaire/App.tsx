@@ -581,7 +581,7 @@ const App: React.FC = () => {
 
                   {/* Step Indicators */}
                   <div
-                    className="flex items-center gap-2 w-full md:w-auto px-1 py-1 overflow-x-auto scrollbar-thin"
+                    className="flex items-center gap-1 md:gap-2 w-full md:w-auto px-1 py-1 overflow-x-auto scrollbar-thin scrollbar-mobile-hidden"
                     onTouchStart={onTouchStart}
                     onTouchMove={onTouchMove}
                     onTouchEnd={onTouchEnd}
@@ -595,9 +595,9 @@ const App: React.FC = () => {
                           key={step.id}
                           onClick={() => handleStepChange(idx)}
                           className={`
-                            relative group flex items-center gap-3 px-2 py-2 rounded-full transition-all duration-500 ease-[cubic-bezier(0.2,0,0,1)] select-none
+                            relative group flex items-center gap-2 md:gap-3 px-2 py-2 rounded-full transition-all duration-500 ease-[cubic-bezier(0.2,0,0,1)] select-none
                             ${isActive
-                               ? 'bg-[#ffecf8] dark:bg-[#4a1a36] pr-6 flex-grow md:flex-grow-0 ring-1 ring-[#ffd8ec] dark:ring-[#a84383]'
+                               ? 'bg-[#ffecf8] dark:bg-[#4a1a36] pr-3 md:pr-6 flex-grow md:flex-grow-0 ring-1 ring-[#ffd8ec] dark:ring-[#a84383]'
                                : 'flex-shrink-0'}
                           `}
                         >
@@ -613,7 +613,7 @@ const App: React.FC = () => {
                            </div>
 
                            <div className={`flex flex-col items-start transition-all duration-500 overflow-hidden ${isActive ? 'w-auto opacity-100 translate-x-0' : 'w-0 opacity-0 -translate-x-4'}`}>
-                             <span className="font-bold text-sm text-[#2f2f2f] dark:text-white whitespace-nowrap leading-none mb-1">
+                             <span className="font-bold text-sm text-[#2f2f2f] dark:text-white leading-none mb-1 max-w-[80px] md:max-w-none truncate">
                                {step.label}
                              </span>
                              <span className="text-[10px] text-gray-500 dark:text-gray-300 font-medium whitespace-nowrap leading-none uppercase tracking-wide">
@@ -629,7 +629,7 @@ const App: React.FC = () => {
                   <div className="hidden md:block w-px h-10 bg-gradient-to-b from-transparent via-gray-200 to-transparent mx-2"></div>
 
                   {/* Actions Area */}
-                  <div className="flex items-center justify-between w-full md:w-auto gap-3 md:gap-4 pl-1 md:pl-0 overflow-x-auto">
+                  <div className="flex items-center justify-between w-full md:w-auto gap-3 md:gap-4 pl-1 md:pl-0">
 
                      {/* Utilities Group */}
                      <div className="flex items-center gap-1 bg-gray-50/80 rounded-full p-1 border border-gray-100/50 flex-shrink-0">
