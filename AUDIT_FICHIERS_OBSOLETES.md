@@ -27,9 +27,10 @@ Analyse complète des fichiers du projet pour identifier :
 - ✅ `.gitignore` - Exclusions Git
 
 ### Composants (`templates/formulaire/components/`)
+- ✅ `AITextarea.tsx` - Textarea avec IA Gemini
 - ✅ `Button.tsx` - Boutons réutilisables
 - ✅ `ErrorBoundary.tsx` - Gestion erreurs React
-- ✅ `Footer.tsx` - Pied de page
+- ✅ `Footer.tsx` - Pied de page avec health check
 - ✅ `FormStep.tsx` - Étapes du formulaire
 - ✅ `Header.tsx` - En-tête avec actions
 - ✅ `Input.tsx` - Champs de formulaire
@@ -63,50 +64,51 @@ Analyse complète des fichiers du projet pour identifier :
 
 ---
 
-## ❌ FICHIERS OBSOLÈTES (À SUPPRIMER)
+## ✅ FICHIERS OBSOLÈTES (SUPPRIMÉS LE 2025-12-02)
 
 ### Racine du projet
-- ❌ `temp_components.css` - Fichier temporaire
-- ❌ `temp_fields.js` - Fichier temporaire
-- ❌ `test.txt` - Fichier de test
-- ❌ `test_webhook_direct.ps1` - Doublon (existe dans archive/)
-- ❌ `test_workflow.ps1` - Doublon (existe dans archive/)
-- ❌ `workflow-check.json` - Doublon (existe dans archive/)
-- ❌ `workflow-current-check.json` - Doublon (existe dans archive/)
-- ❌ `modify_workflow.py` - Doublon (existe dans archive/)
+- ✅ ~~`temp_components.css`~~ - Fichier temporaire - **SUPPRIMÉ**
+- ✅ ~~`temp_fields.js`~~ - Fichier temporaire - **SUPPRIMÉ**
+- ✅ ~~`test.txt`~~ - Fichier de test - **SUPPRIMÉ**
+- ✅ ~~`test_webhook_direct.ps1`~~ - Doublon (existe dans archive/) - **SUPPRIMÉ**
+- ✅ ~~`test_workflow.ps1`~~ - Doublon (existe dans archive/) - **SUPPRIMÉ**
+- ✅ ~~`workflow-check.json`~~ - Doublon (existe dans archive/) - **SUPPRIMÉ**
+- ✅ ~~`workflow-current-check.json`~~ - Doublon (existe dans archive/) - **SUPPRIMÉ**
+- ✅ ~~`modify_workflow.py`~~ - Doublon (existe dans archive/) - **SUPPRIMÉ**
 
 ### Documentation obsolète (`templates/`)
-- ❌ `templates/DEPLOYMENT_CHECKLIST.md` - Créé pour l'audit, non utilisé
-- ❌ `templates/DEPLOYMENT_GUIDE.md` - Créé pour l'audit, non utilisé
-- ❌ `templates/MIGRATION_V2.md` - Créé pour l'audit, non utilisé
-- ❌ `templates/QUICK_START_V2.md` - Créé pour l'audit, non utilisé
-- ❌ `templates/README_V2.md` - Créé pour l'audit, non utilisé
+- ✅ ~~`templates/DEPLOYMENT_CHECKLIST.md`~~ - Créé pour l'audit, non utilisé - **SUPPRIMÉ**
+- ✅ ~~`templates/DEPLOYMENT_GUIDE.md`~~ - Créé pour l'audit, non utilisé - **SUPPRIMÉ**
+- ✅ ~~`templates/MIGRATION_V2.md`~~ - Créé pour l'audit, non utilisé - **SUPPRIMÉ**
+- ✅ ~~`templates/QUICK_START_V2.md`~~ - Créé pour l'audit, non utilisé - **SUPPRIMÉ**
+- ✅ ~~`templates/README_V2.md`~~ - Créé pour l'audit, non utilisé - **SUPPRIMÉ**
 
 ### Documentation obsolète (`templates/formulaire/`)
-- ❌ `templates/formulaire/PERFORMANCE.md` - Créé pour l'audit, non utilisé
-- ❌ `templates/formulaire/README.md` - Créé pour l'audit, non utilisé
+- ✅ ~~`templates/formulaire/PERFORMANCE.md`~~ - Créé pour l'audit, non utilisé - **SUPPRIMÉ**
+- ✅ ~~`templates/formulaire/README.md`~~ - Créé pour l'audit, non utilisé - **SUPPRIMÉ**
 
 ### Assets inutilisés (`templates/formulaire/public/assets/img/`)
-- ❌ `Capture d'écran 2025-11-13 120922.png` - Screenshot non utilisé
+- ✅ ~~`Capture d'écran 2025-11-13 120922.png`~~ - Screenshot non utilisé - **N'EXISTE PAS**
 
 ### Documentation racine obsolète
-- ❌ `CHANGELOG_V2_MIGRATION.md` - Créé pour l'audit, non utilisé
+- ✅ ~~`CHANGELOG_V2_MIGRATION.md`~~ - Créé pour l'audit, non utilisé - **SUPPRIMÉ**
 
 ---
 
 ## ⚠️ FICHIERS À CONSERVER (Infrastructure)
 
 ### Configuration projet
-- ⚠️ `netlify.toml` - Config Netlify (OBLIGATOIRE)
+- ⚠️ `netlify.toml` - Config Netlify (OBLIGATOIRE) - **MODIFIÉ** : publish = "dist"
 - ⚠️ `package.json` - Scripts de build racine
 - ⚠️ `README.md` - Documentation principale
 - ⚠️ `QUICK_START.md` - Guide démarrage rapide
+- ⚠️ `AUDIT_FICHIERS_OBSOLETES.md` - Ce fichier d'audit
 
 ### Version 1 (v1) - À CONSERVER
 - ⚠️ `templates/form/` - **TOUT LE DOSSIER** (v1 en production)
   - Contient la version classique HTML/JS
   - Utilisée en production sur `/`
-  - Le sous-dossier `v2/` est généré automatiquement par le build
+  - **IMPORTANT** : `serve-form.ps1` - Serveur PowerShell avec endpoint `/api/health`
 
 ### Configuration
 - ⚠️ `templates/config/` - Variables d'environnement
@@ -142,40 +144,33 @@ Analyse complète des fichiers du projet pour identifier :
 
 ## 📊 RÉSUMÉ
 
-| Catégorie | Nombre | Action |
-|-----------|--------|--------|
-| ✅ Fichiers v2 utilisés | ~40 | **Conserver** |
-| ❌ Fichiers obsolètes | 13 | **Supprimer** |
-| ⚠️ Infrastructure | ~100+ | **Conserver** |
+| Catégorie | Nombre | Action | Statut |
+|-----------|--------|--------|--------|
+| ✅ Fichiers v2 utilisés | ~42 | **Conserver** | ✅ Actifs |
+| ✅ Fichiers obsolètes | 16 | ~~Supprimer~~ | ✅ **SUPPRIMÉS** |
+| ⚠️ Infrastructure | ~100+ | **Conserver** | ✅ Actifs |
+
+### État du projet (2025-12-02)
+- ✅ **Build** : Fonctionne parfaitement (1.36s)
+- ✅ **TypeScript** : Aucune erreur détectée
+- ✅ **Diagnostics** : Tous les fichiers principaux validés
+- ✅ **Health Check** : Endpoint `/api/health` opérationnel
+- ✅ **Footer** : Détection de statut implémentée
+- ✅ **Mobile** : Optimisations appliquées (gap, troncature, scrollbar)
+- ✅ **Netlify** : Configuration corrigée (`publish = "dist"`)
+- ✅ **Git** : Derniers commits poussés (d8a916e, a87b5b9)
+- ✅ **Nettoyage** : 16 fichiers obsolètes supprimés
 
 ---
 
-## 🗑️ COMMANDES DE SUPPRESSION
+## ✅ SUPPRESSION EFFECTUÉE (2025-12-02)
 
-```powershell
-# Fichiers temporaires racine
-Remove-Item "temp_components.css" -Force
-Remove-Item "temp_fields.js" -Force
-Remove-Item "test.txt" -Force
-Remove-Item "test_webhook_direct.ps1" -Force
-Remove-Item "test_workflow.ps1" -Force
-Remove-Item "workflow-check.json" -Force
-Remove-Item "workflow-current-check.json" -Force
-Remove-Item "modify_workflow.py" -Force
+Tous les fichiers obsolètes ont été supprimés avec succès.
 
-# Documentation obsolète
-Remove-Item "CHANGELOG_V2_MIGRATION.md" -Force
-Remove-Item "templates/DEPLOYMENT_CHECKLIST.md" -Force
-Remove-Item "templates/DEPLOYMENT_GUIDE.md" -Force
-Remove-Item "templates/MIGRATION_V2.md" -Force
-Remove-Item "templates/QUICK_START_V2.md" -Force
-Remove-Item "templates/README_V2.md" -Force
-Remove-Item "templates/formulaire/PERFORMANCE.md" -Force
-Remove-Item "templates/formulaire/README.md" -Force
-
-# Asset inutilisé
-Remove-Item "templates/formulaire/public/assets/img/Capture d'écran 2025-11-13 120922.png" -Force
-```
+**Résultat** :
+- ✅ 16 fichiers supprimés
+- ✅ Build validé après suppression (1.36s)
+- ✅ Aucune erreur détectée
 
 ---
 
@@ -186,4 +181,48 @@ Après suppression, vérifier que :
 2. ✅ La v2 se lance en dev : `cd templates/formulaire && npm run dev`
 3. ✅ La v1 fonctionne toujours
 4. ✅ Le déploiement Netlify passe
+5. ✅ Le Footer affiche le statut du serveur (rond vert/jaune/rouge)
+6. ✅ L'endpoint `/api/health` répond correctement
+
+---
+
+## 📝 MODIFICATIONS RÉCENTES (2025-12-02)
+
+### Fonctionnalités ajoutées
+1. **Health Check Endpoint** (`templates/form/serve-form.ps1`)
+   - Endpoint `/api/health` pour détecter si le tunnel ngrok est actif
+   - Répond avec `{"status": "ok", "timestamp": "...", "service": "PowerShell Server"}`
+
+2. **Footer avec détection de statut** (`templates/formulaire/components/Footer.tsx`)
+   - Vérification asynchrone du statut du serveur toutes les 30 secondes
+   - Indicateurs visuels : ⚪ gris (init), 🟡 jaune (checking), 🟢 vert (online), 🔴 rouge (offline)
+   - Timeout de 5 secondes pour éviter les blocages
+
+3. **Optimisations mobile** (`templates/formulaire/App.tsx`)
+   - Gap réduit entre boutons d'étape : `gap-1 md:gap-2`
+   - Capsule rose plus compacte : `pr-3 md:pr-6`
+   - Texte tronqué avec ellipsis : `max-w-[80px] truncate`
+   - Conteneur avec `overflow-hidden` pour éviter débordement
+
+4. **Scrollbar mobile masquée** (`templates/formulaire/styles.css`)
+   - Nouvelle classe `.scrollbar-mobile-hidden`
+   - Masque la scrollbar sur mobile (< 768px) quand pas de débordement
+   - Scroll tactile reste fonctionnel
+
+5. **Fix Netlify deploy path** (`netlify.toml`)
+   - Correction : `publish = "dist"` au lieu de `"templates/formulaire/dist"`
+   - Évite la duplication de chemin lors du déploiement
+
+### Fichiers modifiés
+- ✅ `templates/form/serve-form.ps1` - Ajout endpoint `/api/health`
+- ✅ `templates/formulaire/components/Footer.tsx` - Health check asynchrone
+- ✅ `templates/formulaire/App.tsx` - Optimisations mobile navigation
+- ✅ `templates/formulaire/styles.css` - Classe scrollbar mobile
+- ✅ `netlify.toml` - Fix chemin de déploiement
+
+### Tests effectués
+- ✅ Build Vite fonctionne : `npm run build` (1.13s)
+- ✅ Aucune erreur TypeScript détectée
+- ✅ Endpoint `/api/health` répond correctement (200 OK)
+- ✅ Push GitHub réussi (commits: d8a916e, a87b5b9)
 
