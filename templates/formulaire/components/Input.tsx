@@ -27,7 +27,8 @@ export const Input: React.FC<InputProps> = ({
   const [touched, setTouched] = useState(false);
 
   const error = externalError || internalError;
-  const showError = touched && error;
+  // Afficher l'erreur si elle vient de l'extérieur (validation globale) OU si le champ a été touché
+  const showError = externalError ? true : (touched && internalError);
 
   const wrapperClass = "relative group";
   const labelClass = "block text-sm font-medium text-gray-700 mb-1 ml-1";

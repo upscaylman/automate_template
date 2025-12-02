@@ -116,21 +116,23 @@ const App: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTemplate]);
 
+  // État pour tracker les champs invalides (pour affichage en rouge)
+  const [invalidFields, setInvalidFields] = useState<Set<string>>(new Set());
+
   // Optimisation: mémoriser handleStepChange pour éviter les re-renders
   const handleStepChange = useCallback((idx: number) => {
-    // Si on avance (idx > currentStepIdx), vérifier que l'étape actuelle est valide
-    // SAUF si on est en mode personnalisation (builder) où on doit pouvoir naviguer librement
-    if (idx > currentStepIdx && !isCustomizing) {
-      const currentStepValid = isStepValid(currentStep.id as StepType);
-      if (!currentStepValid) {
-        showError('Veuillez remplir tous les champs obligatoires avant de continuer');
-        return;
-      }
-    }
-
+    // Permettre la navigation libre entre les étapes
+    // Ne plus bloquer la navigation même si les champs ne sont pas remplis
     setCurrentStepIdx(idx);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentStepIdx, currentStep, isStepValid, showError, isCustomizing]);
+  }, []);
+
+  // Afficher un toast informatif à l'étape 3 si les champs obligatoires ne sont pas remplis
+  useEffect(() => {
+    if (isLastStep && !areAllRequiredFieldsFilled && selectedTemplate) {
+      showError('⚠️ Veuillez remplir tous les champs obligatoires (astérisque en rouge *) pour générer le document');
+    }
+  }, [isLastStep, areAllRequiredFieldsFilled, selectedTemplate]);
 
   // Fonction pour extraire les initiales d'un nom
   const getInitials = (fullName: string): string => {
@@ -163,10 +165,8 @@ const App: React.FC = () => {
     const isRightSwipe = distance < -minSwipeDistance;
 
     if (isLeftSwipe && !isLastStep) {
-      // Swipe gauche = page suivante (seulement si validation OK ou mode builder)
-      if (isCustomizing || isStepValid(currentStep.id as StepType)) {
-        handleStepChange(currentStepIdx + 1);
-      }
+      // Swipe gauche = page suivante (navigation libre)
+      handleStepChange(currentStepIdx + 1);
     }
 
     if (isRightSwipe && !isFirstStep) {
@@ -179,6 +179,15 @@ const App: React.FC = () => {
   const handleInputChange = useCallback((key: string, value: string) => {
     setFormData(prev => {
       const newData = { ...prev, [key]: value };
+
+      // Retirer le champ de la liste des invalides si l'utilisateur le remplit
+      if (value && value.trim() !== '') {
+        setInvalidFields(prevInvalid => {
+          const newSet = new Set(prevInvalid);
+          newSet.delete(key);
+          return newSet;
+        });
+      }
 
       // Auto-génération du code document depuis signatureExp
       if (key === 'signatureExp' && value) {
@@ -244,21 +253,8 @@ const App: React.FC = () => {
   }, [selectedTemplate]);
 
   const toggleCustomization = useCallback(() => {
-    setIsCustomizing(prev => {
-      const newValue = !prev;
-
-      // Si on désactive le mode personnalisation, vérifier si on doit revenir à la page 1
-      if (prev && !newValue) {
-        // Si on n'est pas sur la page 1 et que l'étape actuelle n'est pas valide, revenir à la page 1
-        if (currentStepIdx > 0 && !isStepValid(currentStep.id as StepType)) {
-          setCurrentStepIdx(0);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }
-
-      return newValue;
-    });
-  }, [currentStepIdx, currentStep, isStepValid]);
+    setIsCustomizing(prev => !prev);
+  }, []);
 
   const handleFieldsReorder = (stepId: string, newFields: FormField[]) => {
     console.log('🔄 Réorganisation des champs pour', stepId, newFields);
@@ -294,12 +290,33 @@ const App: React.FC = () => {
       }
   };
 
+  // Fonction pour valider et marquer les champs invalides
+  const validateAndMarkInvalidFields = useCallback(() => {
+    const invalid = new Set<string>();
+
+    STEPS.forEach(step => {
+      const fields = customFieldsOrder[step.id] || FORM_FIELDS[step.id as StepType] || [];
+      const requiredFields = fields.filter(field => field.required);
+
+      requiredFields.forEach(field => {
+        const value = formData[field.id];
+        if (!value || value.trim() === '') {
+          invalid.add(field.id);
+        }
+      });
+    });
+
+    setInvalidFields(invalid);
+    return invalid.size === 0;
+  }, [formData, customFieldsOrder]);
+
   const handlePreview = useCallback(async () => {
     if (isGenerating || !selectedTemplate) return;
 
     // Vérifier que tous les champs requis sont remplis
     if (!areAllRequiredFieldsFilled) {
-      showError('Veuillez remplir tous les champs obligatoires avant de prévisualiser');
+      validateAndMarkInvalidFields();
+      showError('Veuillez remplir tous les champs obligatoires (astérisque en rouge *) avant de générer le document');
       return;
     }
 
@@ -363,7 +380,8 @@ const App: React.FC = () => {
 
     // Vérifier que tous les champs requis sont remplis
     if (!areAllRequiredFieldsFilled) {
-      showError('Veuillez remplir tous les champs obligatoires avant de télécharger');
+      validateAndMarkInvalidFields();
+      showError('Veuillez remplir tous les champs obligatoires (astérisque en rouge *) avant de télécharger le document');
       return;
     }
 
@@ -411,7 +429,8 @@ const App: React.FC = () => {
 
     // Vérifier que tous les champs requis sont remplis
     if (!areAllRequiredFieldsFilled) {
-      showError('Veuillez remplir tous les champs obligatoires avant de télécharger le PDF');
+      validateAndMarkInvalidFields();
+      showError('Veuillez remplir tous les champs obligatoires (astérisque en rouge *) avant de télécharger le PDF');
       return;
     }
 
@@ -464,7 +483,8 @@ const App: React.FC = () => {
 
     // Vérifier que tous les champs requis sont remplis
     if (!areAllRequiredFieldsFilled) {
-      showError('Veuillez remplir tous les champs obligatoires avant de partager');
+      validateAndMarkInvalidFields();
+      showError('Veuillez remplir tous les champs obligatoires (astérisque en rouge *) avant de partager le document');
       return;
     }
 
@@ -549,7 +569,8 @@ const App: React.FC = () => {
           onDownload={handleDownload}
           onShare={() => {
             if (!areAllRequiredFieldsFilled) {
-              showError('Veuillez remplir tous les champs obligatoires avant de partager');
+              validateAndMarkInvalidFields();
+              showError('Veuillez remplir tous les champs obligatoires (astérisque en rouge *) avant de partager le document');
               return;
             }
             setShowShare(true);
@@ -687,14 +708,13 @@ const App: React.FC = () => {
 
                        <button
                          onClick={() => handleStepChange(currentStepIdx + 1)}
-                         disabled={isLastStep || (!isCustomizing && !isStepValid(currentStep.id as StepType))}
+                         disabled={isLastStep}
                          className={`
                            h-12 px-6 rounded-full flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:shadow-[#a84383]/30 transition-all duration-300 flex-shrink-0
-                           ${isLastStep || (!isCustomizing && !isStepValid(currentStep.id as StepType))
+                           ${isLastStep
                              ? 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none'
                              : 'bg-[#a84383] text-white active:scale-95'}
                          `}
-                         title={!isCustomizing && !isStepValid(currentStep.id as StepType) ? 'Veuillez remplir tous les champs obligatoires' : ''}
                        >
                           <span className="font-bold text-sm hidden sm:inline">Suivant</span>
                           <span className="material-icons text-sm">arrow_forward</span>
@@ -713,6 +733,7 @@ const App: React.FC = () => {
                   isCustomizing={isCustomizing && selectedTemplate === 'custom'}
                   customFields={customFieldsOrder[currentStep.id]}
                   onFieldsReorder={(newFields) => handleFieldsReorder(currentStep.id, newFields)}
+                  invalidFields={invalidFields}
                />
                
                {isLastStep && (

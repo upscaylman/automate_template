@@ -11,9 +11,10 @@ interface FormStepProps {
   isCustomizing?: boolean;
   customFields?: FormField[];
   onFieldsReorder?: (newFields: FormField[]) => void;
+  invalidFields?: Set<string>;
 }
 
-const FormStepComponent: React.FC<FormStepProps> = ({ step, data, onChange, isCustomizing = false, customFields, onFieldsReorder }) => {
+const FormStepComponent: React.FC<FormStepProps> = ({ step, data, onChange, isCustomizing = false, customFields, onFieldsReorder, invalidFields }) => {
   // Utiliser l'ordre personnalisé si disponible, sinon l'ordre par défaut
   const [fields, setFields] = useState<FormField[]>(customFields || FORM_FIELDS[step]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -234,6 +235,7 @@ const FormStepComponent: React.FC<FormStepProps> = ({ step, data, onChange, isCu
                 value={data[field.id] || ''}
                 onChange={(e) => onChange(field.id, e.target.value)}
                 fieldId={field.id}
+                error={invalidFields?.has(field.id) && field.required ? `${field.label} est requis` : undefined}
               />
             )}
           </div>
