@@ -12,21 +12,30 @@ interface FormStepProps {
   customFields?: FormField[];
   onFieldsReorder?: (newFields: FormField[]) => void;
   invalidFields?: Set<string>;
+  removedFields?: { field: FormField; originalIndex: number }[];
+  onRemovedFieldsChange?: (removedFields: { field: FormField; originalIndex: number }[]) => void;
 }
 
-const FormStepComponent: React.FC<FormStepProps> = ({ step, data, onChange, isCustomizing = false, customFields, onFieldsReorder, invalidFields }) => {
+const FormStepComponent: React.FC<FormStepProps> = ({
+  step,
+  data,
+  onChange,
+  isCustomizing = false,
+  customFields,
+  onFieldsReorder,
+  invalidFields,
+  removedFields: externalRemovedFields = [],
+  onRemovedFieldsChange
+}) => {
   // Utiliser l'ordre personnalisé si disponible, sinon l'ordre par défaut
   const [fields, setFields] = useState<FormField[]>(customFields || FORM_FIELDS[step]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const [removedFields, setRemovedFields] = useState<{ field: FormField; originalIndex: number }[]>([]);
 
   // Mettre à jour les champs quand step ou customFields changent
   useEffect(() => {
     const newFields = customFields || FORM_FIELDS[step];
     setFields(newFields);
-    // Réinitialiser les champs supprimés quand on change d'étape
-    setRemovedFields([]);
   }, [step, customFields]);
 
   // SECTION: LOGIQUE SUPPRESSION & RESTAURATION
@@ -36,7 +45,11 @@ const FormStepComponent: React.FC<FormStepProps> = ({ step, data, onChange, isCu
     const [removed] = newFields.splice(index, 1);
     setFields(newFields);
     // On l'ajoute à la liste des champs supprimés avec son index d'origine
-    setRemovedFields(prev => [...prev, { field: removed, originalIndex: index }]);
+    const newRemovedFields = [...externalRemovedFields, { field: removed, originalIndex: index }];
+
+    if (onRemovedFieldsChange) {
+      onRemovedFieldsChange(newRemovedFields);
+    }
 
     if (onFieldsReorder) {
       onFieldsReorder(newFields);
@@ -51,7 +64,11 @@ const FormStepComponent: React.FC<FormStepProps> = ({ step, data, onChange, isCu
     newFields.splice(insertIndex, 0, removedItem.field);
     setFields(newFields);
     // On le retire de la liste des champs supprimés
-    setRemovedFields(prev => prev.filter(item => item.field.id !== removedItem.field.id));
+    const newRemovedFields = externalRemovedFields.filter(item => item.field.id !== removedItem.field.id);
+
+    if (onRemovedFieldsChange) {
+      onRemovedFieldsChange(newRemovedFields);
+    }
 
     if (onFieldsReorder) {
       onFieldsReorder(newFields);
@@ -243,21 +260,21 @@ const FormStepComponent: React.FC<FormStepProps> = ({ step, data, onChange, isCu
       </div>
 
       {/* SECTION: ZONE DE RESTAURATION DES CHAMPS SUPPRIMÉS */}
-      {isCustomizing && removedFields.length > 0 && (
+      {isCustomizing && externalRemovedFields.length > 0 && (
         <div className="mt-12 pt-6 border-t-2 border-dashed border-[#e062b1]/30 animate-[fadeInUp_0.3s_ease-out] bg-[#ffecf8]/30 rounded-xl p-6">
           <div className="flex items-center gap-3 mb-4">
             <span className="material-icons text-[#a84383] text-2xl">restore_from_trash</span>
-            <h4 className="text-lg font-bold text-gray-900">Champs supprimés</h4>
-            <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded-full">{removedFields.length}</span>
+            <h4 className="text-lg font-bold text-gray-900">Champs disponibles</h4>
+            <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded-full">{externalRemovedFields.length}</span>
           </div>
-          <p className="text-sm text-gray-600 mb-4">Cliquez sur un champ pour le restaurer à sa position d'origine</p>
+          <p className="text-sm text-gray-600 mb-4">Cliquez pour ajouter un champ</p>
           <div className="flex flex-wrap gap-3">
-            {removedFields.map((removedItem) => (
+            {externalRemovedFields.map((removedItem) => (
               <button
                 key={removedItem.field.id}
                 onClick={() => restoreField(removedItem)}
                 className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-[#e062b1]/30 rounded-full hover:bg-[#ffecf8] hover:border-[#a84383] hover:shadow-md transition-all duration-200 group"
-                title={`Restaurer ${removedItem.field.label}`}
+                title={`Ajouter ${removedItem.field.label}`}
               >
                 <span className="material-icons text-lg text-[#a84383] group-hover:scale-110 transition-transform">add_circle</span>
                 <span className="text-sm font-medium text-gray-700">{removedItem.field.label}</span>

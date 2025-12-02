@@ -52,11 +52,11 @@ export const COMMON_FIELDS: FormField[] = [
 export const TEMPLATE_SPECIFIC_FIELDS: Record<string, FormField[]> = {
   designation: [
     { id: 'numeroCourrier', label: 'Numéro de Recommandé', type: 'text', placeholder: 'Ex: 2025-001', required: true, icon: 'tag', width: 'half' },
-    { id: 'civiliteDelegue', label: 'Civilité Délégué Nommé', type: 'select', options: ['Monsieur', 'Madame'], required: false, width: 'half' },
-    { id: 'nomDelegue', label: 'Nom Délégué Nommé', type: 'text', placeholder: 'Ex: Martin Dupont', required: true, icon: 'person', width: 'half' },
-    { id: 'emailDelegue', label: 'Email Délégué Nommé', type: 'email', placeholder: 'delegue@exemple.com', required: true, icon: 'email', width: 'half' },
-    { id: 'civiliteRemplace', label: 'Civilité du Remplaçé', type: 'select', options: ['Monsieur', 'Madame'], required: false, width: 'half' },
-    { id: 'nomRemplace', label: 'Nom du Remplaçé', type: 'text', placeholder: 'Ex: Sophie Bernard', required: true, icon: 'person', width: 'half' },
+    { id: 'civiliteDelegue', label: 'Civilité Délégué(e) Nommé(e)', type: 'select', options: ['Monsieur', 'Madame'], required: false, width: 'half' },
+    { id: 'nomDelegue', label: 'Nom Délégué(e) Nommé(e)', type: 'text', placeholder: 'Ex: Martin Dupont', required: true, icon: 'person', width: 'half' },
+    { id: 'emailDelegue', label: 'Email Délégué(e) Nommé(e)', type: 'email', placeholder: 'delegue@exemple.com', required: true, icon: 'email', width: 'half' },
+    { id: 'civiliteRemplace', label: 'Civilité du/de la Remplaçé(e)', type: 'select', options: ['Monsieur', 'Madame'], required: false, width: 'half' },
+    { id: 'nomRemplace', label: 'Nom du/de la Remplaçé(e)', type: 'text', placeholder: 'Ex: Sophie Bernard', required: true, icon: 'person', width: 'half' },
   ],
   negociation: [
     { id: 'objet', label: 'Objet du Mandat', type: 'text', placeholder: 'Ex: Négociation accord temps de travail', required: true, icon: 'subject', width: 'full' },

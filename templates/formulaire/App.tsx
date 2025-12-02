@@ -119,6 +119,9 @@ const App: React.FC = () => {
   // État pour tracker les champs invalides (pour affichage en rouge)
   const [invalidFields, setInvalidFields] = useState<Set<string>>(new Set());
 
+  // État pour tracker les champs supprimés par étape (pour le mode personnalisation)
+  const [removedFieldsByStep, setRemovedFieldsByStep] = useState<Record<string, { field: FormField; originalIndex: number }[]>>({});
+
   // Optimisation: mémoriser handleStepChange pour éviter les re-renders
   const handleStepChange = useCallback((idx: number) => {
     // Permettre la navigation libre entre les étapes
@@ -261,6 +264,14 @@ const App: React.FC = () => {
     setCustomFieldsOrder(prev => ({
       ...prev,
       [stepId]: newFields
+    }));
+  };
+
+  const handleRemovedFieldsChange = (stepId: string, removedFields: { field: FormField; originalIndex: number }[]) => {
+    console.log('🗑️ Champs supprimés pour', stepId, removedFields);
+    setRemovedFieldsByStep(prev => ({
+      ...prev,
+      [stepId]: removedFields
     }));
   };
 
@@ -734,6 +745,8 @@ const App: React.FC = () => {
                   customFields={customFieldsOrder[currentStep.id]}
                   onFieldsReorder={(newFields) => handleFieldsReorder(currentStep.id, newFields)}
                   invalidFields={invalidFields}
+                  removedFields={removedFieldsByStep[currentStep.id] || []}
+                  onRemovedFieldsChange={(removedFields) => handleRemovedFieldsChange(currentStep.id, removedFields)}
                />
                
                {isLastStep && (

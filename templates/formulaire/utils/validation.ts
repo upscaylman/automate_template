@@ -44,15 +44,7 @@ export const validatePhone = (phone: string): ValidationResult => {
  * Valider un code postal français
  */
 export const validatePostalCode = (postalCode: string): ValidationResult => {
-  if (!postalCode || postalCode.trim() === '') {
-    return { isValid: true }; // Code postal optionnel
-  }
-
-  const postalCodeRegex = /^[0-9]{5}$/;
-  if (!postalCodeRegex.test(postalCode)) {
-    return { isValid: false, error: 'Code postal invalide (5 chiffres requis)' };
-  }
-
+  // Pas de validation stricte - accepter chiffres et lettres
   return { isValid: true };
 };
 
