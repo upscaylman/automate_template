@@ -188,40 +188,42 @@ const FormStepComponent: React.FC<FormStepProps> = ({
           >
             {/* Pilule flottante avec drag handle et flèches (mode personnalisation uniquement) */}
             {isCustomizing && (
-              <div className="absolute -top-3 right-4 flex gap-1 bg-white shadow-sm border border-gray-200 rounded-full p-1 z-20">
+              <div className="absolute -top-3 right-4 flex gap-1 z-20">
+                {/* Reordering Controls Pill */}
+                <div className="flex gap-1 bg-white dark:bg-[#2f2f2f] shadow-sm border border-gray-200 dark:border-gray-600 rounded-full p-1">
+                  {/* Drag Handle (Points) */}
+                  <div className="w-8 h-8 flex items-center justify-center text-[#3b5265] dark:text-gray-300 bg-[#eef2f6] dark:bg-[#1a1a1a] rounded-full cursor-grab active:cursor-grabbing">
+                    <span className="material-icons text-lg">drag_indicator</span>
+                  </div>
 
-                {/* Poignée de déplacement (6 petits points) */}
-                <div className="w-8 h-8 flex items-center justify-center text-[#3b5265] bg-[#eef2f6] rounded-full cursor-grab active:cursor-grabbing">
-                  <span className="material-icons text-lg">drag_indicator</span>
+                  {/* Arrows (Flèches) */}
+                  <div className="flex items-center border-l border-gray-200 dark:border-gray-600 pl-1 ml-1">
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); moveField(index, 'up'); }}
+                      disabled={index === 0}
+                      className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-30 text-[#3b5265] dark:text-gray-300 transition-colors"
+                      title="Déplacer vers le haut"
+                    >
+                      <span className="material-icons text-sm">arrow_upward</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); moveField(index, 'down'); }}
+                      disabled={index === fields.length - 1}
+                      className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 disabled:opacity-30 text-[#3b5265] dark:text-gray-300 transition-colors"
+                      title="Déplacer vers le bas"
+                    >
+                      <span className="material-icons text-sm">arrow_downward</span>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Boutons de déplacement manuel (flèches haut/bas) */}
-                <div className="flex items-center border-l border-gray-200 pl-1 ml-1">
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); moveField(index, 'up'); }}
-                    disabled={index === 0}
-                    className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-100 disabled:opacity-30 text-[#3b5265] transition-colors"
-                    title="Déplacer vers le haut"
-                  >
-                    <span className="material-icons text-sm">arrow_upward</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); moveField(index, 'down'); }}
-                    disabled={index === fields.length - 1}
-                    className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-100 disabled:opacity-30 text-[#3b5265] transition-colors"
-                    title="Déplacer vers le bas"
-                  >
-                    <span className="material-icons text-sm">arrow_downward</span>
-                  </button>
-                </div>
-
-                {/* Delete Button (SECTION: LOGIQUE SUPPRESSION) */}
+                {/* Delete Button (Corbeille) */}
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); removeField(index); }}
-                  className="w-10 h-10 flex items-center justify-center bg-white shadow-sm border border-red-100 rounded-full text-red-500 hover:bg-red-50 hover:border-red-200 hover:scale-110 transition-all ml-1"
+                  className="w-10 h-10 flex items-center justify-center bg-white dark:bg-[#2f2f2f] shadow-sm border border-red-100 dark:border-red-900 rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-200 dark:hover:border-red-800 hover:scale-110 transition-all"
                   title="Supprimer le champ"
                 >
                   <span className="material-icons text-[20px]">delete_outline</span>
