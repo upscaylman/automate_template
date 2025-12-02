@@ -3,6 +3,7 @@ import { StepType, FormField, FormData } from '../types';
 import { FORM_FIELDS } from '../constants';
 import { Input } from './Input';
 import { AITextarea } from './AITextarea';
+import { PostalCodeInput } from './PostalCodeInput';
 
 interface FormStepProps {
   step: StepType;
@@ -241,6 +242,16 @@ const FormStepComponent: React.FC<FormStepProps> = ({
                 placeholder={field.placeholder}
                 required={field.required}
                 rows={field.rows}
+              />
+            ) : field.id === 'cpVille' ? (
+              <PostalCodeInput
+                label={field.label}
+                value={data[field.id] || ''}
+                onChange={(value) => onChange(field.id, value)}
+                icon={field.icon}
+                required={field.required}
+                placeholder={field.placeholder}
+                error={invalidFields?.has(field.id) && field.required ? `${field.label} est requis` : undefined}
               />
             ) : (
               <Input

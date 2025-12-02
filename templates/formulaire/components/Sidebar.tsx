@@ -72,7 +72,7 @@ const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate,
                 group relative p-3 rounded-2xl cursor-pointer transition-all duration-300 border-2 w-full text-left
                 ${selectedTemplate === template.id
                   ? 'border-[#aa4584] bg-[#ffd8ec]/30 shadow-md'
-                  : 'border-transparent hover:bg-gray-50 hover:border-gray-200'}
+                  : 'border-[rgb(229,231,235)] hover:bg-gray-50 hover:border-gray-300'}
               `}
               aria-pressed={selectedTemplate === template.id}
               aria-label={`Sélectionner le modèle ${template.title}`}
