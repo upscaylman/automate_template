@@ -1,9 +1,10 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo, useRef } from 'react';
 import { StepType, FormField, FormData } from '../types';
 import { FORM_FIELDS } from '../constants';
 import { Input } from './Input';
 import { AITextarea } from './AITextarea';
 import { PostalCodeInput } from './PostalCodeInput';
+import { AddressInput } from './AddressInput';
 
 interface FormStepProps {
   step: StepType;
@@ -32,6 +33,9 @@ const FormStepComponent: React.FC<FormStepProps> = ({
   const [fields, setFields] = useState<FormField[]>(customFields || FORM_FIELDS[step]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const skipPostalAutoSearchRef = useRef(false);
+  const lastAddressValueRef = useRef<string>('');
+  const lastCpVilleValueRef = useRef<string>('');
 
   // Mettre à jour les champs quand step ou customFields changent
   useEffect(() => {
@@ -247,7 +251,43 @@ const FormStepComponent: React.FC<FormStepProps> = ({
               <PostalCodeInput
                 label={field.label}
                 value={data[field.id] || ''}
-                onChange={(value) => onChange(field.id, value)}
+                onChange={(value) => {
+                  lastCpVilleValueRef.current = value;
+                  skipPostalAutoSearchRef.current = false;
+                  onChange(field.id, value);
+                }}
+                icon={field.icon}
+                required={field.required}
+                placeholder={field.placeholder}
+                error={invalidFields?.has(field.id) && field.required ? `${field.label} est requis` : undefined}
+                skipAutoSearch={skipPostalAutoSearchRef.current}
+              />
+            ) : field.id === 'adresse' ? (
+              <AddressInput
+                label={field.label}
+                value={data[field.id] || ''}
+                onChange={(value) => {
+                  // Si l'utilisateur modifie manuellement l'adresse après une sélection
+                  // On désactive la recherche auto du CP pour éviter que ça rouvre
+                  if (lastAddressValueRef.current !== '' && value !== lastAddressValueRef.current) {
+                    skipPostalAutoSearchRef.current = true;
+                    setTimeout(() => {
+                      skipPostalAutoSearchRef.current = false;
+                    }, 500);
+                  }
+                  lastAddressValueRef.current = value;
+                  onChange(field.id, value);
+                }}
+                onAddressSelect={(address, postalCode, city) => {
+                  lastAddressValueRef.current = address;
+                  lastCpVilleValueRef.current = `${postalCode} ${city}`;
+                  onChange('adresse', address);
+                  skipPostalAutoSearchRef.current = true;
+                  onChange('cpVille', `${postalCode} ${city}`);
+                  setTimeout(() => {
+                    skipPostalAutoSearchRef.current = false;
+                  }, 500);
+                }}
                 icon={field.icon}
                 required={field.required}
                 placeholder={field.placeholder}

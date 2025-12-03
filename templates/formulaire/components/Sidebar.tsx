@@ -12,6 +12,7 @@ interface SidebarProps {
 
 const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate, onSelect, isOpenMobile, setIsOpenMobile }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isButtonCompact, setIsButtonCompact] = useState(false);
 
   // Handle click outside to close on mobile
   useEffect(() => {
@@ -21,6 +22,35 @@ const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate,
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [setIsOpenMobile]);
+
+  // Timer pour compacter le bouton après 10s d'inactivité
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    const resetTimer = () => {
+      setIsButtonCompact(false);
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setIsButtonCompact(true);
+      }, 10000); // 10 secondes
+    };
+
+    // Démarrer le timer au montage
+    resetTimer();
+
+    // Réinitialiser le timer sur toute interaction
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    events.forEach(event => {
+      document.addEventListener(event, resetTimer);
+    });
+
+    return () => {
+      clearTimeout(timer);
+      events.forEach(event => {
+        document.removeEventListener(event, resetTimer);
+      });
+    };
+  }, []);
 
   return (
     <>
@@ -115,11 +145,39 @@ const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate,
       {!isOpenMobile && (
         <button
           onClick={() => setIsOpenMobile(true)}
-          className="md:hidden fixed bottom-6 left-6 z-40 bg-[#aa4584] text-white p-4 rounded-full shadow-xl flex items-center gap-2 hover:scale-105 transition-transform"
+          className={`
+            md:hidden fixed bottom-6 left-6 z-40 bg-[#aa4584] text-white shadow-xl
+            flex items-center justify-center hover:scale-105
+            ${isButtonCompact
+              ? 'w-14 h-14 rounded-full p-0'
+              : 'w-auto h-14 rounded-full px-5'
+            }
+          `}
+          style={{
+            transition: 'width 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s, transform 0.2s ease'
+          }}
           aria-label="Ouvrir le menu des modèles"
         >
-           <span className="material-icons" aria-hidden="true">dashboard</span>
-           <span className="font-bold">Templates</span>
+           <span
+             className="material-icons flex-shrink-0"
+             aria-hidden="true"
+             style={{
+               fontSize: '24px'
+             }}
+           >
+             dashboard
+           </span>
+           <span
+             className="font-bold whitespace-nowrap overflow-hidden"
+             style={{
+               maxWidth: isButtonCompact ? '0px' : '100px',
+               opacity: isButtonCompact ? 0 : 1,
+               marginLeft: isButtonCompact ? '0px' : '8px',
+               transition: 'opacity 0.15s ease, max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0.05s, margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0.05s'
+             }}
+           >
+             Templates
+           </span>
         </button>
       )}
     </>

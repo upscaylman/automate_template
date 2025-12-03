@@ -1,39 +1,43 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-interface PostalCodeInputProps {
+interface AddressInputProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  onAddressSelect?: (address: string, postalCode: string, city: string) => void;
   icon?: string;
   required?: boolean;
   error?: string;
   placeholder?: string;
-  skipAutoSearch?: boolean;
 }
 
-interface City {
-  nom: string;
-  code: string;
-  codesPostaux: string[];
+interface AddressFeature {
+  properties: {
+    label: string;
+    name: string;
+    postcode: string;
+    city: string;
+    context: string;
+  };
 }
 
-export const PostalCodeInput: React.FC<PostalCodeInputProps> = ({
+export const AddressInput: React.FC<AddressInputProps> = ({
   label,
   value,
   onChange,
+  onAddressSelect,
   icon,
   required,
   error: externalError,
-  placeholder,
-  skipAutoSearch
+  placeholder
 }) => {
-  const [cities, setCities] = useState<City[]>([]);
+  const [addresses, setAddresses] = useState<AddressFeature[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
-  const [isManualInput, setIsManualInput] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
+  const isSelectingRef = useRef(false);
 
   const showError = !!externalError;
 
@@ -46,58 +50,60 @@ export const PostalCodeInput: React.FC<PostalCodeInputProps> = ({
       : 'border-[#e7e0ec] focus:border-[#a84383] focus:ring-4 focus:ring-[#a84383]/10'
   }`;
 
-  // Extraire le code postal du champ (5 premiers chiffres)
-  const extractPostalCode = (text: string): string => {
-    const match = text.match(/^\d{5}/);
-    return match ? match[0] : '';
-  };
-
-  // Rechercher les villes à partir du code postal
-  const searchCities = useCallback(async (postalCode: string) => {
-    if (postalCode.length !== 5) {
-      setCities([]);
+  // Rechercher les adresses avec l'API officielle
+  const searchAddresses = useCallback(async (query: string) => {
+    if (query.length < 3) {
+      setAddresses([]);
       return;
     }
 
     setIsLoading(true);
     try {
-      const response = await fetch(`https://geo.api.gouv.fr/communes?codePostal=${postalCode}&fields=nom,code,codesPostaux&format=json&geometry=centre`);
+      const response = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=10`);
       if (response.ok) {
-        const data: City[] = await response.json();
-        setCities(data);
-        if (data.length > 0) {
+        const data = await response.json();
+        setAddresses(data.features || []);
+        if (data.features && data.features.length > 0) {
           setShowSuggestions(true);
         }
       }
     } catch (error) {
-      console.error('Erreur lors de la recherche de ville:', error);
+      console.error('Erreur lors de la recherche d\'adresse:', error);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // Détecter le code postal et rechercher automatiquement (seulement si input manuel)
+  // Debounce pour la recherche
   useEffect(() => {
-    if (skipAutoSearch || !isManualInput) {
-      if (!isManualInput) setIsManualInput(true);
+    // Ne pas rechercher si on vient de sélectionner une adresse
+    if (isSelectingRef.current) {
+      isSelectingRef.current = false;
       return;
     }
 
-    const postalCode = extractPostalCode(value);
-    if (postalCode.length === 5) {
-      searchCities(postalCode);
-    } else {
-      setCities([]);
-      setShowSuggestions(false);
-    }
-  }, [value, searchCities, isManualInput, skipAutoSearch]);
+    const timer = setTimeout(() => {
+      if (value.length >= 3) {
+        searchAddresses(value);
+      } else {
+        setAddresses([]);
+        setShowSuggestions(false);
+      }
+    }, 300);
 
-  // Sélectionner une ville
-  const selectCity = (city: City) => {
-    const postalCode = extractPostalCode(value) || city.codesPostaux[0];
-    onChange(`${postalCode} ${city.nom}`);
+    return () => clearTimeout(timer);
+  }, [value, searchAddresses]);
+
+  // Sélectionner une adresse
+  const selectAddress = (feature: AddressFeature) => {
+    const { name, postcode, city } = feature.properties;
+    isSelectingRef.current = true;
     setShowSuggestions(false);
-    setCities([]);
+    setAddresses([]);
+    onChange(name);
+    if (onAddressSelect) {
+      onAddressSelect(name, postcode, city);
+    }
   };
 
   // Calculer la position du dropdown
@@ -120,10 +126,10 @@ export const PostalCodeInput: React.FC<PostalCodeInputProps> = ({
       updateDropdownPosition();
       const handleScroll = () => updateDropdownPosition();
       const handleResize = () => updateDropdownPosition();
-
+      
       window.addEventListener('scroll', handleScroll, true);
       window.addEventListener('resize', handleResize);
-
+      
       return () => {
         window.removeEventListener('scroll', handleScroll, true);
         window.removeEventListener('resize', handleResize);
@@ -147,7 +153,7 @@ export const PostalCodeInput: React.FC<PostalCodeInputProps> = ({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onFocus={() => {
-              if (cities.length > 0) {
+              if (addresses.length > 0) {
                 setShowSuggestions(true);
                 updateDropdownPosition();
               }
@@ -175,23 +181,27 @@ export const PostalCodeInput: React.FC<PostalCodeInputProps> = ({
       </div>
 
       {/* Portail pour les suggestions - monté dans body */}
-      {showSuggestions && cities.length > 0 && createPortal(
+      {showSuggestions && addresses.length > 0 && createPortal(
         <div
           style={dropdownStyle}
           className="bg-white border-2 border-[#a84383] rounded-2xl shadow-xl max-h-60 overflow-y-auto"
         >
           <div className="p-2">
-            <div className="text-xs text-gray-500 px-3 py-2 font-medium">Sélectionnez une ville :</div>
-            {cities.map((city) => (
+            <div className="text-xs text-gray-500 px-3 py-2 font-medium">Sélectionnez une adresse :</div>
+            {addresses.map((feature, index) => (
               <button
-                key={city.code}
+                key={index}
                 type="button"
-                onClick={() => selectCity(city)}
-                className="w-full text-left px-3 py-2 rounded-xl hover:bg-[#ffecf8] transition-colors flex items-center gap-2"
+                onClick={() => selectAddress(feature)}
+                className="w-full text-left px-3 py-2 rounded-xl hover:bg-[#ffecf8] transition-colors"
               >
-                <span className="material-icons text-[#a84383] text-sm">location_city</span>
-                <span className="font-medium text-[#1c1b1f]">{city.nom}</span>
-                <span className="text-xs text-gray-500 ml-auto">{city.codesPostaux[0]}</span>
+                <div className="flex items-start gap-2">
+                  <span className="material-icons text-[#a84383] text-sm mt-0.5">place</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-[#1c1b1f] truncate">{feature.properties.name}</div>
+                    <div className="text-xs text-gray-500 truncate">{feature.properties.postcode} {feature.properties.city}</div>
+                  </div>
+                </div>
               </button>
             ))}
           </div>
