@@ -98,7 +98,10 @@
     {
       "parameters": {
         "context": "={{ $json }}",
-        "options": {}
+        "options": {
+          "linebreaks": true,
+          "paragraphLoop": true
+        }
       },
       "type": "n8n-nodes-docxtemplater.docxTemplater",
       "typeVersion": 1,
@@ -172,13 +175,13 @@
             {
               "id": "68bdcad8-b639-4963-8a10-6dc4a2e16a36",
               "name": "entreprise",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.entreprise }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.entreprise || '' }}",
               "type": "string"
             },
             {
               "id": "civiliteDestinataire",
               "name": "civiliteDestinataire",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.civiliteDestinataire }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.civiliteDestinataire || '' }}",
               "type": "string"
             },
             {
@@ -190,13 +193,13 @@
             {
               "id": "nomDestinataire",
               "name": "nomDestinataire",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.nomDestinataire }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.nomDestinataire || '' }}",
               "type": "string"
             },
             {
               "id": "statutDestinataire",
               "name": "statutDestinataire",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.statutDestinataire }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.statutDestinataire || '' }}",
               "type": "string"
             },
             {
@@ -208,13 +211,13 @@
             {
               "id": "adresse",
               "name": "adresse",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.adresse }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.adresse || '' }}",
               "type": "string"
             },
             {
               "id": "cpVille",
               "name": "cpVille",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.cpVille }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.cpVille || '' }}",
               "type": "string"
             },
             {
@@ -238,49 +241,49 @@
             {
               "id": "numeroCourrier",
               "name": "numeroCourrier",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.numeroCourrier }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.numeroCourrier || '' }}",
               "type": "string"
             },
             {
               "id": "civiliteRemplace",
               "name": "civiliteRemplace",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.civiliteRemplace }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.civiliteRemplace || '' }}",
               "type": "string"
             },
             {
               "id": "nomRemplace",
               "name": "nomRemplace",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.nomRemplace }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.nomRemplace || '' }}",
               "type": "string"
             },
             {
               "id": "codeDocument",
               "name": "codeDocument",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.codeDocument }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.codeDocument || '' }}",
               "type": "string"
             },
             {
               "id": "civiliteDelegue",
               "name": "civiliteDelegue",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.civiliteDelegue }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.civiliteDelegue || '' }}",
               "type": "string"
             },
             {
               "id": "nomDelegue",
               "name": "nomDelegue",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.nomDelegue }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.nomDelegue || '' }}",
               "type": "string"
             },
             {
               "id": "emailDelegue",
               "name": "emailDelegue",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.emailDelegue }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.emailDelegue || '' }}",
               "type": "string"
             },
             {
               "id": "emailDestinataire",
               "name": "emailDestinataire",
-              "value": "={{ $('Formulaire (Webhook)').item.json.body.emailDestinataire }}",
+              "value": "={{ $('Formulaire (Webhook)').item.json.body.emailDestinataire || '' }}",
               "type": "string"
             },
             {
@@ -378,7 +381,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const baseData = {...$('Preparer Donnees').item.json};\n\ntry {\n  const iaNode = $('Extraire Texte IA');\n  if (iaNode && iaNode.item && iaNode.item.json && iaNode.item.json.texteIa) {\n    baseData.texteIa = iaNode.item.json.texteIa;\n  }\n} catch (e) {\n  console.log('Pas d\\'IA');\n}\n\nreturn {\n  json: baseData,\n  binary: items[0].binary\n};"
+        "jsCode": "// Récupérer les données du nœud précédent\nconst inputData = $('Preparer Donnees').item.json;\n\n// Ajouter le texte IA si disponible\ntry {\n  const iaNode = $('Extraire Texte IA');\n  if (iaNode && iaNode.item && iaNode.item.json && iaNode.item.json.texteIa) {\n    inputData.texteIa = iaNode.item.json.texteIa;\n  }\n} catch (e) {\n  console.log('Pas d\\'IA');\n}\n\n// NETTOYER : supprimer les variables vides/undefined/null\n// pour éviter les lignes vides dans le document Word\nconst cleanData = {};\nfor (const [key, value] of Object.entries(inputData)) {\n  // Ne garder que les valeurs non vides\n  if (value !== undefined && \n      value !== null && \n      value !== \"\" && \n      value !== \"undefined\" && \n      value !== \"null\") {\n    cleanData[key] = value;\n  }\n}\n\nconsole.log('Données nettoyées:', Object.keys(cleanData));\n\nreturn {\n  json: cleanData,\n  binary: items[0].binary\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
