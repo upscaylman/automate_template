@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './Button';
 
 interface HeaderProps {
@@ -6,12 +6,27 @@ interface HeaderProps {
   onDownload: () => void;
   onShare: () => void;
   hasData: boolean;
+  sidebarWidth?: number;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onPreview, onDownload, onShare, hasData }) => {
+export const Header: React.FC<HeaderProps> = ({ onPreview, onDownload, onShare, hasData, sidebarWidth = 280 }) => {
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-40 bg-white/80 dark:bg-[#0f0f0f]/80 backdrop-blur-xl border-b border-white/20 dark:border-gray-800/20 shadow-sm transition-all duration-300"
+      style={{
+        left: isDesktop ? `${sidebarWidth}px` : '0px',
+      }}
       role="banner"
     >
       <div className="container mx-auto px-4 lg:px-8 h-20 flex items-center justify-between">

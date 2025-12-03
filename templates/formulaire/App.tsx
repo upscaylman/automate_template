@@ -21,6 +21,7 @@ const App: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>('designation');
   const [formData, setFormData] = useState<FormData>({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState(280);
   const [generatedWord, setGeneratedWord] = useState<string | null>(null);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -570,6 +571,8 @@ const App: React.FC = () => {
         onSelect={handleTemplateChange}
         isOpenMobile={isSidebarOpen}
         setIsOpenMobile={setIsSidebarOpen}
+        onDesktopCollapseChange={(collapsed) => setSidebarWidth(collapsed ? 88 : 280)}
+        showSuccess={showSuccess}
       />
 
       {/* Main Content Area */}
@@ -586,6 +589,7 @@ const App: React.FC = () => {
             setShowShare(true);
           }}
           hasData={hasData && areAllRequiredFieldsFilled}
+          sidebarWidth={sidebarWidth}
         />
 
         <main className="flex-1 overflow-y-auto pb-8 px-4 md:px-8 lg:px-12 scroll-smooth pt-20">
