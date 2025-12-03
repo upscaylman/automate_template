@@ -10,6 +10,7 @@ interface AddressInputProps {
   required?: boolean;
   error?: string;
   placeholder?: string;
+  resetKey?: string | number; // Pour forcer le reset quand on change de page
 }
 
 interface AddressFeature {
@@ -30,7 +31,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   icon,
   required,
   error: externalError,
-  placeholder
+  placeholder,
+  resetKey
 }) => {
   const [addresses, setAddresses] = useState<AddressFeature[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +40,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
   const inputRef = useRef<HTMLInputElement>(null);
   const isSelectingRef = useRef(false);
+  const hasUserTypedRef = useRef(false);
+  const lastSearchedValueRef = useRef<string>('');
 
   const showError = !!externalError;
 
@@ -82,12 +86,22 @@ export const AddressInput: React.FC<AddressInputProps> = ({
       return;
     }
 
+    // NE PAS rechercher si la valeur n'a pas changé depuis la dernière recherche
+    // Cela évite de relancer la recherche quand on revient sur la page avec une valeur déjà remplie
+    if (value === lastSearchedValueRef.current) {
+      return;
+    }
+
     const timer = setTimeout(() => {
       if (value.length >= 3) {
+        hasUserTypedRef.current = true;
+        lastSearchedValueRef.current = value;
         searchAddresses(value);
       } else {
         setAddresses([]);
         setShowSuggestions(false);
+        hasUserTypedRef.current = false;
+        lastSearchedValueRef.current = '';
       }
     }, 300);
 
@@ -98,6 +112,8 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   const selectAddress = (feature: AddressFeature) => {
     const { name, postcode, city } = feature.properties;
     isSelectingRef.current = true;
+    hasUserTypedRef.current = false;
+    lastSearchedValueRef.current = name; // Marquer cette valeur comme déjà recherchée
     setShowSuggestions(false);
     setAddresses([]);
     onChange(name);
@@ -115,7 +131,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         top: `${rect.bottom + 8}px`,
         left: `${rect.left}px`,
         width: `${rect.width}px`,
-        zIndex: 9999
+        zIndex: 10000
       });
     }
   }, [showSuggestions]);
@@ -126,16 +142,24 @@ export const AddressInput: React.FC<AddressInputProps> = ({
       updateDropdownPosition();
       const handleScroll = () => updateDropdownPosition();
       const handleResize = () => updateDropdownPosition();
-      
+
       window.addEventListener('scroll', handleScroll, true);
       window.addEventListener('resize', handleResize);
-      
+
       return () => {
         window.removeEventListener('scroll', handleScroll, true);
         window.removeEventListener('resize', handleResize);
       };
     }
   }, [showSuggestions, updateDropdownPosition]);
+
+  // Nettoyer les suggestions quand resetKey change (changement de page)
+  useEffect(() => {
+    setAddresses([]);
+    setShowSuggestions(false);
+    hasUserTypedRef.current = false;
+    // NE PAS réinitialiser lastSearchedValueRef pour garder la mémoire de la valeur validée
+  }, [resetKey]);
 
   return (
     <>
@@ -151,15 +175,28 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             className={inputClass}
             placeholder={placeholder || " "}
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              // Si l'utilisateur modifie manuellement, réinitialiser la mémoire pour permettre une nouvelle recherche
+              if (newValue !== lastSearchedValueRef.current) {
+                lastSearchedValueRef.current = '';
+              }
+              onChange(newValue);
+            }}
             onFocus={() => {
-              if (addresses.length > 0) {
+              // Ne montrer les suggestions que si l'utilisateur a déjà tapé
+              if (addresses.length > 0 && hasUserTypedRef.current) {
                 setShowSuggestions(true);
                 updateDropdownPosition();
               }
             }}
             onBlur={() => {
-              setTimeout(() => setShowSuggestions(false), 200);
+              setTimeout(() => {
+                setShowSuggestions(false);
+                setAddresses([]);
+                hasUserTypedRef.current = false;
+                // NE PAS réinitialiser lastSearchedValueRef pour garder la mémoire de la valeur validée
+              }, 200);
             }}
             required={required}
             aria-invalid={showError ? 'true' : 'false'}

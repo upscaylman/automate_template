@@ -7,6 +7,7 @@ import { Sidebar } from './components/Sidebar';
 import { Footer } from './components/Footer';
 import { FormStep } from './components/FormStep';
 import { Button } from './components/Button';
+import { UpdateNotification } from './components/UpdateNotification';
 import { generateWordDocument, convertWordToPdf, downloadBlob, base64ToBlob, sendEmailWithPdf } from './api';
 import { Toast, useToast } from './components/Toast';
 import { LoadingOverlay } from './components/Spinner';
@@ -130,12 +131,7 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // Afficher un toast informatif à l'étape 3 si les champs obligatoires ne sont pas remplis
-  useEffect(() => {
-    if (isLastStep && !areAllRequiredFieldsFilled && selectedTemplate) {
-      showError('⚠️ Veuillez remplir tous les champs obligatoires (astérisque en rouge *) pour générer le document');
-    }
-  }, [isLastStep, areAllRequiredFieldsFilled, selectedTemplate]);
+
 
   // Fonction pour extraire les initiales d'un nom
   const getInitials = (fullName: string): string => {
@@ -222,12 +218,15 @@ const App: React.FC = () => {
     }
   }, [selectedTemplate]);
 
-  // Nettoyer les données du formulaire (remplacer undefined/null par des chaînes vides)
+  // Nettoyer les données du formulaire (supprimer les valeurs vides/undefined/null)
   const cleanFormData = useCallback((data: FormData): Record<string, string> => {
     const cleaned: Record<string, string> = {};
     Object.keys(data).forEach(key => {
       const value = data[key];
-      cleaned[key] = (value !== undefined && value !== null && value !== '') ? String(value) : '';
+      // Ne garder que les valeurs non vides
+      if (value !== undefined && value !== null && value !== '' && String(value).trim() !== '') {
+        cleaned[key] = String(value);
+      }
     });
     return cleaned;
   }, []);
@@ -689,16 +688,14 @@ const App: React.FC = () => {
                        >
                          <span className="material-icons text-[20px] group-hover:scale-110 transition-transform">delete_sweep</span>
                        </button>
-                       {/* Bouton données de test - masqué mais conservé dans le code */}
-                       {false && (
-                         <button
-                           onClick={fillTestData}
-                           className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-[#0072ff] hover:bg-white transition-all duration-300 group"
-                           title="Données de test"
-                         >
-                           <span className="material-icons text-[20px] group-hover:scale-110 transition-transform">casino</span>
-                         </button>
-                       )}
+                       {/* Bouton données de test */}
+                       <button
+                         onClick={fillTestData}
+                         className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-[#0072ff] hover:bg-white transition-all duration-300 group"
+                         title="Données de test"
+                       >
+                         <span className="material-icons text-[20px] group-hover:scale-110 transition-transform">casino</span>
+                       </button>
                      </div>
 
                      {/* Navigation Group */}
@@ -757,8 +754,6 @@ const App: React.FC = () => {
                        icon="visibility"
                        className="py-4 px-8 text-lg rounded-[2rem] shadow-xl hover:shadow-2xl hover:shadow-[#a84383]/20"
                        onClick={handlePreview}
-                       disabled={!areAllRequiredFieldsFilled}
-                       title={!areAllRequiredFieldsFilled ? 'Veuillez remplir tous les champs obligatoires' : ''}
                      />
                   </div>
                )}
@@ -814,6 +809,9 @@ const App: React.FC = () => {
           onClose={hideToast}
         />
       )}
+
+      {/* Update Notification */}
+      <UpdateNotification checkInterval={5 * 60 * 1000} />
 
     </div>
   );

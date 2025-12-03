@@ -210,11 +210,16 @@ function Handle-Request {
                 default { "application/octet-stream" }
             }
 
-            $Response.ContentType = $contentType
-            $Response.ContentLength64 = $Buffer.Length
-            $Response.StatusCode = 200
+            try {
+                $Response.ContentType = $contentType
+                $Response.ContentLength64 = $Buffer.Length
+                $Response.StatusCode = 200
 
-            $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+                $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+            }
+            catch {
+                Write-Host "[WARNING] Erreur lors de l'envoi de l'image (connexion fermée): $_" -ForegroundColor Yellow
+            }
         } else {
             Write-Host "Image non trouvee: $imgFile" -ForegroundColor Red
             $Response.StatusCode = 404
@@ -258,15 +263,22 @@ function Handle-Request {
             $result = $proxyResponse | ConvertTo-Json -Depth 10 -Compress
             $Buffer = [System.Text.Encoding]::UTF8.GetBytes($result)
 
-            $Response.ContentType = "application/json; charset=utf-8"
-            $Response.ContentLength64 = $Buffer.Length
-            $Response.StatusCode = 200
-            $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
-            $Response.OutputStream.Flush()
+            try {
+                $Response.ContentType = "application/json; charset=utf-8"
+                $Response.ContentLength64 = $Buffer.Length
+                $Response.StatusCode = 200
+                $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+                $Response.OutputStream.Flush()
 
-            Write-Host "[PROXY] Réponse envoyée ($($Buffer.Length) bytes)" -ForegroundColor Green
-            Write-Host "========================================" -ForegroundColor Green
-            Write-Host "" -ForegroundColor White
+                Write-Host "[PROXY] Réponse envoyée ($($Buffer.Length) bytes)" -ForegroundColor Green
+                Write-Host "========================================" -ForegroundColor Green
+                Write-Host "" -ForegroundColor White
+            }
+            catch {
+                Write-Host "[WARNING] Erreur lors de l'envoi de la réponse proxy (connexion fermée): $_" -ForegroundColor Yellow
+                Write-Host "========================================" -ForegroundColor Yellow
+                Write-Host "" -ForegroundColor White
+            }
 
         } catch {
             Write-Host "" -ForegroundColor White
@@ -281,11 +293,17 @@ function Handle-Request {
             } | ConvertTo-Json
 
             $Buffer = [System.Text.Encoding]::UTF8.GetBytes($errorJson)
-            $Response.ContentType = "application/json; charset=utf-8"
-            $Response.ContentLength64 = $Buffer.Length
-            $Response.StatusCode = 500
-            $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
-            $Response.OutputStream.Flush()
+
+            try {
+                $Response.ContentType = "application/json; charset=utf-8"
+                $Response.ContentLength64 = $Buffer.Length
+                $Response.StatusCode = 500
+                $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+                $Response.OutputStream.Flush()
+            }
+            catch {
+                Write-Host "[WARNING] Impossible d'envoyer l'erreur au client (connexion fermée)" -ForegroundColor Yellow
+            }
 
             Write-Host "" -ForegroundColor White
         }
@@ -302,16 +320,27 @@ function Handle-Request {
             } | ConvertTo-Json
 
             $Buffer = [System.Text.Encoding]::UTF8.GetBytes($healthResponse)
-            $Response.ContentType = "application/json; charset=utf-8"
-            $Response.ContentLength64 = $Buffer.Length
-            $Response.StatusCode = 200
-            $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
 
-            Write-Host "[HEALTH] Health check OK" -ForegroundColor Green
+            try {
+                $Response.ContentType = "application/json; charset=utf-8"
+                $Response.ContentLength64 = $Buffer.Length
+                $Response.StatusCode = 200
+                $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+
+                Write-Host "[HEALTH] Health check OK" -ForegroundColor Green
+            }
+            catch {
+                Write-Host "[WARNING] Erreur lors de l'envoi du health check (connexion fermée): $_" -ForegroundColor Yellow
+            }
         }
         catch {
             Write-Host "[ERROR] Health check failed: $_" -ForegroundColor Red
-            $Response.StatusCode = 500
+            try {
+                $Response.StatusCode = 500
+            }
+            catch {
+                # Ignorer si la réponse est déjà fermée
+            }
         }
     }
     # ============================================
@@ -418,22 +447,29 @@ function Handle-Request {
                 Write-Host "[DEBUG] Buffer créé, taille: $($Buffer.Length) bytes" -ForegroundColor Magenta
 
                 # Définir les headers
-                $Response.ContentType = "application/json; charset=utf-8"
-                $Response.ContentLength64 = $Buffer.Length
-                $Response.StatusCode = 200
+                try {
+                    $Response.ContentType = "application/json; charset=utf-8"
+                    $Response.ContentLength64 = $Buffer.Length
+                    $Response.StatusCode = 200
 
-                Write-Host "[DEBUG] Headers définis - ContentType: $($Response.ContentType)" -ForegroundColor Cyan
-                Write-Host "[DEBUG] ContentLength64: $($Response.ContentLength64)" -ForegroundColor Cyan
-                Write-Host "[DEBUG] Status code: $($Response.StatusCode)" -ForegroundColor Cyan
-                Write-Host "[DEBUG] Envoi de la réponse..." -ForegroundColor Cyan
+                    Write-Host "[DEBUG] Headers définis - ContentType: $($Response.ContentType)" -ForegroundColor Cyan
+                    Write-Host "[DEBUG] ContentLength64: $($Response.ContentLength64)" -ForegroundColor Cyan
+                    Write-Host "[DEBUG] Status code: $($Response.StatusCode)" -ForegroundColor Cyan
+                    Write-Host "[DEBUG] Envoi de la réponse..." -ForegroundColor Cyan
 
-                # Envoyer
-                $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
-                $Response.OutputStream.Flush()
+                    # Envoyer
+                    $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+                    $Response.OutputStream.Flush()
 
-                Write-Host "[SUCCESS] Réponse envoyée avec succès" -ForegroundColor Green
-                Write-Host "========================================" -ForegroundColor Green
-                Write-Host "" -ForegroundColor White
+                    Write-Host "[SUCCESS] Réponse envoyée avec succès" -ForegroundColor Green
+                    Write-Host "========================================" -ForegroundColor Green
+                    Write-Host "" -ForegroundColor White
+                }
+                catch {
+                    Write-Host "[WARNING] Erreur lors de l'envoi de la réponse (connexion probablement fermée par le client): $_" -ForegroundColor Yellow
+                    Write-Host "========================================" -ForegroundColor Yellow
+                    Write-Host "" -ForegroundColor White
+                }
             } else {
                 throw "Fichier PDF non généré"
             }
@@ -451,23 +487,39 @@ function Handle-Request {
             } | ConvertTo-Json
 
             $Buffer = [System.Text.Encoding]::UTF8.GetBytes($errorResult)
-            $Response.ContentType = "application/json; charset=utf-8"
-            $Response.ContentLength64 = $Buffer.Length
-            $Response.StatusCode = 500
 
-            Write-Host "[DEBUG] Envoi erreur, taille: $($Buffer.Length) bytes" -ForegroundColor Yellow
+            try {
+                $Response.ContentType = "application/json; charset=utf-8"
+                $Response.ContentLength64 = $Buffer.Length
+                $Response.StatusCode = 500
 
-            $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
-            $Response.OutputStream.Flush()
-            Write-Host "[DEBUG] Erreur envoyée et flushée" -ForegroundColor Yellow
+                Write-Host "[DEBUG] Envoi erreur, taille: $($Buffer.Length) bytes" -ForegroundColor Yellow
+
+                $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
+                $Response.OutputStream.Flush()
+                Write-Host "[DEBUG] Erreur envoyée et flushée" -ForegroundColor Yellow
+            }
+            catch {
+                Write-Host "[WARNING] Impossible d'envoyer l'erreur au client (connexion fermée): $_" -ForegroundColor Yellow
+            }
             Write-Host "" -ForegroundColor White
         }
     }
     else {
-        $Response.StatusCode = 404
+        try {
+            $Response.StatusCode = 404
+        }
+        catch {
+            # Ignorer si la réponse est déjà fermée
+        }
     }
-    
-    $Response.Close()
+
+    try {
+        $Response.Close()
+    }
+    catch {
+        # Ignorer si la réponse est déjà fermée
+    }
 }
 
 # Créer le listener HTTP

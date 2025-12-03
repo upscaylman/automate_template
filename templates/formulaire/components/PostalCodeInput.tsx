@@ -10,6 +10,7 @@ interface PostalCodeInputProps {
   error?: string;
   placeholder?: string;
   skipAutoSearch?: boolean;
+  resetKey?: string | number; // Pour forcer le reset quand on change de page
 }
 
 interface City {
@@ -26,7 +27,8 @@ export const PostalCodeInput: React.FC<PostalCodeInputProps> = ({
   required,
   error: externalError,
   placeholder,
-  skipAutoSearch
+  skipAutoSearch,
+  resetKey
 }) => {
   const [cities, setCities] = useState<City[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +36,8 @@ export const PostalCodeInput: React.FC<PostalCodeInputProps> = ({
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
   const [isManualInput, setIsManualInput] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasUserTypedRef = useRef(false);
+  const lastSearchedValueRef = useRef<string>('');
 
   const showError = !!externalError;
 
@@ -83,19 +87,32 @@ export const PostalCodeInput: React.FC<PostalCodeInputProps> = ({
       return;
     }
 
+    // NE PAS rechercher si la valeur n'a pas changé depuis la dernière recherche
+    // Cela évite de relancer la recherche quand on revient sur la page avec une valeur déjà remplie
+    if (value === lastSearchedValueRef.current) {
+      return;
+    }
+
     const postalCode = extractPostalCode(value);
     if (postalCode.length === 5) {
+      hasUserTypedRef.current = true;
+      lastSearchedValueRef.current = value;
       searchCities(postalCode);
     } else {
       setCities([]);
       setShowSuggestions(false);
+      hasUserTypedRef.current = false;
+      lastSearchedValueRef.current = '';
     }
   }, [value, searchCities, isManualInput, skipAutoSearch]);
 
   // Sélectionner une ville
   const selectCity = (city: City) => {
     const postalCode = extractPostalCode(value) || city.codesPostaux[0];
-    onChange(`${postalCode} ${city.nom}`);
+    const newValue = `${postalCode} ${city.nom}`;
+    hasUserTypedRef.current = false;
+    lastSearchedValueRef.current = newValue; // Marquer cette valeur comme déjà recherchée
+    onChange(newValue);
     setShowSuggestions(false);
     setCities([]);
   };
@@ -109,7 +126,7 @@ export const PostalCodeInput: React.FC<PostalCodeInputProps> = ({
         top: `${rect.bottom + 8}px`,
         left: `${rect.left}px`,
         width: `${rect.width}px`,
-        zIndex: 9999
+        zIndex: 10000
       });
     }
   }, [showSuggestions]);
@@ -131,6 +148,14 @@ export const PostalCodeInput: React.FC<PostalCodeInputProps> = ({
     }
   }, [showSuggestions, updateDropdownPosition]);
 
+  // Nettoyer les suggestions quand resetKey change (changement de page)
+  useEffect(() => {
+    setCities([]);
+    setShowSuggestions(false);
+    hasUserTypedRef.current = false;
+    // NE PAS réinitialiser lastSearchedValueRef pour garder la mémoire de la valeur validée
+  }, [resetKey]);
+
   return (
     <>
       <div className={wrapperClass}>
@@ -145,15 +170,28 @@ export const PostalCodeInput: React.FC<PostalCodeInputProps> = ({
             className={inputClass}
             placeholder={placeholder || " "}
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              // Si l'utilisateur modifie manuellement, réinitialiser la mémoire pour permettre une nouvelle recherche
+              if (newValue !== lastSearchedValueRef.current) {
+                lastSearchedValueRef.current = '';
+              }
+              onChange(newValue);
+            }}
             onFocus={() => {
-              if (cities.length > 0) {
+              // Ne montrer les suggestions que si l'utilisateur a déjà tapé
+              if (cities.length > 0 && hasUserTypedRef.current) {
                 setShowSuggestions(true);
                 updateDropdownPosition();
               }
             }}
             onBlur={() => {
-              setTimeout(() => setShowSuggestions(false), 200);
+              setTimeout(() => {
+                setShowSuggestions(false);
+                setCities([]);
+                hasUserTypedRef.current = false;
+                // NE PAS réinitialiser lastSearchedValueRef pour garder la mémoire de la valeur validée
+              }, 200);
             }}
             required={required}
             aria-invalid={showError ? 'true' : 'false'}
