@@ -684,7 +684,7 @@ const App: React.FC = () => {
 
                        <button
                          onClick={clearData}
-                         className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-[#e04142] hover:bg-white transition-all duration-300 group"
+                         className="w-10 h-10 flex items-center justify-center rounded-full text-[#aa4584] hover:text-[#8b3569] hover:bg-white transition-all duration-300 group"
                          title="Effacer tout"
                        >
                          <span className="material-icons text-[20px] group-hover:scale-110 transition-transform">delete_sweep</span>
