@@ -563,7 +563,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#2f2f2f] text-[#1c1b1f]">
+    <div className="flex h-screen overflow-hidden bg-[#2f2f2f] dark:bg-[rgb(18,18,18)] text-[#1c1b1f] dark:text-white">
       {/* Sidebar */}
       <Sidebar
         templates={TEMPLATES}
@@ -641,7 +641,7 @@ const App: React.FC = () => {
                              ${isActive
                                ? 'bg-[#2a2a2a] dark:bg-white text-white dark:text-[#2a2a2a] scale-100 rotate-0 shadow-md'
                                : isCompleted
-                                 ? 'bg-[#2a2a2a] text-white scale-90 group-hover:scale-100'
+                                 ? 'bg-[#2a2a2a] dark:bg-[#a84383] text-white scale-90 group-hover:scale-100'
                                  : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-400 scale-90 group-hover:text-gray-600 dark:group-hover:text-gray-200 group-hover:scale-100 group-hover:shadow-md'}
                            `}>
                              {isCompleted ? <span className="material-icons text-lg animate-[fadeIn_0.3s]">check</span> : idx + 1}
@@ -667,7 +667,7 @@ const App: React.FC = () => {
                   <div className="flex items-center justify-between w-full md:w-auto gap-3 md:gap-4 pl-1 md:pl-0">
 
                      {/* Utilities Group */}
-                     <div className="flex items-center gap-1 bg-gray-50/80 rounded-full p-1 border border-gray-100/50 flex-shrink-0">
+                     <div className="flex items-center gap-1 bg-gray-50/80 dark:bg-[#1a1a1a]/80 rounded-full p-1 border border-gray-100/50 dark:border-gray-800/50 flex-shrink-0">
                        {/* Bouton Personnaliser (uniquement pour template custom) */}
                        {selectedTemplate === 'custom' && (
                          <button
@@ -675,7 +675,7 @@ const App: React.FC = () => {
                            className={`w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 group
                              ${isCustomizing
                                ? 'bg-[#3b5265] text-white shadow-md'
-                               : 'text-gray-400 hover:text-[#3b5265] hover:bg-white'}
+                               : 'text-gray-400 hover:text-[#3b5265] hover:bg-white dark:hover:bg-[#2f2f2f]'}
                            `}
                            title="Personnaliser les champs"
                          >
@@ -687,7 +687,7 @@ const App: React.FC = () => {
 
                        <button
                          onClick={clearData}
-                         className="w-10 h-10 flex items-center justify-center rounded-full text-[#aa4584] hover:text-[#8b3569] hover:bg-white transition-all duration-300 group"
+                         className="w-10 h-10 flex items-center justify-center rounded-full text-[#aa4584] hover:text-[#8b3569] hover:bg-white dark:hover:bg-[#2f2f2f] transition-all duration-300 group"
                          title="Effacer tout"
                        >
                          <span className="material-icons text-[20px] group-hover:scale-110 transition-transform">delete_sweep</span>
@@ -695,7 +695,7 @@ const App: React.FC = () => {
                        {/* Bouton données de test */}
                        <button
                          onClick={fillTestData}
-                         className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-[#0072ff] hover:bg-white transition-all duration-300 group"
+                         className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-[#0072ff] hover:bg-white dark:hover:bg-[#2f2f2f] transition-all duration-300 group"
                          title="Données de test"
                        >
                          <span className="material-icons text-[20px] group-hover:scale-110 transition-transform">casino</span>
@@ -710,8 +710,8 @@ const App: React.FC = () => {
                          className={`
                            h-12 px-4 rounded-full flex items-center justify-center gap-2 transition-all duration-300 flex-shrink-0
                            ${isFirstStep
-                             ? 'text-gray-300 cursor-not-allowed'
-                             : 'text-[#1c1b1f] hover:bg-gray-100 active:scale-95 font-medium'}
+                             ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                             : 'text-[#1c1b1f] dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 active:scale-95 font-medium'}
                          `}
                        >
                           <span className="material-icons">arrow_back</span>
@@ -722,10 +722,10 @@ const App: React.FC = () => {
                          onClick={() => handleStepChange(currentStepIdx + 1)}
                          disabled={isLastStep}
                          className={`
-                           h-12 px-6 rounded-full flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:shadow-[#a84383]/30 transition-all duration-300 flex-shrink-0
+                           h-12 px-6 rounded-full flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:shadow-[#a84383]/30 dark:hover:shadow-[#e062b1]/30 transition-all duration-300 flex-shrink-0
                            ${isLastStep
-                             ? 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none'
-                             : 'bg-[#a84383] text-white active:scale-95'}
+                             ? 'bg-gray-100 dark:bg-gray-800 text-gray-300 cursor-not-allowed shadow-none'
+                             : 'bg-[#a84383] dark:bg-[#e062b1] text-white active:scale-95'}
                          `}
                        >
                           <span className="font-bold text-sm hidden sm:inline">Suivant</span>

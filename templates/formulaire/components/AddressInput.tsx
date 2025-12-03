@@ -46,12 +46,12 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   const showError = !!externalError;
 
   const wrapperClass = "relative group";
-  const labelClass = "block text-sm font-medium text-gray-700 mb-1 ml-1";
-  const baseInputClass = `w-full bg-[#fdfbff] border-2 text-[#1c1b1f] text-base rounded-2xl py-3 outline-none transition-all duration-200 placeholder:text-gray-400 ${icon ? 'pl-12 pr-4' : 'px-4'}`;
+  const labelClass = "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 ml-1";
+  const baseInputClass = `w-full bg-[#fdfbff] dark:bg-[rgb(37,37,37)] border-2 text-[#1c1b1f] dark:text-white text-base rounded-2xl py-3 outline-none transition-all duration-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 ${icon ? 'pl-12 pr-4' : 'px-4'}`;
   const inputClass = `${baseInputClass} ${
     showError
       ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10'
-      : 'border-[#e7e0ec] focus:border-[#a84383] focus:ring-4 focus:ring-[#a84383]/10'
+      : 'border-[#e7e0ec] dark:border-[rgb(75,85,99)] focus:border-[#a84383] focus:ring-4 focus:ring-[#a84383]/10'
   }`;
 
   // Rechercher les adresses avec l'API officielle
@@ -201,7 +201,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
             required={required}
             aria-invalid={showError ? 'true' : 'false'}
           />
-          {icon && <span className="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">{icon}</span>}
+          {icon && <span className="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none">{icon}</span>}
           {isLoading && (
             <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10">
               <div className="w-5 h-5 border-2 border-[#a84383] border-t-transparent rounded-full animate-spin"></div>

@@ -125,13 +125,13 @@ export const AITextarea: React.FC<AITextareaProps> = ({
 
   return (
     <div className="relative group">
-      <label className="block text-sm font-medium text-gray-700 mb-1 ml-1">
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 ml-1">
         {label}
         {required && <span style={{ color: 'rgb(196, 35, 45)' }}> *</span>}
       </label>
       <div className="relative">
         <textarea
-          className="w-full bg-[#fdfbff] border-2 border-[#e7e0ec] text-[#1c1b1f] text-base rounded-2xl px-4 py-3 pr-24 outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-[#a84383] focus:ring-4 focus:ring-[#a84383]/10 resize-y"
+          className="w-full bg-[#fdfbff] dark:bg-[rgb(37,37,37)] border-2 border-[#e7e0ec] dark:border-[rgb(75,85,99)] text-[#1c1b1f] dark:text-white text-base rounded-2xl px-4 py-3 pr-24 outline-none transition-all duration-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#a84383] focus:ring-4 focus:ring-[#a84383]/10 resize-y"
           placeholder={placeholder}
           required={required}
           rows={rows}

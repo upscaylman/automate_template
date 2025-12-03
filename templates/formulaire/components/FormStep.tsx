@@ -153,17 +153,17 @@ const FormStepComponent: React.FC<FormStepProps> = ({
 
   return (
     <div className={`
-      bg-white rounded-[2rem] shadow-xl p-6 md:p-8 animate-[fadeIn_0.4s_ease-out] transition-all duration-300
+      bg-white dark:bg-[#1e1e1e] rounded-[2rem] shadow-xl p-6 md:p-8 animate-[fadeIn_0.4s_ease-out] transition-all duration-300
       ${isCustomizing ? 'ring-4 ring-[#3b5265]/20 scale-[1.01]' : ''}
     `}>
       {/* Header Card */}
-      <div className="flex items-center gap-4 p-4 -mx-2 -mt-2 mb-8 bg-gradient-to-r from-[#ffecf8] to-white rounded-2xl border border-[#ffeefb]">
-        <div className={`w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg ${getIconColor(step)}`}>
-          <span className="material-icons text-2xl text-[#e062b1]">{getStepIcon(step)}</span>
+      <div className="flex items-center gap-4 p-4 -mx-2 -mt-2 mb-8 bg-gradient-to-r from-[#ffecf8] to-white dark:from-[#4a1a36] dark:to-[#1e1e1e] rounded-2xl border border-[#ffeefb] dark:border-gray-700">
+        <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg ${getIconColor(step)} dark:bg-gray-200`}>
+          <span className="material-icons text-2xl text-[#e062b1] dark:text-[#a84383]">{getStepIcon(step)}</span>
         </div>
         <div>
-          <h3 className="text-xl font-bold text-gray-900">{getStepTitle(step)}</h3>
-          <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{getStepTitle(step)}</h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
             {isCustomizing ? 'Mode personnalisation : Glissez-déposez les champs' : 'Veuillez remplir les champs ci-dessous'}
           </p>
         </div>

@@ -93,7 +93,7 @@ const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate,
       <aside
         className={`
           fixed md:sticky inset-y-0 md:top-0 left-0 z-[60] md:z-30
-          bg-white dark:bg-[#0f0f0f] border-r border-gray-100 dark:border-gray-800 shadow-2xl md:shadow-none
+          bg-white dark:bg-[rgb(30,30,30)] border-r border-gray-100 dark:border-gray-800 shadow-2xl md:shadow-none
           transform transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
           ${isOpenMobile ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
           ${isDesktopCollapsed ? 'w-[280px] md:w-[88px]' : 'w-[280px]'}
@@ -160,7 +160,7 @@ const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate,
                       : 'border-[#aa4584] dark:border-[#e062b1] bg-[#ffd8ec]/30 dark:bg-[#4a1a36]/50 shadow-md scale-[1.02]')
                   : (isDesktopCollapsed
                       ? ''
-                      : 'border-transparent hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-200 dark:hover:border-gray-700')}
+                      : 'border-[rgb(229,231,235)] dark:border-[rgb(55,65,81)] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-200 dark:hover:border-gray-600')}
               `}
               aria-pressed={selectedTemplate === template.id}
               aria-label={`Sélectionner le modèle ${template.title}`}
@@ -243,14 +243,22 @@ const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate,
           ))}
         </nav>
 
-        {/* Footer avec logo FO Métaux (Visible uniquement si fermé) */}
-        {isDesktopCollapsed && (
+        {/* Footer */}
+        {isDesktopCollapsed ? (
+          /* Logo FO Métaux si fermé */
           <div className="p-2 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#1a1a1a] flex items-center justify-center">
             <img
               src="/assets/img/FOmetaux_HD.png"
               alt="FO Métaux"
               className="w-10 h-10 object-contain"
             />
+          </div>
+        ) : (
+          /* Texte d'information si ouvert */
+          <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#1a1a1a]" role="status" aria-live="polite">
+            <p className="text-xs text-center text-gray-400">
+              Sélectionnez un modèle pour commencer
+            </p>
           </div>
         )}
       </aside>

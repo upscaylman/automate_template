@@ -31,12 +31,12 @@ export const Input: React.FC<InputProps> = ({
   const showError = externalError ? true : (touched && internalError);
 
   const wrapperClass = "relative group";
-  const labelClass = "block text-sm font-medium text-gray-700 mb-1 ml-1";
-  const baseInputClass = `w-full bg-[#fdfbff] border-2 text-[#1c1b1f] text-base rounded-2xl py-3 outline-none transition-all duration-200 placeholder:text-gray-400 ${icon ? 'pl-12 pr-4' : 'px-4'}`;
+  const labelClass = "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 ml-1";
+  const baseInputClass = `w-full bg-[#fdfbff] dark:bg-[rgb(37,37,37)] border-2 text-[#1c1b1f] dark:text-white text-base rounded-2xl py-3 outline-none transition-all duration-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 ${icon ? 'pl-12 pr-4' : 'px-4'}`;
   const inputClass = `${baseInputClass} ${
     showError
       ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/10'
-      : 'border-[#e7e0ec] focus:border-[#a84383] focus:ring-4 focus:ring-[#a84383]/10'
+      : 'border-[#e7e0ec] dark:border-[rgb(75,85,99)] focus:border-[#a84383] focus:ring-4 focus:ring-[#a84383]/10'
   }`;
 
   // Validation en temps réel
@@ -78,7 +78,7 @@ export const Input: React.FC<InputProps> = ({
             aria-describedby={showError ? `${fieldId}-error` : undefined}
             {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
           />
-          {icon && <span className="material-icons absolute left-4 top-4 text-gray-400 pointer-events-none">{icon}</span>}
+          {icon && <span className="material-icons absolute left-4 top-4 text-gray-400 dark:text-gray-500 pointer-events-none">{icon}</span>}
         </div>
         {showError && (
           <div id={`${fieldId}-error`} className="flex items-center gap-1 mt-1 ml-1 text-sm text-red-600 animate-[fadeIn_0.2s]" role="alert">
@@ -141,7 +141,7 @@ export const Input: React.FC<InputProps> = ({
           aria-describedby={showError ? `${fieldId}-error` : undefined}
           {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
         />
-        {icon && <span className="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">{icon}</span>}
+        {icon && <span className="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none">{icon}</span>}
       </div>
       {showError && (
         <div id={`${fieldId}-error`} className="flex items-center gap-1 mt-1 ml-1 text-sm text-red-600 animate-[fadeIn_0.2s]" role="alert">
