@@ -268,7 +268,7 @@ const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate,
         <button
           onClick={() => setIsOpenMobile(true)}
           className={`
-            md:hidden fixed bottom-6 left-6 z-40 bg-[rgb(168,67,131)] dark:bg-[rgb(73,25,54)] text-white shadow-xl ring-2 ring-[rgb(168,67,131)] dark:ring-[rgb(168,67,131)]
+            md:hidden fixed bottom-6 left-6 z-40 bg-[rgb(168,67,131)] dark:bg-[rgb(166,65,130)] text-white shadow-xl ring-2 ring-[rgb(168,67,131)] dark:ring-[rgb(168,67,131)]
             flex items-center justify-center hover:scale-105
             ${isButtonCompact
               ? 'w-14 h-14 rounded-full p-0'
