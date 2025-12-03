@@ -693,13 +693,15 @@ const App: React.FC = () => {
                          <span className="material-icons text-[20px] group-hover:scale-110 transition-transform">delete_sweep</span>
                        </button>
                        {/* Bouton données de test */}
-                       <button
-                         onClick={fillTestData}
-                         className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-[#0072ff] hover:bg-white dark:hover:bg-[#2f2f2f] transition-all duration-300 group"
-                         title="Données de test"
-                       >
-                         <span className="material-icons text-[20px] group-hover:scale-110 transition-transform">casino</span>
-                       </button>
+                       {false && (
+                         <button
+                           onClick={fillTestData}
+                           className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-[#0072ff] hover:bg-white dark:hover:bg-[#2f2f2f] transition-all duration-300 group"
+                           title="Données de test"
+                         >
+                           <span className="material-icons text-[20px] group-hover:scale-110 transition-transform">casino</span>
+                         </button>
+                       )}
                      </div>
 
                      {/* Navigation Group */}

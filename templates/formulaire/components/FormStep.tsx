@@ -182,7 +182,7 @@ const FormStepComponent: React.FC<FormStepProps> = ({
               relative transition-all duration-300 transform-gpu
               ${field.width === 'full' ? 'md:col-span-2' : ''}
 
-              ${isCustomizing ? 'cursor-grab active:cursor-grabbing p-4 border-2 border-dashed border-[#3b5265]/30 rounded-2xl bg-gray-50/50 hover:bg-white hover:shadow-lg hover:border-[#3b5265] hover:z-10' : ''}
+              ${isCustomizing ? 'cursor-grab active:cursor-grabbing p-4 border-2 border-dashed border-[#3b5265]/30 dark:border-blue-400/30 rounded-2xl bg-gray-50/50 dark:bg-[#252525] hover:bg-white dark:hover:bg-[#2f2f2f] hover:shadow-lg hover:border-[#3b5265] dark:hover:border-blue-400 hover:z-10' : ''}
 
               ${draggedIndex === index ? 'opacity-50' : ''}
             `}
@@ -279,23 +279,21 @@ const FormStepComponent: React.FC<FormStepProps> = ({
 
       {/* SECTION: ZONE DE RESTAURATION DES CHAMPS SUPPRIMÉS */}
       {isCustomizing && externalRemovedFields.length > 0 && (
-        <div className="mt-12 pt-6 border-t-2 border-dashed border-[#e062b1]/30 animate-[fadeInUp_0.3s_ease-out] bg-[#ffecf8]/30 rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="material-icons text-[#a84383] text-2xl">restore_from_trash</span>
-            <h4 className="text-lg font-bold text-gray-900">Champs disponibles</h4>
-            <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded-full">{externalRemovedFields.length}</span>
-          </div>
-          <p className="text-sm text-gray-600 mb-4">Cliquez pour ajouter un champ</p>
+        <div className="mt-12 pt-6 border-t-2 border-dashed border-[#e062b1]/30 dark:border-[#a84383]/50 animate-[fadeInUp_0.3s_ease-out] bg-[#ffecf8]/30 dark:bg-[#4a1a36]/30 rounded-xl p-6">
+          <h4 className="flex items-center gap-2 text-sm font-bold text-[#a84383] dark:text-[#e062b1] uppercase tracking-wide mb-4">
+            <span className="material-icons">restore_from_trash</span>
+            Champs disponibles (Cliquez pour ajouter)
+          </h4>
           <div className="flex flex-wrap gap-3">
             {externalRemovedFields.map((removedItem) => (
               <button
                 key={removedItem.field.id}
                 onClick={() => restoreField(removedItem)}
-                className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-[#e062b1]/30 rounded-full hover:bg-[#ffecf8] hover:border-[#a84383] hover:shadow-md transition-all duration-200 group"
+                className="group flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#2f2f2f] border border-[#a84383]/20 dark:border-[#e062b1]/30 rounded-full hover:bg-[#a84383] dark:hover:bg-[#e062b1] hover:text-white hover:border-[#a84383] dark:hover:border-[#e062b1] hover:shadow-md transition-all shadow-sm active:scale-95 text-gray-700 dark:text-gray-300"
                 title={`Ajouter ${removedItem.field.label}`}
               >
-                <span className="material-icons text-lg text-[#a84383] group-hover:scale-110 transition-transform">add_circle</span>
-                <span className="text-sm font-medium text-gray-700">{removedItem.field.label}</span>
+                <span className="material-icons text-lg text-[#a84383] dark:text-[#e062b1] group-hover:text-white transition-colors">add_circle</span>
+                <span className="text-sm font-medium">{removedItem.field.label}</span>
               </button>
             ))}
           </div>

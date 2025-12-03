@@ -229,7 +229,7 @@ const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate,
               {/* Tooltip au survol OU si sélectionné (Visible uniquement si réduit) */}
               {isDesktopCollapsed && (
                 <div className={`
-                  absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg transition-all duration-200 whitespace-nowrap z-50 shadow-xl pointer-events-none transform
+                  absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-2 bg-gray-800 text-white dark:text-[rgb(156,163,175)] text-xs rounded-lg transition-all duration-200 whitespace-nowrap z-50 shadow-xl pointer-events-none transform
                   ${selectedTemplate === template.id
                     ? 'opacity-100 visible translate-x-0'
                     : 'opacity-0 invisible translate-x-[-10px] group-hover:opacity-100 group-hover:visible group-hover:translate-x-0'}
@@ -268,7 +268,7 @@ const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate,
         <button
           onClick={() => setIsOpenMobile(true)}
           className={`
-            md:hidden fixed bottom-6 left-6 z-40 bg-[#aa4584] text-white shadow-xl
+            md:hidden fixed bottom-6 left-6 z-40 bg-[rgb(168,67,131)] dark:bg-[rgb(73,25,54)] text-white shadow-xl ring-2 ring-[rgb(168,67,131)] dark:ring-[rgb(168,67,131)]
             flex items-center justify-center hover:scale-105
             ${isButtonCompact
               ? 'w-14 h-14 rounded-full p-0'
