@@ -245,7 +245,7 @@ FO METAUX`;
         <div>
            <label className="block text-sm font-bold text-gray-700 mb-2">Message personnalisé (optionnel)</label>
            <textarea
-             className="w-full bg-[#fdfbff] border-2 border-gray-200 rounded-xl p-4 outline-none focus:border-[#a84383] min-h-[120px]"
+             className="w-full bg-[#fdfbff] border-2 border-gray-200 rounded-xl p-4 outline-none focus:border-[#a84383] min-h-[120px] text-black"
              placeholder="Ajoutez un message personnalisé qui accompagnera le document..."
              value={message}
              onChange={(e) => setMessage(e.target.value)}

@@ -97,7 +97,7 @@ const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate,
           transform transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)]
           ${isOpenMobile ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
           ${isDesktopCollapsed ? 'w-[280px] md:w-[88px]' : 'w-[280px]'}
-          flex flex-col h-screen
+          flex flex-col h-dvh md:h-screen
         `}
         role="complementary"
         aria-label="Sélection de modèles de documents"

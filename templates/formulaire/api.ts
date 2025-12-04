@@ -130,7 +130,8 @@ export const convertWordToPdf = async (
 export const sendEmailWithPdf = async (
   data: FormData,
   pdfBase64: string,
-  customMessage?: string
+  customMessage?: string,
+  filename?: string
 ): Promise<EmailSendResult> => {
   try {
     console.log('=== ENVOI EMAIL AVEC PDF ===');
@@ -138,6 +139,7 @@ export const sendEmailWithPdf = async (
     interface EmailPayload extends FormData {
       pdfFile: string;
       customEmailMessage?: string;
+      pdfFilename?: string;
     }
 
     const payload: EmailPayload = {
@@ -147,6 +149,10 @@ export const sendEmailWithPdf = async (
 
     if (customMessage) {
       payload.customEmailMessage = customMessage;
+    }
+
+    if (filename) {
+      payload.pdfFilename = filename;
     }
 
     const response = await fetch(CONFIG.WEBHOOK_EMAIL_URL, {

@@ -161,6 +161,55 @@ const App: React.FC = () => {
     return initials;
   };
 
+  // Fonction pour générer un nom de fichier intelligent
+  const generateFilename = useCallback((extension: 'docx' | 'pdf'): string => {
+    let prefix = '';
+    let suffix = '';
+
+    // Récupérer le préfixe selon le template
+    if (selectedTemplate === 'designation') {
+      prefix = 'Designation';
+    } else if (selectedTemplate === 'negociation') {
+      prefix = 'Negociation';
+    } else if (selectedTemplate === 'custom') {
+      // Pour custom : utiliser l'objet du document
+      const objet = formData.objet || '';
+      if (objet) {
+        // Extraire le dernier mot significatif de l'objet (ex: "Lettre de recommandation" -> "Recommandation")
+        const words = objet.trim().split(/\s+/);
+        const lastWord = words[words.length - 1];
+        // Capitaliser la première lettre
+        prefix = lastWord.charAt(0).toUpperCase() + lastWord.slice(1).toLowerCase();
+      } else {
+        prefix = 'Document';
+      }
+    } else {
+      prefix = 'Document';
+    }
+
+    // Récupérer le suffixe : nomDestinataire en priorité, sinon codeDocument, sinon timestamp
+    const recipientName = formData.nomDestinataire || '';
+    const codeDocument = formData.codeDocument || '';
+
+    if (recipientName.trim()) {
+      // Nettoyer le nom du destinataire (enlever espaces, convertir accents, enlever caractères spéciaux)
+      suffix = recipientName
+        .trim()
+        .normalize('NFD')  // Décomposer les caractères accentués
+        .replace(/[\u0300-\u036f]/g, '')  // Enlever les accents
+        .replace(/\s+/g, '')  // Enlever les espaces
+        .replace(/[^a-zA-Z0-9_-]/g, '');  // Enlever les caractères spéciaux
+    } else if (codeDocument.trim()) {
+      // Utiliser le code document tel quel (déjà un code propre)
+      suffix = codeDocument.trim();
+    } else {
+      // Fallback : timestamp
+      suffix = new Date().getTime().toString();
+    }
+
+    return `${prefix}_${suffix}.${extension}`;
+  }, [selectedTemplate, formData]);
+
   // Gestion du swipe mobile
   const minSwipeDistance = 50;
 
@@ -448,7 +497,7 @@ const App: React.FC = () => {
       }
 
       const blob = base64ToBlob(wordBase64);
-      const filename = `document_${selectedTemplate}_${new Date().getTime()}.docx`;
+      const filename = generateFilename('docx');
       downloadBlob(blob, filename);
       showSuccess('Document Word téléchargé avec succès !');
     } catch (error) {
@@ -457,7 +506,7 @@ const App: React.FC = () => {
     } finally {
       setIsGenerating(false);
     }
-  }, [isGenerating, selectedTemplate, formData, generatedWord, documentCache, getDataHash, cleanFormData, showSuccess, showError, areAllRequiredFieldsFilled]);
+  }, [isGenerating, selectedTemplate, formData, generatedWord, documentCache, getDataHash, cleanFormData, showSuccess, showError, areAllRequiredFieldsFilled, generateFilename]);
 
   const handleDownloadPdf = useCallback(async () => {
     if (isGenerating || !selectedTemplate) return;
@@ -502,7 +551,7 @@ const App: React.FC = () => {
         setPdfBlob(blob);
       }
 
-      const filename = `document_${selectedTemplate}_${new Date().getTime()}.pdf`;
+      const filename = generateFilename('pdf');
       downloadBlob(blob, filename);
       showSuccess('Document PDF téléchargé avec succès ! Vérifiez vos téléchargements.', 5000);
     } catch (error) {
@@ -511,7 +560,7 @@ const App: React.FC = () => {
     } finally {
       setIsGenerating(false);
     }
-  }, [isGenerating, selectedTemplate, formData, pdfBlob, generatedWord, documentCache, getDataHash, cleanFormData, showSuccess, showError, areAllRequiredFieldsFilled]);
+  }, [isGenerating, selectedTemplate, formData, pdfBlob, generatedWord, documentCache, getDataHash, cleanFormData, showSuccess, showError, areAllRequiredFieldsFilled, generateFilename]);
 
   const handleSendEmail = async (emails: string[], customMessage: string) => {
     if (isSending) return;
@@ -574,7 +623,11 @@ const App: React.FC = () => {
         ...cleanFormData(formData),
         emailEnvoi: emails.join(', ') // Joindre les emails avec des virgules pour n8n
       };
-      await sendEmailWithPdf(data, pdfBase64, customMessage);
+
+      // Générer le nom de fichier intelligent
+      const filename = generateFilename('pdf');
+
+      await sendEmailWithPdf(data, pdfBase64, customMessage, filename);
 
       showSuccess('Email envoyé avec succès !');
       setShowShare(false);
