@@ -3,24 +3,54 @@
   --base-scale: 1;
 }
 
-html {
-  overflow: hidden;
-  height: 100vh;
-  width: 100vw;
-  zoom: var(--base-scale);
+/* Desktop - hauteur fixe */
+@media (min-width: 768px) {
+  html {
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    zoom: var(--base-scale);
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #2f2f2f;
+    background-size: 400% 400% !important;
+    animation: gradient 15s ease infinite !important;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
 }
 
-body {
-  margin: 0 !important;
-  padding: 0 !important;
-  background: #2f2f2f;
-  background-size: 400% 400% !important;
-  animation: gradient 15s ease infinite !important;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
+/* Mobile - hauteur adaptative avec dvh pour gérer le clavier virtuel */
+@media (max-width: 767px) {
+  html {
+    overflow: hidden;
+    /* Utiliser dvh pour s'adapter dynamiquement au clavier virtuel et à la barre d'adresse */
+    height: 100vh;
+    height: 100dvh; /* Dynamic Viewport Height - s'adapte au clavier */
+    height: 100svh; /* Small Viewport Height - fallback pour certains navigateurs */
+    width: 100vw;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #2f2f2f;
+    background-size: 400% 400% !important;
+    animation: gradient 15s ease infinite !important;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    height: 100svh;
+    width: 100vw;
+    overflow: hidden;
+  }
 }
 
 header {

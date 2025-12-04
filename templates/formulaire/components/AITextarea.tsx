@@ -9,6 +9,9 @@ interface AITextareaProps {
   placeholder?: string;
   required?: boolean;
   rows?: number;
+  showInfo?: (message: string, duration?: number) => void;
+  showSuccess?: (message: string, duration?: number) => void;
+  showError?: (message: string, duration?: number) => void;
 }
 
 export const AITextarea: React.FC<AITextareaProps> = ({
@@ -18,7 +21,10 @@ export const AITextarea: React.FC<AITextareaProps> = ({
   objetValue = '',
   placeholder,
   required,
-  rows = 5
+  rows = 5,
+  showInfo,
+  showSuccess,
+  showError
 }) => {
   const [isImproving, setIsImproving] = useState(false);
   const [charCount, setCharCount] = useState(value.length);
@@ -32,11 +38,20 @@ export const AITextarea: React.FC<AITextareaProps> = ({
   const handleImproveText = useCallback(async () => {
     const originalText = value.trim();
     if (!originalText || originalText.length < 10) {
-      alert('Veuillez saisir au moins 10 caractères pour utiliser l\'IA');
+      if (showError) {
+        showError('Veuillez saisir au moins 10 caractères pour utiliser l\'IA');
+      } else {
+        alert('Veuillez saisir au moins 10 caractères pour utiliser l\'IA');
+      }
       return;
     }
 
     setIsImproving(true);
+
+    // Afficher un toast d'information sur la lenteur
+    if (showInfo) {
+      showInfo('⏳ Génération en cours... Cela peut prendre jusqu\'à 1 minute selon la charge du serveur. Merci de patienter.', 10000);
+    }
 
     try {
       // Construire le prompt
@@ -47,6 +62,8 @@ export const AITextarea: React.FC<AITextareaProps> = ({
       promptText += `Informations à utiliser : ${originalText}\n\n`;
       promptText += `Instructions :\n- Écris un texte complet et structuré (pas de suggestions ni de listes)\n- Le texte doit être en lien direct avec l'objet du document\n- Utilise un style formel et professionnel\n- Le texte doit être prêt à être utilisé tel quel dans le document\n\nTexte du document :`;
 
+      console.log('🤖 Appel à l\'IA avec le prompt:', promptText.substring(0, 100) + '...');
+
       // Détecter si on est en production
       const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
@@ -54,7 +71,10 @@ export const AITextarea: React.FC<AITextareaProps> = ({
 
       if (isProduction) {
         // En production : utiliser le webhook n8n
-        const response = await fetch(CONFIG.WEBHOOK_URL, {
+        console.log('🌐 Mode PRODUCTION - Appel du webhook n8n');
+        console.log('URL:', CONFIG.WEBHOOK_AI_IMPROVE_URL);
+
+        const response = await fetch(CONFIG.WEBHOOK_AI_IMPROVE_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -68,53 +88,89 @@ export const AITextarea: React.FC<AITextareaProps> = ({
           })
         });
 
+        console.log('📡 Réponse HTTP:', response.status, response.statusText);
+
         if (!response.ok) {
-          throw new Error('Erreur lors de l\'appel à l\'IA');
+          const errorText = await response.text();
+          console.error('❌ Erreur HTTP:', errorText);
+          throw new Error(`Erreur ${response.status}: ${response.statusText}`);
         }
 
         const data = await response.json();
+        console.log('📦 Données reçues:', data);
+
+        // Le webhook n8n peut retourner différents formats
         improvedText = data.improvedText || data.response || data.text || data.texteAmeliore || '';
       } else {
         // En développement local : appeler Ollama directement
+        console.log('💻 Mode LOCAL - Appel direct à Ollama');
+
         const response = await fetch('http://localhost:11434/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'gemma2:2b',
+            model: CONFIG.OLLAMA_MODEL,
             prompt: promptText,
             stream: false,
             options: {
               num_predict: 1000,
-              temperature: 0.5
+              temperature: 0.7,
+              top_p: 0.9,
+              top_k: 40
             }
           })
         });
 
+        console.log('📡 Réponse HTTP:', response.status, response.statusText);
+
         if (!response.ok) {
-          throw new Error('Erreur lors de l\'appel à l\'IA');
+          const errorText = await response.text();
+          console.error('❌ Erreur HTTP:', errorText);
+          throw new Error(`Erreur ${response.status}: ${response.statusText}`);
         }
 
         const data = await response.json();
-        improvedText = data.response.trim();
+        console.log('📦 Données reçues:', data);
+
+        improvedText = data.response?.trim() || '';
       }
 
       if (!improvedText || improvedText.length === 0) {
-        throw new Error('Réponse vide de l\'IA');
+        throw new Error('Réponse vide de l\'IA. Le modèle n\'a pas généré de texte.');
       }
 
       // Mettre à jour le texte
       onChange(improvedText);
       setCharCount(improvedText.length);
 
-      // Afficher un message de succès
-      console.log('✅ Texte amélioré avec l\'IA !');
+      console.log('✅ Texte amélioré avec succès !');
+
+      if (showSuccess) {
+        showSuccess('✅ Texte amélioré avec succès !');
+      } else {
+        alert('✅ Texte amélioré avec succès !');
+      }
     } catch (error) {
-      console.error('Erreur IA:', error);
-      alert('Erreur lors de l\'amélioration du texte : ' + (error as Error).message);
+      console.error('❌ Erreur IA:', error);
+
+      // Message d'erreur détaillé
+      let errorMessage = 'Erreur lors de l\'amélioration du texte';
+
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        errorMessage = 'Impossible de se connecter au serveur IA. Vérifiez votre connexion.';
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      if (showError) {
+        showError(errorMessage);
+      } else {
+        alert(errorMessage);
+      }
     } finally {
       setIsImproving(false);
     }
-  }, [value, objetValue, onChange]);
+  }, [value, objetValue, onChange, showInfo, showSuccess, showError]);
 
   const handleClear = useCallback(() => {
     onChange('');

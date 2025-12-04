@@ -25,17 +25,30 @@ const getWebhookPdfConvertUrl = (): string => {
   return import.meta.env.VITE_WEBHOOK_PDF_CONVERT_URL || 'https://dee-wakeful-succulently.ngrok-free.dev/api/convert-pdf';
 };
 
+const getWebhookAiImproveUrl = (): string => {
+  if (typeof window !== 'undefined' && (window as any).ENV?.WEBHOOK_AI_IMPROVE_URL) {
+    return (window as any).ENV.WEBHOOK_AI_IMPROVE_URL;
+  }
+  // En local : appeler Ollama directement
+  // En production : utiliser le webhook n8n
+  return import.meta.env.VITE_WEBHOOK_AI_IMPROVE_URL || 'http://localhost:11434/api/generate';
+};
+
 export const CONFIG = {
   // URLs des webhooks n8n
   WEBHOOK_URL: getWebhookUrl(),
   WEBHOOK_EMAIL_URL: getWebhookEmailUrl(),
   WEBHOOK_PDF_CONVERT_URL: getWebhookPdfConvertUrl(),
-  
+  WEBHOOK_AI_IMPROVE_URL: getWebhookAiImproveUrl(),
+
   // Chemins
   VARIABLES_CONFIG_PATH: '/config/variables.json',
-  
+
   // Timeouts
   REQUEST_TIMEOUT: 120000, // 2 minutes
+
+  // Ollama
+  OLLAMA_MODEL: 'gemma2:2b',
 };
 
 /**

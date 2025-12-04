@@ -48,7 +48,7 @@ const App: React.FC = () => {
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   // Toast hook
-  const { toast, showSuccess, showError, hideToast } = useToast();
+  const { toast, showSuccess, showError, showInfo, hideToast } = useToast();
 
   // Optimisation: mémoriser les valeurs calculées
   const currentStep = useMemo(() => STEPS[currentStepIdx], [currentStepIdx]);
@@ -757,6 +757,9 @@ const App: React.FC = () => {
                   invalidFields={invalidFields}
                   removedFields={removedFieldsByStep[currentStep.id] || []}
                   onRemovedFieldsChange={(removedFields) => handleRemovedFieldsChange(currentStep.id, removedFields)}
+                  showInfo={showInfo}
+                  showSuccess={showSuccess}
+                  showError={showError}
                />
                
                {isLastStep && (

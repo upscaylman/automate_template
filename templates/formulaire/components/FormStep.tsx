@@ -15,6 +15,9 @@ interface FormStepProps {
   invalidFields?: Set<string>;
   removedFields?: { field: FormField; originalIndex: number }[];
   onRemovedFieldsChange?: (removedFields: { field: FormField; originalIndex: number }[]) => void;
+  showInfo?: (message: string, duration?: number) => void;
+  showSuccess?: (message: string, duration?: number) => void;
+  showError?: (message: string, duration?: number) => void;
 }
 
 const FormStepComponent: React.FC<FormStepProps> = ({
@@ -26,7 +29,10 @@ const FormStepComponent: React.FC<FormStepProps> = ({
   onFieldsReorder,
   invalidFields,
   removedFields: externalRemovedFields = [],
-  onRemovedFieldsChange
+  onRemovedFieldsChange,
+  showInfo,
+  showSuccess,
+  showError
 }) => {
   // Utiliser l'ordre personnalisé si disponible, sinon l'ordre par défaut
   const [fields, setFields] = useState<FormField[]>(customFields || FORM_FIELDS[step]);
@@ -242,6 +248,9 @@ const FormStepComponent: React.FC<FormStepProps> = ({
                 placeholder={field.placeholder}
                 required={field.required}
                 rows={field.rows}
+                showInfo={showInfo}
+                showSuccess={showSuccess}
+                showError={showError}
               />
             ) : field.id === 'adresse' ? (
               <AddressInput
