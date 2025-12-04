@@ -167,13 +167,28 @@ const FormStepComponent: React.FC<FormStepProps> = ({
         <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg ${getIconColor(step)} dark:bg-gray-200`}>
           <span className="material-icons text-2xl text-[#e062b1] dark:text-[#a84383]">{getStepIcon(step)}</span>
         </div>
-        <div>
+        <div className="flex-1">
           <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{getStepTitle(step)}</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
             {isCustomizing ? 'Mode personnalisation : Glissez-déposez les champs' : 'Veuillez remplir les champs ci-dessous'}
           </p>
         </div>
       </div>
+
+      {/* Info Message en mode personnalisation */}
+      {isCustomizing && (
+        <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl flex items-start gap-3">
+          <span className="material-icons text-blue-600 dark:text-blue-400 text-xl mt-0.5">info</span>
+          <div className="flex-1">
+            <p className="text-sm text-blue-900 dark:text-blue-100 font-medium">
+              Mode Personnalisation
+            </p>
+            <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+              Réorganisez les champs pour faciliter votre saisie. L'ordre dans le document final reste inchangé.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Fields Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -248,6 +263,7 @@ const FormStepComponent: React.FC<FormStepProps> = ({
                 placeholder={field.placeholder}
                 required={field.required}
                 rows={field.rows}
+                maxLength={field.maxLength}
                 showInfo={showInfo}
                 showSuccess={showSuccess}
                 showError={showError}

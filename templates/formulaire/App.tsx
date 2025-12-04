@@ -63,14 +63,25 @@ const App: React.FC = () => {
     return Object.values(formData).some(value => value && value.trim() !== '');
   }, [formData]);
 
-  // Vérifier si tous les champs requis d'une étape sont remplis
+  // Vérifier si tous les champs requis d'une étape sont remplis ET valides
   const isStepValid = useCallback((stepId: StepType): boolean => {
     const fields = customFieldsOrder[stepId] || FORM_FIELDS[stepId] || [];
     const requiredFields = fields.filter(field => field.required);
 
     return requiredFields.every(field => {
       const value = formData[field.id];
-      return value !== undefined && value !== null && value.trim() !== '';
+      // Vérifier que le champ est rempli
+      if (!value || value.trim() === '') {
+        return false;
+      }
+
+      // Validation spécifique pour les emails
+      if (field.id.toLowerCase().includes('email')) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(value);
+      }
+
+      return true;
     });
   }, [formData, customFieldsOrder]);
 
@@ -313,8 +324,19 @@ const App: React.FC = () => {
 
       requiredFields.forEach(field => {
         const value = formData[field.id];
+
+        // Vérifier si le champ est vide
         if (!value || value.trim() === '') {
           invalid.add(field.id);
+          return;
+        }
+
+        // Validation spécifique pour les emails
+        if (field.id.toLowerCase().includes('email')) {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(value)) {
+            invalid.add(field.id);
+          }
         }
       });
     });

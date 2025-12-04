@@ -9,6 +9,7 @@ interface AITextareaProps {
   placeholder?: string;
   required?: boolean;
   rows?: number;
+  maxLength?: number;
   showInfo?: (message: string, duration?: number) => void;
   showSuccess?: (message: string, duration?: number) => void;
   showError?: (message: string, duration?: number) => void;
@@ -22,6 +23,7 @@ export const AITextarea: React.FC<AITextareaProps> = ({
   placeholder,
   required,
   rows = 5,
+  maxLength,
   showInfo,
   showSuccess,
   showError
@@ -31,9 +33,13 @@ export const AITextarea: React.FC<AITextareaProps> = ({
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
+    // Appliquer la limite de caractères si définie
+    if (maxLength && newValue.length > maxLength) {
+      return; // Ne pas mettre à jour si la limite est dépassée
+    }
     onChange(newValue);
     setCharCount(newValue.length);
-  }, [onChange]);
+  }, [onChange, maxLength]);
 
   const handleImproveText = useCallback(async () => {
     const originalText = value.trim();
@@ -194,6 +200,7 @@ export const AITextarea: React.FC<AITextareaProps> = ({
           value={value}
           onChange={handleChange}
           minLength={10}
+          maxLength={maxLength}
           title="Minimum 10 caractères requis pour déclencher l'IA"
         />
         {/* Boutons */}
@@ -226,11 +233,21 @@ export const AITextarea: React.FC<AITextareaProps> = ({
         )}
       </div>
       {/* Compteur de caractères */}
-      <div className="text-xs mt-1 ml-1">
-        <span className={`font-bold ${minCharsReached ? 'text-green-600' : 'text-red-600'}`}>
-          {charCount}
-        </span>
-        <span className="text-gray-500"> / 10 caractères minimum (pour déclencher l'IA)</span>
+      <div className="text-xs mt-1 ml-1 flex items-center justify-between">
+        <div>
+          <span className={`font-bold ${minCharsReached ? 'text-green-600' : 'text-red-600'}`}>
+            {charCount}
+          </span>
+          <span className="text-gray-500"> / 10 caractères minimum (pour déclencher l'IA)</span>
+        </div>
+        {maxLength && (
+          <div>
+            <span className={`font-bold ${charCount > maxLength ? 'text-red-600' : charCount > maxLength * 0.9 ? 'text-orange-500' : 'text-gray-600'}`}>
+              {charCount}
+            </span>
+            <span className="text-gray-500"> / {maxLength} max</span>
+          </div>
+        )}
       </div>
     </div>
   );

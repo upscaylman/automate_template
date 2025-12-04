@@ -24,6 +24,7 @@ export interface FormField {
   required?: boolean;
   icon?: string;
   rows?: number;
+  maxLength?: number;
 }
 
 // Données du formulaire

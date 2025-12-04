@@ -44,7 +44,7 @@ export const downloadBlob = (blob: Blob, filename: string): void => {
 /**
  * Générer un document Word via le webhook n8n
  */
-export const generateWordDocument = async (data: FormData): Promise<DocumentGenerationResult> => {
+export const generateWordDocument = async (data: any): Promise<DocumentGenerationResult> => {
   try {
     console.log('Génération du Word via webhook n8n:', data);
 

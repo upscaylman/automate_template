@@ -66,7 +66,7 @@ export const TEMPLATE_SPECIFIC_FIELDS: Record<string, FormField[]> = {
   ],
   custom: [
     { id: 'objet', label: 'Objet du Document', type: 'text', placeholder: 'Ex: Demande d\'information', required: true, icon: 'subject', width: 'full' },
-    { id: 'texteIa', label: 'Contenu du Document', type: 'textarea', placeholder: 'Saisissez le contenu du document (minimum 10 caractères pour déclencher l\'IA)...', required: true, icon: 'edit_note', rows: 5, width: 'full' },
+    { id: 'texteIa', label: 'Contenu du Document', type: 'textarea', placeholder: 'Saisissez le contenu du document (minimum 10 caractères pour déclencher l\'IA)...', required: true, icon: 'edit_note', rows: 5, width: 'full', maxLength: 900 },
   ],
 };
 
