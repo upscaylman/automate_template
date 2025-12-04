@@ -58,6 +58,11 @@ const App: React.FC = () => {
   // Vérifier si le formulaire a des données
   const hasData = useMemo(() => Object.keys(formData).length > 0 && selectedTemplate !== null, [formData, selectedTemplate]);
 
+  // Vérifier si le formulaire a des données non vides
+  const hasNonEmptyData = useMemo(() => {
+    return Object.values(formData).some(value => value && value.trim() !== '');
+  }, [formData]);
+
   // Vérifier si tous les champs requis d'une étape sont remplis
   const isStepValid = useCallback((stepId: StepType): boolean => {
     const fields = customFieldsOrder[stepId] || FORM_FIELDS[stepId] || [];
@@ -196,10 +201,7 @@ const App: React.FC = () => {
           const year = new Date().getFullYear();
           const randomNum = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
           newData.codeDocument = `${initials}-${year}-${randomNum}`;
-          // Auto-génération du numéro de recommandé pour le template designation
-          if (selectedTemplate === 'designation') {
-            newData.numeroCourrier = `${initials}-${year}-${randomNum}`;
-          }
+          // Le numéro de recommandé n'est plus auto-généré, c'est un champ normal obligatoire
         }
       }
 
@@ -688,14 +690,14 @@ const App: React.FC = () => {
                        <button
                          onClick={clearData}
                          className={`w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 group ${
-                           Object.keys(formData).length === 0
+                           !hasNonEmptyData
                              ? 'text-[rgb(156,163,175)] cursor-default'
                              : 'text-[#aa4584] hover:text-[#8b3569] hover:bg-white dark:hover:bg-[#2f2f2f]'
                          }`}
                          title="Effacer tout"
-                         disabled={Object.keys(formData).length === 0}
+                         disabled={!hasNonEmptyData}
                        >
-                         <span className={`material-icons text-[20px] transition-transform ${Object.keys(formData).length > 0 ? 'group-hover:scale-110' : ''}`}>delete_sweep</span>
+                         <span className={`material-icons text-[20px] transition-transform ${hasNonEmptyData ? 'group-hover:scale-110' : ''}`}>delete_sweep</span>
                        </button>
                        {/* Bouton données de test */}
                        {false && (
