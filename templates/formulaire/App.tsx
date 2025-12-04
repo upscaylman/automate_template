@@ -687,10 +687,15 @@ const App: React.FC = () => {
 
                        <button
                          onClick={clearData}
-                         className="w-10 h-10 flex items-center justify-center rounded-full text-[#aa4584] hover:text-[#8b3569] hover:bg-white dark:hover:bg-[#2f2f2f] transition-all duration-300 group"
+                         className={`w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 group ${
+                           Object.keys(formData).length === 0
+                             ? 'text-[rgb(156,163,175)] cursor-default'
+                             : 'text-[#aa4584] hover:text-[#8b3569] hover:bg-white dark:hover:bg-[#2f2f2f]'
+                         }`}
                          title="Effacer tout"
+                         disabled={Object.keys(formData).length === 0}
                        >
-                         <span className="material-icons text-[20px] group-hover:scale-110 transition-transform">delete_sweep</span>
+                         <span className={`material-icons text-[20px] transition-transform ${Object.keys(formData).length > 0 ? 'group-hover:scale-110' : ''}`}>delete_sweep</span>
                        </button>
                        {/* Bouton données de test */}
                        {false && (

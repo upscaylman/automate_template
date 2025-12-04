@@ -114,7 +114,7 @@ export const Header: React.FC<HeaderProps> = ({ onPreview, onDownload, onShare, 
           <button
              onClick={onPreview}
              disabled={!hasData}
-             className="sm:hidden w-10 h-10 flex items-center justify-center rounded-full bg-[#aa4584] text-white disabled:opacity-50 transition-all hover:scale-105"
+             className="hidden w-10 h-10 items-center justify-center rounded-full bg-[#aa4584] text-white disabled:opacity-50 transition-all hover:scale-105"
              aria-label="Prévisualiser le document"
              title="Prévisualiser"
           >

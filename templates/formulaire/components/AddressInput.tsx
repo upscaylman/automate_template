@@ -221,22 +221,22 @@ export const AddressInput: React.FC<AddressInputProps> = ({
       {showSuggestions && addresses.length > 0 && createPortal(
         <div
           style={dropdownStyle}
-          className="bg-white border-2 border-[#a84383] rounded-2xl shadow-xl max-h-60 overflow-y-auto"
+          className="bg-white dark:bg-[rgb(47,47,47)] border-2 border-[#a84383] dark:border-[#e062b1] rounded-2xl shadow-xl max-h-60 overflow-y-auto"
         >
           <div className="p-2">
-            <div className="text-xs text-gray-500 px-3 py-2 font-medium">Sélectionnez une adresse :</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 px-3 py-2 font-medium">Sélectionnez une adresse :</div>
             {addresses.map((feature, index) => (
               <button
                 key={index}
                 type="button"
                 onClick={() => selectAddress(feature)}
-                className="w-full text-left px-3 py-2 rounded-xl hover:bg-[#ffecf8] transition-colors"
+                className="w-full text-left px-3 py-2 rounded-xl hover:bg-[#ffecf8] dark:hover:bg-[#4a1a36]/50 transition-colors"
               >
                 <div className="flex items-start gap-2">
-                  <span className="material-icons text-[#a84383] text-sm mt-0.5">place</span>
+                  <span className="material-icons text-[#a84383] dark:text-[#e062b1] text-sm mt-0.5">place</span>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[#1c1b1f] truncate">{feature.properties.name}</div>
-                    <div className="text-xs text-gray-500 truncate">{feature.properties.postcode} {feature.properties.city}</div>
+                    <div className="font-medium text-[#1c1b1f] dark:text-[rgb(255,255,255)] truncate">{feature.properties.name}</div>
+                    <div className="text-xs text-gray-500 dark:text-[rgb(229,231,235)] truncate">{feature.properties.postcode} {feature.properties.city}</div>
                   </div>
                 </div>
               </button>
