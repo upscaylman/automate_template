@@ -42,23 +42,31 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
     const updatePosition = () => {
       if (showDropdown && containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        const viewportHeight = window.visualViewport?.height || window.innerHeight;
-        const spaceBelow = viewportHeight - rect.bottom;
-        const spaceAbove = rect.top;
 
-        // Calculer la hauteur max disponible (en laissant 16px de marge)
-        const maxHeight = Math.max(spaceBelow, spaceAbove) - 16;
+        // Utiliser visualViewport pour tenir compte du clavier mobile
+        const viewport = window.visualViewport;
+        const viewportHeight = viewport ? viewport.height : window.innerHeight;
+        const viewportOffsetTop = viewport ? viewport.offsetTop : 0;
+
+        // Calculer l'espace disponible en tenant compte du viewport
+        const spaceBelow = viewportHeight + viewportOffsetTop - rect.bottom;
+        const spaceAbove = rect.top - viewportOffsetTop;
 
         // Déterminer si on affiche en dessous ou au-dessus
-        const showBelow = spaceBelow > spaceAbove || spaceBelow > 200;
+        const showBelow = spaceBelow >= 150; // Au moins 150px pour afficher en dessous
+
+        // Calculer la hauteur max disponible (en laissant 16px de marge)
+        const availableSpace = showBelow ? spaceBelow : spaceAbove;
+        const maxHeight = Math.max(Math.min(availableSpace - 16, 320), 150);
 
         setDropdownStyle({
           position: 'fixed',
           top: showBelow ? `${rect.bottom + 8}px` : 'auto',
-          bottom: showBelow ? 'auto' : `${viewportHeight - rect.top + 8}px`,
-          left: `${rect.left}px`,
-          width: `${rect.width}px`,
-          maxHeight: `${Math.min(maxHeight, 320)}px`,
+          bottom: showBelow ? 'auto' : `${viewportHeight + viewportOffsetTop - rect.top + 8}px`,
+          left: `${Math.max(8, rect.left)}px`,
+          right: `${Math.max(8, window.innerWidth - rect.right)}px`,
+          width: 'auto',
+          maxHeight: `${maxHeight}px`,
           zIndex: 9999,
         });
       }
@@ -66,16 +74,28 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
 
     if (showDropdown) {
       updatePosition();
+
       // Mettre à jour la position lors du scroll, resize et changement de viewport (clavier mobile)
-      window.addEventListener('scroll', updatePosition, true);
-      window.addEventListener('resize', updatePosition);
-      window.visualViewport?.addEventListener('resize', updatePosition);
-      window.visualViewport?.addEventListener('scroll', updatePosition);
+      const scrollHandler = () => updatePosition();
+      const resizeHandler = () => {
+        updatePosition();
+      };
+
+      window.addEventListener('scroll', scrollHandler, true);
+      window.addEventListener('resize', resizeHandler);
+
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', resizeHandler);
+        window.visualViewport.addEventListener('scroll', scrollHandler);
+      }
+
       return () => {
-        window.removeEventListener('scroll', updatePosition, true);
-        window.removeEventListener('resize', updatePosition);
-        window.visualViewport?.removeEventListener('resize', updatePosition);
-        window.visualViewport?.removeEventListener('scroll', updatePosition);
+        window.removeEventListener('scroll', scrollHandler, true);
+        window.removeEventListener('resize', resizeHandler);
+        if (window.visualViewport) {
+          window.visualViewport.removeEventListener('resize', resizeHandler);
+          window.visualViewport.removeEventListener('scroll', scrollHandler);
+        }
       };
     }
   }, [showDropdown]);
@@ -145,13 +165,21 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
     }
   };
 
+  const handleInputFocus = () => {
+    // Ouvrir le dropdown automatiquement au focus si on a des emails prédéfinis
+    if (predefinedEmails.length > 0) {
+      setShowDropdown(true);
+    }
+  };
+
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
 
   const selectPredefinedEmail = (email: string) => {
     addEmail(email);
-    inputRef.current?.focus();
+    // Ne pas fermer le dropdown pour permettre la sélection multiple
+    // inputRef.current?.focus();
   };
 
   const selectAll = () => {
@@ -222,7 +250,7 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
-          onFocus={() => setShowDropdown(true)}
+          onFocus={handleInputFocus}
           placeholder={emails.length === 0 ? placeholder : ''}
           className="
             flex-1 min-w-[150px] outline-none bg-transparent
