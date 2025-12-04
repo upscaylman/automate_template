@@ -42,11 +42,23 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
     const updatePosition = () => {
       if (showDropdown && containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
+        const viewportHeight = window.visualViewport?.height || window.innerHeight;
+        const spaceBelow = viewportHeight - rect.bottom;
+        const spaceAbove = rect.top;
+
+        // Calculer la hauteur max disponible (en laissant 16px de marge)
+        const maxHeight = Math.max(spaceBelow, spaceAbove) - 16;
+
+        // Déterminer si on affiche en dessous ou au-dessus
+        const showBelow = spaceBelow > spaceAbove || spaceBelow > 200;
+
         setDropdownStyle({
           position: 'fixed',
-          top: `${rect.bottom + 8}px`,
+          top: showBelow ? `${rect.bottom + 8}px` : 'auto',
+          bottom: showBelow ? 'auto' : `${viewportHeight - rect.top + 8}px`,
           left: `${rect.left}px`,
           width: `${rect.width}px`,
+          maxHeight: `${Math.min(maxHeight, 320)}px`,
           zIndex: 9999,
         });
       }
@@ -54,12 +66,16 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
 
     if (showDropdown) {
       updatePosition();
-      // Mettre à jour la position lors du scroll
+      // Mettre à jour la position lors du scroll, resize et changement de viewport (clavier mobile)
       window.addEventListener('scroll', updatePosition, true);
       window.addEventListener('resize', updatePosition);
+      window.visualViewport?.addEventListener('resize', updatePosition);
+      window.visualViewport?.addEventListener('scroll', updatePosition);
       return () => {
         window.removeEventListener('scroll', updatePosition, true);
         window.removeEventListener('resize', updatePosition);
+        window.visualViewport?.removeEventListener('resize', updatePosition);
+        window.visualViewport?.removeEventListener('scroll', updatePosition);
       };
     }
   }, [showDropdown]);
@@ -248,7 +264,7 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
           className="
             bg-white dark:bg-[rgb(47,47,47)]
             border-2 border-[#a84383] dark:border-[#e062b1]
-            rounded-2xl shadow-xl max-h-80 overflow-y-auto
+            rounded-2xl shadow-xl overflow-y-auto
           "
         >
           <div className="p-2">
