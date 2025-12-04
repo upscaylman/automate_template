@@ -79,7 +79,9 @@ const App: React.FC = () => {
 
     if (stepId === 'coordonnees') {
       if (selectedTemplate === 'circulaire') {
-        return COMMON_FIELDS.filter(f => ['numeroCourrier', 'emailDestinataire'].includes(f.id));
+        // Pour la circulaire, emailDestinataire n'est pas obligatoire
+        return COMMON_FIELDS.filter(f => ['numeroCourrier', 'emailDestinataire'].includes(f.id))
+          .map(field => field.id === 'emailDestinataire' ? { ...field, required: false } : field);
       } else {
         return COMMON_FIELDS.filter(f => ['codeDocument', 'entreprise', 'civiliteDestinataire', 'nomDestinataire', 'statutDestinataire', 'batiment', 'adresse', 'cpVille', 'emailDestinataire'].includes(f.id));
       }
