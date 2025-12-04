@@ -32,6 +32,8 @@ const SidebarComponent: React.FC<SidebarProps> = ({ templates, selectedTemplate,
         return 'Désignation de délégué syndical';
       case 'negociation':
         return 'Mandat de négociation collective';
+      case 'circulaire':
+        return 'Circulaire d\'informations';
       case 'custom':
         return 'Document personnalisé avec contenu IA';
       default:

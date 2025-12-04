@@ -22,6 +22,12 @@ export const TEMPLATES: Template[] = [
     description: 'Document personnalisé avec contenu IA',
     image: '/assets/img/custom_template.png'
   },
+  {
+    id: 'circulaire',
+    title: 'Circulaire',
+    description: 'Circulaire d\'informations',
+    image: '/assets/img/custom_template.png'
+  },
 ];
 
 export const STEPS: StepConfig[] = [
@@ -33,6 +39,7 @@ export const STEPS: StepConfig[] = [
 // Champs communs à tous les templates
 export const COMMON_FIELDS: FormField[] = [
   { id: 'codeDocument', label: 'Numéro du document', type: 'text', placeholder: 'Ex : DOC-2024-001', required: true, icon: 'description', width: 'half' },
+  { id: 'numeroCourrier', label: 'Numéro de Courrier', type: 'text', placeholder: 'Ex: 2025-001', required: true, icon: 'tag', width: 'half' },
   { id: 'entreprise', label: 'Entreprise', type: 'text', placeholder: 'Ex: ACME Corp', required: true, icon: 'business', width: 'half' },
   { id: 'civiliteDestinataire', label: 'Civilité Destinataire', type: 'select', options: ['Monsieur', 'Madame', 'Monsieur et Madame'], required: false, width: 'half' },
   { id: 'nomDestinataire', label: 'Nom Destinataire', type: 'text', placeholder: 'Ex: Dupont', required: false, icon: 'person', width: 'half' },
@@ -63,6 +70,11 @@ export const TEMPLATE_SPECIFIC_FIELDS: Record<string, FormField[]> = {
     { id: 'civiliteDelegue', label: 'Civilité du Mandataire', type: 'select', options: ['Monsieur', 'Madame'], required: false, width: 'half' },
     { id: 'nomDelegue', label: 'Nom du Mandataire', type: 'text', placeholder: 'Ex: Jean Durand', required: true, icon: 'person', width: 'half' },
     { id: 'emailDelegue', label: 'Email du Mandataire', type: 'email', placeholder: 'mandataire@exemple.com', required: true, icon: 'email', width: 'half' },
+  ],
+  circulaire: [
+    { id: 'objet', label: 'Objet de la Circulaire', type: 'text', placeholder: 'Ex: Information importante', required: true, icon: 'subject', width: 'full' },
+    { id: 'circulaireTexteA', label: 'Contenu de la Circulaire', type: 'textarea', placeholder: 'Saisissez le contenu de la circulaire...', required: true, icon: 'description', rows: 8, width: 'full' },
+    { id: 'circulaireTexteB', label: 'Autres contenu', type: 'textarea', placeholder: 'Saisissez d\'autres contenus...', required: true, icon: 'edit_note', rows: 8, width: 'full' },
   ],
   custom: [
     { id: 'objet', label: 'Objet du Document', type: 'text', placeholder: 'Ex: Demande d\'information', required: true, icon: 'subject', width: 'full' },

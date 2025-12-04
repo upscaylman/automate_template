@@ -1,5 +1,5 @@
 // Types de base
-export type TemplateId = 'designation' | 'negociation' | 'custom';
+export type TemplateId = 'designation' | 'negociation' | 'custom' | 'circulaire';
 export type StepType = 'coordonnees' | 'contenu' | 'expediteur';
 export type FieldType = 'text' | 'email' | 'textarea' | 'date' | 'select';
 export type FieldWidth = 'full' | 'half';

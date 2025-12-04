@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
-import { TEMPLATES, STEPS, FORM_FIELDS, TEMPLATE_SPECIFIC_FIELDS } from './constants';
+import { TEMPLATES, STEPS, FORM_FIELDS, TEMPLATE_SPECIFIC_FIELDS, COMMON_FIELDS } from './constants';
 import { StepType, FormData, FormField } from './types';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
@@ -51,9 +51,17 @@ const App: React.FC = () => {
   const { toast, showSuccess, showError, showInfo, hideToast } = useToast();
 
   // Optimisation: mémoriser les valeurs calculées
-  const currentStep = useMemo(() => STEPS[currentStepIdx], [currentStepIdx]);
+  // Filtrer les steps selon le template (circulaire n'a pas de page signataire)
+  const availableSteps = useMemo(() => {
+    if (selectedTemplate === 'circulaire') {
+      return STEPS.filter(step => step.id !== 'expediteur');
+    }
+    return STEPS;
+  }, [selectedTemplate]);
+
+  const currentStep = useMemo(() => availableSteps[currentStepIdx], [availableSteps, currentStepIdx]);
   const isFirstStep = useMemo(() => currentStepIdx === 0, [currentStepIdx]);
-  const isLastStep = useMemo(() => currentStepIdx === STEPS.length - 1, [currentStepIdx]);
+  const isLastStep = useMemo(() => currentStepIdx === availableSteps.length - 1, [currentStepIdx, availableSteps.length]);
 
   // Vérifier si le formulaire a des données
   const hasData = useMemo(() => Object.keys(formData).length > 0 && selectedTemplate !== null, [formData, selectedTemplate]);
@@ -63,9 +71,34 @@ const App: React.FC = () => {
     return Object.values(formData).some(value => value && value.trim() !== '');
   }, [formData]);
 
+  // Fonction pour obtenir les champs selon le template et l'étape
+  const getFieldsForStep = useCallback((stepId: StepType): FormField[] => {
+    if (customFieldsOrder[stepId]) {
+      return customFieldsOrder[stepId];
+    }
+
+    if (stepId === 'coordonnees') {
+      if (selectedTemplate === 'circulaire') {
+        return COMMON_FIELDS.filter(f => ['numeroCourrier', 'emailDestinataire'].includes(f.id));
+      } else {
+        return COMMON_FIELDS.filter(f => ['codeDocument', 'entreprise', 'civiliteDestinataire', 'nomDestinataire', 'statutDestinataire', 'batiment', 'adresse', 'cpVille', 'emailDestinataire'].includes(f.id));
+      }
+    }
+
+    if (stepId === 'contenu' && selectedTemplate && TEMPLATE_SPECIFIC_FIELDS[selectedTemplate]) {
+      return TEMPLATE_SPECIFIC_FIELDS[selectedTemplate];
+    }
+
+    if (stepId === 'expediteur') {
+      return COMMON_FIELDS.filter(f => f.id === 'signatureExp');
+    }
+
+    return FORM_FIELDS[stepId] || [];
+  }, [selectedTemplate, customFieldsOrder]);
+
   // Vérifier si tous les champs requis d'une étape sont remplis ET valides
   const isStepValid = useCallback((stepId: StepType): boolean => {
-    const fields = customFieldsOrder[stepId] || FORM_FIELDS[stepId] || [];
+    const fields = getFieldsForStep(stepId);
     const requiredFields = fields.filter(field => field.required);
 
     return requiredFields.every(field => {
@@ -83,14 +116,14 @@ const App: React.FC = () => {
 
       return true;
     });
-  }, [formData, customFieldsOrder]);
+  }, [formData, getFieldsForStep]);
 
   // Vérifier si tous les champs requis du formulaire sont remplis
   const areAllRequiredFieldsFilled = useMemo(() => {
     if (!selectedTemplate) return false;
 
-    return STEPS.every(step => isStepValid(step.id as StepType));
-  }, [selectedTemplate, isStepValid]);
+    return availableSteps.every(step => isStepValid(step.id as StepType));
+  }, [selectedTemplate, availableSteps, isStepValid]);
 
   // Sauvegarder les données du template actuel avant de changer
   const saveCurrentTemplateData = (templateId: string, data: FormData) => {
@@ -118,6 +151,14 @@ const App: React.FC = () => {
     if (selectedTemplate && TEMPLATE_SPECIFIC_FIELDS[selectedTemplate]) {
       // Ajouter les champs spécifiques au template dans l'étape "contenu"
       FORM_FIELDS.contenu = TEMPLATE_SPECIFIC_FIELDS[selectedTemplate];
+
+      // Pour la circulaire, filtrer les champs de coordonnées
+      if (selectedTemplate === 'circulaire') {
+        FORM_FIELDS.coordonnees = COMMON_FIELDS.filter(f => ['numeroCourrier', 'emailDestinataire'].includes(f.id));
+      } else {
+        // Pour les autres templates, utiliser tous les champs de coordonnées
+        FORM_FIELDS.coordonnees = COMMON_FIELDS.filter(f => ['codeDocument', 'entreprise', 'civiliteDestinataire', 'nomDestinataire', 'statutDestinataire', 'batiment', 'adresse', 'cpVille', 'emailDestinataire'].includes(f.id));
+      }
 
       // Restaurer les données du nouveau template s'il y en a
       const savedData = templateDataStore[selectedTemplate];
@@ -171,6 +212,8 @@ const App: React.FC = () => {
       prefix = 'Designation';
     } else if (selectedTemplate === 'negociation') {
       prefix = 'Negociation';
+    } else if (selectedTemplate === 'circulaire') {
+      prefix = 'Circulaire';
     } else if (selectedTemplate === 'custom') {
       // Pour custom : utiliser l'objet du document
       const objet = formData.objet || '';
@@ -187,24 +230,31 @@ const App: React.FC = () => {
       prefix = 'Document';
     }
 
-    // Récupérer le suffixe : nomDestinataire en priorité, sinon codeDocument, sinon timestamp
-    const recipientName = formData.nomDestinataire || '';
-    const codeDocument = formData.codeDocument || '';
-
-    if (recipientName.trim()) {
-      // Nettoyer le nom du destinataire (enlever espaces, convertir accents, enlever caractères spéciaux)
-      suffix = recipientName
-        .trim()
-        .normalize('NFD')  // Décomposer les caractères accentués
-        .replace(/[\u0300-\u036f]/g, '')  // Enlever les accents
-        .replace(/\s+/g, '')  // Enlever les espaces
-        .replace(/[^a-zA-Z0-9_-]/g, '');  // Enlever les caractères spéciaux
-    } else if (codeDocument.trim()) {
-      // Utiliser le code document tel quel (déjà un code propre)
-      suffix = codeDocument.trim();
+    // Récupérer le suffixe selon le template
+    if (selectedTemplate === 'circulaire') {
+      // Pour circulaire : utiliser numeroCourrier
+      const numeroCourrier = formData.numeroCourrier || '';
+      suffix = numeroCourrier.trim() || new Date().getTime().toString();
     } else {
-      // Fallback : timestamp
-      suffix = new Date().getTime().toString();
+      // Pour les autres templates : nomDestinataire en priorité, sinon codeDocument, sinon timestamp
+      const recipientName = formData.nomDestinataire || '';
+      const codeDocument = formData.codeDocument || '';
+
+      if (recipientName.trim()) {
+        // Nettoyer le nom du destinataire (enlever espaces, convertir accents, enlever caractères spéciaux)
+        suffix = recipientName
+          .trim()
+          .normalize('NFD')  // Décomposer les caractères accentués
+          .replace(/[\u0300-\u036f]/g, '')  // Enlever les accents
+          .replace(/\s+/g, '')  // Enlever les espaces
+          .replace(/[^a-zA-Z0-9_-]/g, '');  // Enlever les caractères spéciaux
+      } else if (codeDocument.trim()) {
+        // Utiliser le code document tel quel (déjà un code propre)
+        suffix = codeDocument.trim();
+      } else {
+        // Fallback : timestamp
+        suffix = new Date().getTime().toString();
+      }
     }
 
     return `${prefix}_${suffix}.${extension}`;
@@ -367,8 +417,8 @@ const App: React.FC = () => {
   const validateAndMarkInvalidFields = useCallback(() => {
     const invalid = new Set<string>();
 
-    STEPS.forEach(step => {
-      const fields = customFieldsOrder[step.id] || FORM_FIELDS[step.id as StepType] || [];
+    availableSteps.forEach(step => {
+      const fields = getFieldsForStep(step.id as StepType);
       const requiredFields = fields.filter(field => field.required);
 
       requiredFields.forEach(field => {
@@ -392,7 +442,7 @@ const App: React.FC = () => {
 
     setInvalidFields(invalid);
     return invalid.size === 0;
-  }, [formData, customFieldsOrder]);
+  }, [formData, getFieldsForStep, availableSteps]);
 
   const handlePreview = useCallback(async () => {
     if (isGenerating || !selectedTemplate) return;
@@ -698,7 +748,7 @@ const App: React.FC = () => {
                     onTouchMove={onTouchMove}
                     onTouchEnd={onTouchEnd}
                   >
-                    {STEPS.map((step, idx) => {
+                    {availableSteps.map((step, idx) => {
                       const isActive = currentStepIdx === idx;
                       const isCompleted = currentStepIdx > idx;
 
@@ -729,7 +779,7 @@ const App: React.FC = () => {
                                {step.label}
                              </span>
                              <span className="text-[10px] text-gray-500 dark:text-gray-300 font-medium whitespace-nowrap leading-none uppercase tracking-wide">
-                               Étape {idx + 1}/{STEPS.length}
+                               Étape {idx + 1}/{availableSteps.length}
                              </span>
                            </div>
                         </button>
@@ -827,7 +877,7 @@ const App: React.FC = () => {
                   data={formData}
                   onChange={handleInputChange}
                   isCustomizing={isCustomizing && selectedTemplate === 'custom'}
-                  customFields={customFieldsOrder[currentStep.id]}
+                  customFields={getFieldsForStep(currentStep.id as StepType)}
                   onFieldsReorder={(newFields) => handleFieldsReorder(currentStep.id, newFields)}
                   invalidFields={invalidFields}
                   removedFields={removedFieldsByStep[currentStep.id] || []}
