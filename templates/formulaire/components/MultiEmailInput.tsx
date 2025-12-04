@@ -37,17 +37,30 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
     }
   }, [value]);
 
-  // Calculer la position du dropdown
+  // Calculer la position du dropdown et la mettre à jour lors du scroll
   useEffect(() => {
-    if (showDropdown && containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      setDropdownStyle({
-        position: 'fixed',
-        top: `${rect.bottom + 8}px`,
-        left: `${rect.left}px`,
-        width: `${rect.width}px`,
-        zIndex: 9999,
-      });
+    const updatePosition = () => {
+      if (showDropdown && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setDropdownStyle({
+          position: 'fixed',
+          top: `${rect.bottom + 8}px`,
+          left: `${rect.left}px`,
+          width: `${rect.width}px`,
+          zIndex: 9999,
+        });
+      }
+    };
+
+    if (showDropdown) {
+      updatePosition();
+      // Mettre à jour la position lors du scroll
+      window.addEventListener('scroll', updatePosition, true);
+      window.addEventListener('resize', updatePosition);
+      return () => {
+        window.removeEventListener('scroll', updatePosition, true);
+        window.removeEventListener('resize', updatePosition);
+      };
     }
   }, [showDropdown]);
 
