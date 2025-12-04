@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { TEMPLATES, STEPS, FORM_FIELDS, TEMPLATE_SPECIFIC_FIELDS, COMMON_FIELDS } from './constants';
-import { StepType, FormData, FormField } from './types';
+import { StepType, FormData, FormField, TemplateId } from './types';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { Footer } from './components/Footer';
@@ -18,7 +18,7 @@ const ShareModal = lazy(() => import('./components/Modals').then(module => ({ de
 
 const App: React.FC = () => {
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>('designation');
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateId | null>('designation');
   const [formData, setFormData] = useState<FormData>({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(280);
@@ -111,12 +111,19 @@ const App: React.FC = () => {
       // Validation spécifique pour les emails
       if (field.id.toLowerCase().includes('email')) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Pour la circulaire, accepter plusieurs emails séparés par des virgules
+        if (selectedTemplate === 'circulaire' && field.id === 'emailDestinataire') {
+          const emails = value.split(',').map(e => e.trim()).filter(e => e);
+          return emails.length > 0 && emails.every(email => emailRegex.test(email));
+        }
+
         return emailRegex.test(value);
       }
 
       return true;
     });
-  }, [formData, getFieldsForStep]);
+  }, [formData, getFieldsForStep, selectedTemplate]);
 
   // Vérifier si tous les champs requis du formulaire sont remplis
   const areAllRequiredFieldsFilled = useMemo(() => {
@@ -135,7 +142,7 @@ const App: React.FC = () => {
   };
 
   // Gérer le changement de template (sauvegarder avant de changer)
-  const handleTemplateChange = useCallback((newTemplateId: string) => {
+  const handleTemplateChange = useCallback((newTemplateId: TemplateId) => {
     // Sauvegarder les données du template actuel avant de changer
     if (selectedTemplate && Object.keys(formData).length > 0) {
       console.log('💾 Sauvegarde automatique avant changement de template');
@@ -433,8 +440,19 @@ const App: React.FC = () => {
         // Validation spécifique pour les emails
         if (field.id.toLowerCase().includes('email')) {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(value)) {
-            invalid.add(field.id);
+
+          // Pour la circulaire, accepter plusieurs emails séparés par des virgules
+          if (selectedTemplate === 'circulaire' && field.id === 'emailDestinataire') {
+            const emails = value.split(',').map(e => e.trim()).filter(e => e);
+            const allValid = emails.every(email => emailRegex.test(email));
+            if (!allValid || emails.length === 0) {
+              invalid.add(field.id);
+            }
+          } else {
+            // Pour les autres templates, un seul email
+            if (!emailRegex.test(value)) {
+              invalid.add(field.id);
+            }
           }
         }
       });
@@ -885,6 +903,7 @@ const App: React.FC = () => {
                   showInfo={showInfo}
                   showSuccess={showSuccess}
                   showError={showError}
+                  selectedTemplate={selectedTemplate}
                />
                
                {isLastStep && (

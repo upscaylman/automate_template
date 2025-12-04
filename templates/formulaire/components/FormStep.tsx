@@ -1,9 +1,10 @@
 import React, { useState, useEffect, memo } from 'react';
-import { StepType, FormField, FormData } from '../types';
-import { FORM_FIELDS } from '../constants';
+import { StepType, FormField, FormData, TemplateId } from '../types';
+import { FORM_FIELDS, PREDEFINED_EMAILS } from '../constants';
 import { Input } from './Input';
 import { AITextarea } from './AITextarea';
 import { AddressInput } from './AddressInput';
+import { MultiEmailInput } from './MultiEmailInput';
 
 interface FormStepProps {
   step: StepType;
@@ -18,6 +19,7 @@ interface FormStepProps {
   showInfo?: (message: string, duration?: number) => void;
   showSuccess?: (message: string, duration?: number) => void;
   showError?: (message: string, duration?: number) => void;
+  selectedTemplate?: TemplateId;
 }
 
 const FormStepComponent: React.FC<FormStepProps> = ({
@@ -32,7 +34,8 @@ const FormStepComponent: React.FC<FormStepProps> = ({
   onRemovedFieldsChange,
   showInfo,
   showSuccess,
-  showError
+  showError,
+  selectedTemplate
 }) => {
   // Utiliser l'ordre personnalisé si disponible, sinon l'ordre par défaut
   const [fields, setFields] = useState<FormField[]>(customFields || FORM_FIELDS[step]);
@@ -282,6 +285,16 @@ const FormStepComponent: React.FC<FormStepProps> = ({
                 placeholder={field.placeholder}
                 error={invalidFields?.has(field.id) && field.required ? `${field.label} est requis` : undefined}
                 resetKey={step}
+              />
+            ) : field.id === 'emailDestinataire' && selectedTemplate === 'circulaire' ? (
+              <MultiEmailInput
+                label={field.label}
+                value={data[field.id] || ''}
+                onChange={(value) => onChange(field.id, value)}
+                required={field.required}
+                placeholder={field.placeholder}
+                predefinedEmails={PREDEFINED_EMAILS}
+                error={invalidFields?.has(field.id) && field.required ? `${field.label} est requis` : undefined}
               />
             ) : (
               <Input

@@ -135,8 +135,14 @@ FO METAUX`;
 
   // Initialiser avec l'email par défaut quand la modal s'ouvre
   React.useEffect(() => {
-    if (isOpen && defaultEmail && !emails.includes(defaultEmail)) {
-      setEmails([defaultEmail]);
+    if (isOpen && defaultEmail) {
+      // Si defaultEmail contient plusieurs emails séparés par des virgules (cas de la circulaire)
+      const emailList = defaultEmail.split(',').map(e => e.trim()).filter(e => e && e.includes('@'));
+      // Ajouter uniquement les emails qui ne sont pas déjà dans la liste
+      const newEmails = emailList.filter(email => !emails.includes(email));
+      if (newEmails.length > 0) {
+        setEmails(prev => [...prev, ...newEmails]);
+      }
     }
   }, [isOpen, defaultEmail]);
 

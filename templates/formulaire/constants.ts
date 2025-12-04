@@ -3,6 +3,20 @@ import { Template, StepConfig, FormField, TemplateId, StepType } from './types';
 // Exporter aussi les constantes UI
 export * from './constants/ui';
 
+// Emails prédéfinis pour la circulaire
+export const PREDEFINED_EMAILS = [
+  { name: 'Bruno REYNES', email: 'breynes@fo-metaux.fr' },
+  { name: 'Eric KELLER', email: 'ekeller@fo-metaux.fr' },
+  { name: 'Edwin LIARD', email: 'eliard@fo-metaux.fr' },
+  { name: 'Gérard CIANNARELLA', email: 'gciannarella@fo-metaux.fr' },
+  { name: 'Géraldine GOMIZ', email: 'ggomiz@fo-metaux.fr' },
+  { name: 'Jean-Yves SABOT', email: 'jysabot@fo-metaux.fr' },
+  { name: 'Nathalie CAPART', email: 'ncapart@fo-metaux.fr' },
+  { name: 'Olivier LEFEBVRE', email: 'olefebvre@fo-metaux.fr' },
+  { name: 'Paul RIBEIRO', email: 'pribeiro@fo-metaux.fr' },
+  { name: 'Valentin RODRIGUEZ', email: 'vrodriguez@fo-metaux.fr' },
+];
+
 export const TEMPLATES: Template[] = [
   {
     id: 'designation',
@@ -26,7 +40,7 @@ export const TEMPLATES: Template[] = [
     id: 'circulaire',
     title: 'Circulaire',
     description: 'Circulaire d\'informations',
-    image: '/assets/img/custom_template.png'
+    image: '/assets/img/circulaire_template.png'
   },
 ];
 
@@ -39,7 +53,7 @@ export const STEPS: StepConfig[] = [
 // Champs communs à tous les templates
 export const COMMON_FIELDS: FormField[] = [
   { id: 'codeDocument', label: 'Numéro du document', type: 'text', placeholder: 'Ex : DOC-2024-001', required: true, icon: 'description', width: 'half' },
-  { id: 'numeroCourrier', label: 'Numéro de Courrier', type: 'text', placeholder: 'Ex: 2025-001', required: true, icon: 'tag', width: 'half' },
+  { id: 'numeroCourrier', label: 'Numéro de la Circulaire', type: 'text', placeholder: 'Ex: 2025-001', required: true, icon: 'tag', width: 'half' },
   { id: 'entreprise', label: 'Entreprise', type: 'text', placeholder: 'Ex: ACME Corp', required: true, icon: 'business', width: 'half' },
   { id: 'civiliteDestinataire', label: 'Civilité Destinataire', type: 'select', options: ['Monsieur', 'Madame', 'Monsieur et Madame'], required: false, width: 'half' },
   { id: 'nomDestinataire', label: 'Nom Destinataire', type: 'text', placeholder: 'Ex: Dupont', required: false, icon: 'person', width: 'half' },
@@ -49,7 +63,7 @@ export const COMMON_FIELDS: FormField[] = [
   { id: 'cpVille', label: 'Code postal + Ville', type: 'text', placeholder: 'Ex: 75001 Paris', required: false, icon: 'location_city', width: 'half' },
   { id: 'emailDestinataire', label: 'Email Destinataire', type: 'email', placeholder: 'destinataire@exemple.com', required: true, icon: 'email', width: 'half' },
   { id: 'signatureExp', label: 'Secrétaire Fédéral', type: 'select', options: [
-    'Bruno REYNES', 'Eric KELLER', 'Edwin LIARD', 'Gérald CIANNARELLA',
+    'Bruno REYNES', 'Eric KELLER', 'Edwin LIARD', 'Gérard CIANNARELLA',
     'Géraldine GOMIZ', 'Jean-Yves SABOT', 'Nathalie CAPART',
     'Olivier LEFEBVRE', 'Paul RIBEIRO', 'Valentin RODRIGUEZ'
   ], required: true, icon: 'edit', width: 'full' },
