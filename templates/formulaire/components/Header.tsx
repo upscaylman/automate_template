@@ -128,14 +128,14 @@ export const Header: React.FC<HeaderProps> = ({ onPreview, onDownload, onShare, 
             onClick={onDownload}
             disabled={!hasData}
             className="hidden md:inline-flex"
-            aria-label="Télécharger le document Word"
+            aria-label="Télécharger le document PDF"
           />
            <button
              onClick={onDownload}
              disabled={!hasData}
              className="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-[#dd60b0] text-white disabled:opacity-50 transition-all hover:scale-105"
-             aria-label="Télécharger le document Word"
-             title="Télécharger Word"
+             aria-label="Télécharger le document PDF"
+             title="Télécharger PDF"
           >
              <span className="material-icons" aria-hidden="true">download</span>
           </button>

@@ -504,7 +504,7 @@ const App: React.FC = () => {
 
       const filename = `document_${selectedTemplate}_${new Date().getTime()}.pdf`;
       downloadBlob(blob, filename);
-      showSuccess('Document PDF téléchargé avec succès !');
+      showSuccess('Document PDF téléchargé avec succès ! Vérifiez vos téléchargements.', 5000);
     } catch (error) {
       showError(`Erreur lors de la conversion PDF : ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
       console.error(error);
@@ -603,7 +603,7 @@ const App: React.FC = () => {
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         <Header
           onPreview={handlePreview}
-          onDownload={handleDownload}
+          onDownload={handleDownloadPdf}
           onShare={() => {
             if (!areAllRequiredFieldsFilled) {
               validateAndMarkInvalidFields();
