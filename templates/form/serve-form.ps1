@@ -257,7 +257,7 @@ function Handle-Request {
                 -Method POST `
                 -Body $RequestBody `
                 -Headers $headers `
-                -TimeoutSec 120
+                -TimeoutSec 300
 
             # Renvoyer la réponse de n8n
             $result = $proxyResponse | ConvertTo-Json -Depth 10 -Compress

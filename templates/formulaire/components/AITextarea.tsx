@@ -61,12 +61,12 @@ export const AITextarea: React.FC<AITextareaProps> = ({
 
     try {
       // Construire le prompt
-      let promptText = `Tu es un assistant professionnel. Écris un texte complet et professionnel pour un document administratif.\n\n`;
+      let promptText = `You are a professional assistant specialized in metallurgy unions. Write a complete and professional text for an administrative document. MAX 900 characters.\n\n`;
       if (objetValue) {
-        promptText += `Objet du document : ${objetValue}\n\n`;
+        promptText += `Document subject: ${objetValue}\n\n`;
       }
-      promptText += `Informations à utiliser : ${originalText}\n\n`;
-      promptText += `Instructions :\n- Écris un texte complet et structuré (pas de suggestions ni de listes)\n- Le texte doit être en lien direct avec l'objet du document\n- Utilise un style formel et professionnel\n- Le texte doit être prêt à être utilisé tel quel dans le document\n\nTexte du document :`;
+      promptText += `Information to use: ${originalText}\n\n`;
+      promptText += `Instructions:\n- Write a complete and structured text (no suggestions or lists)\n- Text must be directly related to the document subject\n- Use formal and professional style\n- Text must be ready to use as-is in the document\n- IMPORTANT: Always finish your sentences properly. If you run out of space, write less but end cleanly.\n- RESPOND IN FRENCH\n\nDocument text:`;
 
       console.log('🤖 Appel à l\'IA avec le prompt:', promptText.substring(0, 100) + '...');
 
