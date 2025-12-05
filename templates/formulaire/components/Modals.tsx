@@ -251,10 +251,10 @@ FO METAUX`;
           <p className="text-xs text-gray-500 mt-2">Séparez les emails par des virgules, espaces ou Entrée.</p>
         </div>
         <div>
-           <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Message personnalisé (optionnel)</label>
+           <label className="block text-sm font-bold text-gray-700 mb-2">Message personnalisé (optionnel)</label>
            <div className="relative">
              <textarea
-               className="w-full bg-[#fdfbff] dark:bg-[rgb(47,47,47)] border-2 border-gray-200 dark:border-gray-600 rounded-xl p-4 pr-10 outline-none focus:border-[#a84383] dark:focus:border-[#e062b1] min-h-[120px] text-black dark:text-white"
+               className="w-full bg-[#fdfbff] border-2 border-gray-200 rounded-xl p-4 pr-10 outline-none focus:border-[#a84383] min-h-[120px] text-black"
                placeholder="Ajoutez un message personnalisé qui accompagnera le document..."
                value={message}
                onChange={(e) => setMessage(e.target.value)}
@@ -264,10 +264,10 @@ FO METAUX`;
                <button
                  type="button"
                  onClick={() => setMessage('')}
-                 className="absolute top-2 right-2 flex items-center justify-center w-6 h-6 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                 className="absolute top-2 right-2 flex items-center justify-center w-6 h-6 rounded-full hover:bg-gray-200 transition-colors"
                  title="Effacer le message"
                >
-                 <span className="material-icons text-gray-500 dark:text-gray-400" style={{ fontSize: '18px' }}>close</span>
+                 <span className="material-icons text-gray-500" style={{ fontSize: '18px' }}>close</span>
                </button>
              )}
            </div>
