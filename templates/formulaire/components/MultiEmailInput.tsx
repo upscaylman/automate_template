@@ -172,6 +172,14 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
     }
   };
 
+  const handleInputBlur = () => {
+    // Ajouter l'email en cours de saisie quand on perd le focus
+    if (inputValue.trim()) {
+      addEmail(inputValue);
+      setInputValue('');
+    }
+  };
+
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
@@ -183,11 +191,16 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
   };
 
   const selectAll = () => {
-    predefinedEmails.forEach(({ email }) => {
-      if (!emails.includes(email)) {
-        addEmail(email);
-      }
-    });
+    // Collecter tous les emails à ajouter
+    const emailsToAdd = predefinedEmails
+      .map(({ email }) => email)
+      .filter(email => !emails.includes(email));
+
+    if (emailsToAdd.length > 0) {
+      const newEmails = [...emails, ...emailsToAdd];
+      setEmails(newEmails);
+      onChange(newEmails.join(', '));
+    }
   };
 
   const filteredPredefined = predefinedEmails.filter(
@@ -221,10 +234,11 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
             <div
               key={index}
               className="
-                flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium
+                flex items-center gap-1 px-2 rounded-full text-xs font-medium
                 bg-[#E8DEF8] dark:bg-[#4a1a36]
                 text-[#21005D] dark:text-[#e062b1]
                 transition-colors whitespace-nowrap flex-shrink-0
+                h-[1.875rem]
               "
             >
               <span className="material-icons" style={{ fontSize: '14px' }}>email</span>
@@ -251,6 +265,7 @@ export const MultiEmailInput: React.FC<MultiEmailInputProps> = ({
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
           onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
           placeholder={emails.length === 0 ? placeholder : ''}
           className="
             flex-1 min-w-[150px] outline-none bg-transparent
