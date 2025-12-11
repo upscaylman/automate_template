@@ -145,15 +145,28 @@ const App: React.FC = () => {
 
   // Gérer le changement de template (sauvegarder avant de changer)
   const handleTemplateChange = useCallback((newTemplateId: TemplateId) => {
+    // Vérifier si un document a été généré pour le template actuel
+    const hasGeneratedDocument = generatedWord !== null || pdfBlob !== null;
+
     // Sauvegarder les données du template actuel avant de changer
     if (selectedTemplate && Object.keys(formData).length > 0) {
       console.log('💾 Sauvegarde automatique avant changement de template');
       saveCurrentTemplateData(selectedTemplate, formData);
     }
 
+    // Afficher un toast informatif si un document a été généré
+    if (hasGeneratedDocument && selectedTemplate !== newTemplateId) {
+      showInfo('Changement de template : le document précédent a été effacé. Vos données sont sauvegardées.');
+    }
+
     // Changer de template
     setSelectedTemplate(newTemplateId);
-  }, [selectedTemplate, formData]);
+
+    // Invalider le cache du document généré (évite la contamination entre templates)
+    console.log('🗑️ Invalidation du cache document lors du changement de template');
+    setGeneratedWord(null);
+    setPdfBlob(null);
+  }, [selectedTemplate, formData, generatedWord, pdfBlob, showInfo]);
 
   // Mettre à jour les champs du formulaire quand le template change
   useEffect(() => {
@@ -340,18 +353,58 @@ const App: React.FC = () => {
     }
   }, [selectedTemplate]);
 
-  // Nettoyer les données du formulaire (supprimer les valeurs vides/undefined/null)
+  // Obtenir tous les IDs de champs valides pour le template actuel
+  const getValidFieldIds = useCallback((): string[] => {
+    if (!selectedTemplate) return [];
+
+    const fieldIds: string[] = [];
+
+    // Récupérer les champs de toutes les étapes disponibles
+    availableSteps.forEach(step => {
+      const fields = getFieldsForStep(step.id as StepType);
+      fields.forEach(field => {
+        if (!fieldIds.includes(field.id)) {
+          fieldIds.push(field.id);
+        }
+      });
+    });
+
+    // Toujours inclure templateType et templateName
+    fieldIds.push('templateType', 'templateName');
+
+    return fieldIds;
+  }, [selectedTemplate, availableSteps, getFieldsForStep]);
+
+  // Nettoyer les données du formulaire (supprimer les valeurs vides/undefined/null ET filtrer selon le template)
   const cleanFormData = useCallback((data: FormData): Record<string, string> => {
     const cleaned: Record<string, string> = {};
+    const validFieldIds = getValidFieldIds();
+
     Object.keys(data).forEach(key => {
+      // Filtrer uniquement les champs valides pour ce template
+      if (!validFieldIds.includes(key)) {
+        console.log(`🚫 Champ "${key}" ignoré (non pertinent pour ${selectedTemplate})`);
+        return;
+      }
+
       const value = data[key];
-      // Ne garder que les valeurs non vides
-      if (value !== undefined && value !== null && value !== '' && String(value).trim() !== '') {
-        cleaned[key] = String(value);
+
+      // Ignorer les valeurs undefined, null ou chaînes vides
+      // Cela évite d'envoyer des champs vides au template Word
+      if (value === undefined || value === null || value === '') {
+        return;
+      }
+
+      // Ne garder que les valeurs non vides (après trim)
+      const stringValue = String(value).trim();
+      if (stringValue !== '') {
+        cleaned[key] = stringValue;
       }
     });
+
+    console.log(`✅ Données nettoyées pour ${selectedTemplate}:`, cleaned);
     return cleaned;
-  }, []);
+  }, [selectedTemplate, getValidFieldIds]);
 
   // Créer un hash des données pour le cache
   const getDataHash = useCallback((data: FormData): string => {

@@ -91,6 +91,12 @@ export const Input: React.FC<InputProps> = ({
   }
 
   if (type === 'select') {
+    // S'assurer que la valeur est toujours une chaîne (jamais undefined)
+    const selectValue = (props.value as string) || '';
+
+    // Exclure 'value' des props pour éviter qu'il écrase notre valeur contrôlée
+    const { value: _, ...selectProps } = props as React.SelectHTMLAttributes<HTMLSelectElement>;
+
     return (
       <div className={`${wrapperClass} ${className}`}>
         <label className={labelClass}>
@@ -104,9 +110,10 @@ export const Input: React.FC<InputProps> = ({
             onBlur={handleBlur}
             aria-invalid={showError ? 'true' : 'false'}
             aria-describedby={showError ? `${fieldId}-error` : undefined}
-            {...(props as React.SelectHTMLAttributes<HTMLSelectElement>)}
+            {...selectProps}
+            value={selectValue}
           >
-            <option value="" disabled>Sélectionner...</option>
+            <option value="">Sélectionner...</option>
             {options?.map(opt => (
               <option key={opt} value={opt}>{opt}</option>
             ))}
